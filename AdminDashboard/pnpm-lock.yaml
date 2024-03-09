@@ -48,7 +48,7 @@ devDependencies:
     specifier: ^3.6.0
     version: 3.6.6(postcss@8.4.35)(svelte@4.2.12)
   typescript:
-    specifier: ^5.0.0
+    specifier: ^5.3.3
     version: 5.3.3
   vite:
     specifier: ^5.0.3

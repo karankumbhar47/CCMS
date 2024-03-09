@@ -1,0 +1,9 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd AdminDashboard || exit 1
+
+pnpm run format
+pnpm run lint
+pnpm run check
+# pnpm test
