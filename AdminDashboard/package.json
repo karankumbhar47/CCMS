@@ -12,9 +12,12 @@
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
         "precommit": "pnpx pretty-quick --staged",
-        "prepare": "cd .. && husky AdminDashboard/.husky"
+        "prepare": "cd .. && husky AdminDashboard/.husky",
+        "updateapi-node": "pnpx @openapitools/openapi-generator-cli generate -i api/main.yaml -o src/lib/generated/ -g typescript-fetch",
+        "updateapi": "openapi-generator generate -i api/main.yaml -o src/lib/generated/ -g typescript-fetch"
     },
     "devDependencies": {
+        "@openapitools/openapi-generator-cli": "^2.11.0",
         "@sveltejs/adapter-auto": "^3.0.0",
         "@sveltejs/kit": "^2.0.0",
         "@sveltejs/vite-plugin-svelte": "^3.0.0",
