@@ -1,0 +1,1142 @@
+openapi: 3.0.0
+info:
+    title: FDS
+    description: |
+        This API allows to communicate with FDS (Food Delivery System) server.
+    version: 0.0.8
+paths:
+    # Registration and Authentication paths
+    /register:
+        post:
+            summary: Register a new consumer?
+            description: Create a new user account with unique username, strong password for authentication and other user info.
+            operationId: register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/userDetails'
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/sessionId'
+                "409":
+                    description: "Conflict"
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                enum:
+                                    - Username
+                                    - Phone
+                                    - Email
+                                    - Password
+
+    /login:
+        post:
+            summary: Login to user account
+            description: Get username and password and authenticate the user.
+                Returns sessionId for further requests
+            operationId: login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/sessionId'
+                "403":
+                    description: "Forbidden"
+
+    /profile:
+        get:
+            summary:
+            description: Get information about the another user from username
+                if the current user is allowed to do so. Anyone can see
+                information about all the Vendors, Delivery Persons and the
+                user himself.
+            operationId: getProfile
+            parameters:
+                - name: sessionId
+                  in: header
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/profile'
+                "401":
+                    description: "Unauthorized"
+
+    /profile/update:
+        post:
+            summary: updating profile
+            description: Update userinfo of the user.
+            operationId: updateProfile
+            parameters:
+                - name: sessionId
+                  in: header
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/profile'
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/profile'
+                "401":
+                    description: "Unauthorized"
+
+    /query:
+        get:
+            summary: Search for items
+            description: Search for items based on search query and filters
+                (Authentication is not necessary)
+            operationId: query
+            parameters:
+                - name: sessionId
+                  in: header
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+                - name: query
+                  in: header
+                  required: false
+                  schema:
+                      type: string
+#                - name: filters
+#                  in: header
+#                  required: false
+#                  schema:
+#                      type: array
+#                      items:
+#                          $ref: '#/components/schemas/filter'
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/foodItem'
+                "401":
+                    description: "Unauthorized"
+
+    /order/place:
+        post:
+            summary: Place the order
+            description: Place the order from the cart, with item id as key and quantity as value.
+            operationId: placeOrder
+            parameters:
+                - name: sessionId
+                  in: header
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - itemCart
+                                - location
+                            properties:
+                                itemCart:
+                                    type: array
+                                    items:
+                                        type: object
+                                        required:
+                                            - itemId
+                                            - quantity
+                                        properties:
+                                            itemId:
+                                                $ref: '#/components/schemas/itemId'
+                                            quantity:
+                                                type: integer
+                                                description: Quantity of the specific item.
+                                location:
+                                    type: string
+                                    description: Delivery location.
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/orderId'
+                "404":
+                    description: "Not Found"
+
+    /order/confirm:
+        post:
+            summary: Confirm Order
+            description: Confirm Order Delivery
+            operationId: confirmOrder
+            parameters:
+                - name: sessionId
+                  in: header
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/orderId'
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema: #OTP
+                               type: string
+
+                "404":
+                    description: "Not Found"
+
+    /product/{id}:
+        get:
+            summary: Get Product Details
+            description: Retrieve details for a specific item by providing its ID
+            operationId: getProduct
+            parameters:
+                - name: id
+                  in: path
+                  description: ID of the item to retrieve details for
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/foodItemFull'
+                "404":
+                    description: File Not Found
+                "401":
+                    description: Unauthorized
+
+    /product/{id}/available:
+        get:
+            summary: Check Availability
+            description: Check the availability of a specific item by providing its ID and quantity count
+            operationId: checkProductAvailable
+            parameters:
+                - name: id
+                  in: path
+                  description: ID of the item to check availability for
+                  required: true
+                  schema:
+                      type: string
+                - name: count
+                  in: query
+                  description: Quantity count to check availability for
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                description: Indicates if the specified quantity is available
+                "401":
+                    description: Unauthorized
+    
+    /file/{fileId}:
+        get:
+            summary: Get file by file ID
+            description: Retrieve a file, typically an image, based on the provided file ID.
+            operationId: getFile
+            parameters:
+                - name: fileId
+                  in: path  
+                  description: ID of the file to retrieve
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/fileId'
+                - name: sessionId
+                  in: header
+                  required: false
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        image/*:
+                            schema:
+                                type: multipartFile
+                "401":
+                    description: "Unauthorized"
+                "404":
+                    description: "File Not Found"
+
+    /file:
+        put:
+            summary: Upload a file
+            description: Upload an image to server for referencing elsewhere.
+            operationId: putFile
+            parameters:
+                - name: sessionId
+                  in: header
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            requestBody:
+                required: true
+                content:
+                    image/*:
+                        schema:
+                            type: multipartFile # Assuming a base64-encoded image string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/fileId'
+                "401":
+                    description: Unauthorized (if user not valid to upload file)
+
+    /delivery/viewWaitingOrders:
+        get:
+            summary: View Waiting Orders
+            operationId: deliveryViewWaitingOrders
+            parameters:
+                - name: sessionId
+                  in: header
+                  description: Session ID of the delivery person
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/order'
+
+    /delivery/acceptOrder:
+        post:
+            summary: Accept Order
+            operationId: deliveryAcceptOrder
+            parameters:
+                - name: sessionId
+                  in: header
+                  description: Session ID of the delivery person
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                orderId:
+                                    $ref: '#/components/schemas/orderId'
+            responses:
+                "200":
+                    description: OK
+                "401":
+                    description: Unauthorized
+
+    /delivery/getAcceptedOrders:
+        get:
+            summary: Get List of Accepted Orders
+            operationId: deliveryViewAcceptedOrders
+            parameters:
+                - name: sessionId
+                  in: header
+                  description: Session ID of the delivery person
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/order'
+
+    /delivery/pickupOrder:
+        post:
+            summary: Pickup Order
+            operationId: deliveryPick
+            parameters:
+                - name: sessionId
+                  in: header
+                  description: Session ID of the delivery person
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+                - name: orderId
+                  in: query
+                  description: ID of the order to be picked up
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: OK
+                '401':
+                    description: Unauthorized
+
+    /delivery/dropOrder:
+        post:
+            summary: Drop Order
+            operationId: deliveryDrop
+            parameters:
+                - name: sessionId
+                  in: header
+                  description: Session ID of the delivery person
+                  required: true
+                  schema:
+                      $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                orderId:
+                                    type: string
+                                otp:
+                                    type: integer
+            responses:
+                '200':
+                    description: OK
+                '401':
+                    description: Unauthorized
+
+    /deliveryPerson/register:
+        post:
+            summary: Register a new deliveryPerson
+            description: Create a new deliveryPerson account with unique username, strong password for authentication and other deliveryPerson info.
+            operationId: registerDeliveryPerson
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/deliveryPersonDetails'
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/sessionId'
+                "409":
+                    description: "Conflict"
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                enum:
+                                    - Username
+                                    - Phone
+                                    - Email
+                                    - Password
+    /deliveryPerson/login:
+        post:
+            summary: Login to delivery person account
+            description: Get username and password and authenticate the delivery person.
+                Returns sessionId for further requests
+            operationId: loginDeliveryPerson
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/sessionId'
+                "403":
+                    description: "Forbidden"
+
+    # Vendor API
+    /vendor/register:
+        post:
+            summary: Register a new vendor
+            description: Create a new vendor account with unique username, strong password for authentication and other vendor info.
+            operationId: registerVendor
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/vendorDetails'
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/sessionId'
+                "409":
+                    description: "Conflict"
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                enum:
+                                    - Username
+                                    - Phone
+                                    - Email
+                                    - Password
+
+    /vendor/login:
+        post:
+            summary: Login to vendor account
+            description: Get username and password and authenticate the vendor.
+                Returns sessionId for further requests
+            operationId: loginVendor
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/sessionId'
+                "403":
+                    description: "Forbidden"
+
+    /vendor/product/add:
+        post:
+            summary:
+            description:
+            operationId: vendorAddProduct
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - name
+                                - price
+                            properties:
+                                name:
+                                    type: string
+                                thumbnail:
+                                    type: string
+                                price:
+                                    type: number
+                                maxQuantity:
+                                    type: integer
+                                imageUrls:
+                                    type: array
+                                    items:
+                                        type: string
+                                        minLength: 40
+                                        maxLength: 40
+                                tags:
+                                    type: array
+                                    description: tags related to food item
+                                    items:
+                                        type: string
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/itemId'
+                "403":
+                    description: "Forbidden"
+
+    /vendor/product/edit:
+        post:
+            summary:
+            description:
+            operationId: vendorEditProduct
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - itemId
+                            properties:
+                                itemId:
+                                    $ref: '#/components/schemas/itemId'
+                                name:
+                                    type: string
+                                thumbnail:
+                                    type: string
+                                price:
+                                    type: number
+                                maxQuantity:
+                                    type: integer
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/foodItemFull'
+                "403":
+                    description: "Forbidden"
+
+    /vendor/product/changeAvailable:
+        post:
+            summary:
+            description:
+            operationId: vendorChangeProductAvailabile
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - itemId
+                                - status
+                            properties:
+                                itemId:
+                                    $ref: '#/components/schemas/itemId'
+                                status:
+                                    description: Weather the item is available or not
+                                    type: boolean
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                "403":
+                    description: "Forbidden"
+
+    /vendor/changeAvailable:
+        post:
+            summary:
+            description:
+            operationId: vendorChangeAvailabile
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - itemId
+                                - status
+                            properties:
+                                itemId:
+                                    $ref: '#/components/schemas/itemId'
+                                status:
+                                    description: Weather the item is available or not
+                                    type: boolean
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                "403":
+                    description: "Forbidden"
+
+    /vendor/order/requested:
+        get:
+            summary:
+            description:
+            operationId: vendorGetRequestedOrders
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        orderId:
+                                            type: string
+                                        userId:
+                                            type: string
+                                        vendorID:
+                                            type: string
+                                        pickupLocation:
+                                            type: string
+                                        orderItems:
+                                            type: array
+                                            items:
+                                                type: object
+                                                required:
+                                                    - itemId
+                                                    - quantity
+                                                properties:
+                                                    itemId:
+                                                        type: string
+                                                        minLength: 40
+                                                        maxLength: 40
+                                                    quantity:
+                                                        type: integer
+                                                        description: Quantity of the specific item.
+                                        location:
+                                            type: string
+                                            description: Delivery location.
+                                        price:
+                                            type: number
+                "403":
+                    description: "Forbidden"
+
+    /vendor/order/accepted:
+        get:
+            summary:
+            description:
+            operationId: vendorGetAcceptedOrders
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        orderId:
+                                            type: string
+                                        userId:
+                                            type: string
+                                        vendorID:
+                                            type: string
+                                        pickupLocation:
+                                            type: string
+                                        orderItems:
+                                            type: array
+                                            items:
+                                                type: object
+                                                required:
+                                                    - itemId
+                                                    - quantity
+                                                properties:
+                                                    itemId:
+                                                        type: string
+                                                        minLength: 40
+                                                        maxLength: 40
+                                                    quantity:
+                                                        type: integer
+                                                        description: Quantity of the specific item.
+                                        location:
+                                            type: string
+                                            description: Delivery location.
+                                        price:
+                                            type: number
+                "403":
+                    description: "Forbidden"
+
+    /order:
+        get:
+            summary:
+            description:
+            operationId: getOrders
+            parameters:
+            - name: sessionId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/sessionId'
+            - name: orderId
+              in : header
+              required: true
+              schema:
+                  $ref: '#/components/schemas/orderId'
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    orderId:
+                                        type: string
+                                    userId:
+                                        type: string
+                                    vendorID:
+                                        type: string
+                                    pickupLocation:
+                                        type: string
+                                    orderItems:
+                                        type: array
+                                        items:
+                                            type: object
+                                            required:
+                                                - itemId
+                                                - quantity
+                                            properties:
+                                                itemId:
+                                                    type: string
+                                                    minLength: 40
+                                                    maxLength: 40
+                                                quantity:
+                                                    type: integer
+                                                    description: Quantity of the specific item.
+                                    location:
+                                        type: string
+                                        description: Delivery location.
+                                    price:
+                                        type: number
+                                    status:
+                                        type: string
+                "401":
+                    description: "Unauthorized"
+
+components:
+    schemas:
+        sessionId:
+            type: string
+            maxLength: 40
+            minLength: 40
+
+        itemId:
+            type: string
+            maxLength: 40
+            minLength: 40
+
+        orderId:
+            type: string
+            maxLength: 40
+            minLength: 40
+
+        fileId:
+            type: string
+            maxLength: 40
+            minLength: 40
+
+        profile:
+            type: object
+            properties:
+                username:
+                    type: string
+                name:
+                    type: string
+                phone:
+                    type: string
+                email:
+                    type: string
+                gender:
+                    type: string
+                    enum:
+                        - Male
+                        - Female
+                        - Others
+                dob:
+                    type: string
+
+        filter:
+            type: object
+            required:
+                - property
+                - constrainType
+                - value
+            properties:
+                property:
+                    type: string
+                    description: What property to
+                        apply filter on.
+                    enum:
+                        - price
+                        - veg
+                        - rating
+                        - vendor
+                        - category # (rajasthani, punjabi, bihari, bangali, udpi, kolhapuri, etc)
+                constrainType:
+                    type: string
+                    enum:
+                        - greaterThan
+                        - lessThan
+                        - equals
+                        - notEquals
+                value:
+                    type: string
+
+        foodItem:
+            type: object
+            required:
+                - itemId
+                - name
+                - vendor
+                - price
+            properties:
+                itemId:
+                    $ref: '#/components/schemas/itemId'
+                name:
+                    type: string
+                thumbnail:
+                    type: string
+                vendor:
+                    type: string
+                price:
+                    type: number
+                rating:
+                    type: number
+                ratedBy:
+                    type: integer
+                tags:
+                    type: array
+                    description: tags related to food item
+                    items:
+                        type: string
+
+        foodItemFull:
+            type: object
+            properties:
+                itemId:
+                    type: string
+                    description: ID of the item
+                itemName:
+                    type: string
+                    description: Name of the item
+                thumbnailPicture:
+                    type: string
+                    description: 64bit encoded thumbnail picture
+                price:
+                    type: number
+                    description: Price of the item
+                vendorName:
+                    type: string
+                    description: Name of the vendor
+                vendorLocation:
+                    type: string
+                    description: Location of the vendor
+                starRating:
+                    type: number
+                    description: Star rating of the item
+                isAvailable:
+                    type: boolean
+                    description: Indicates if the item is available
+                maxQuantity:
+                    type: integer
+                    description: Maximum quantity available
+                imageUrls:
+                    type: array
+                    description: URLs of additional images
+                    items:
+                        type: string
+                tags:
+                    type: array
+                    description: tags related to food item
+                    items:
+                        type: string
+
+        orderItem:
+            type: object
+            properties:
+                itemId:
+                    type: string
+                itemName:
+                    type: string
+                quantity:
+                    type: integer
+                price:
+                    type: number
+
+        order:
+            type: object
+            properties:
+                orderId:
+                    type: string
+                customerName:
+                    type: string
+                deliveryAddress:
+                    type: string
+                pickupLocation:
+                    type: string
+                orderDetails:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/orderItem'
+
+        userDetails:
+            type: object
+            required:
+                - username
+                - password
+                - phone
+            properties:
+                username:
+                    type: string
+                    example: "testUser1"
+                password:
+                    type: string
+                    example: "1234@Abcd"
+                name:
+                    type: string
+                    example: "Test D. User"
+                phone:
+                    type: string
+                    example: "9876543210"
+                email:
+                    type: string
+                    example: "email@example.com"
+                gender:
+                    type: string
+                    enum:
+                        - Male
+                        - Female
+                        - Others
+                    example: "Male"
+                dob:
+                    type: string
+                    example: "01-01-2000"
+
+        vendorDetails:
+            type: object
+            required:
+                - username
+                - password
+                - phone
+                - location
+            properties:
+                username:
+                    type: string
+                    example: "testVendor1"
+                password:
+                    type: string
+                    example: "1234@Ved"
+                name:
+                    type: string
+                    example: "UltraTech Cafe"
+                phone:
+                    type: string
+                    example: "9878543210"
+                email:
+                    type: string
+                    example: "vendor001@example.com"
+                location:
+                    type: string
+                    example: "Mess Block"
+
+        deliveryPersonDetails:
+            type: object
+            required:
+                - username
+                - password
+                - phone
+            properties:
+                username:
+                    type: string
+                    example: "testdeliveryperson1"
+                password:
+                    type: string
+                    example: "1234@Ved"
+                name:
+                    type: string
+                    example: "deliveryPerson"
+                phone:
+                    type: string
+                    example: "9878543210"
+                email:
+                    type: string
+                    example: "deliveryperson001@example.com"
+
+servers:
+    - url: http://13.233.99.87:8080
