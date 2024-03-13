@@ -36,8 +36,9 @@
         display: block;
         background: none;
         border: none;
-        padding: 0;
+        padding: 30px 0px;
         margin: 0;
+        font-size: large;
         cursor: pointer;
         text-align: left;
     }
@@ -46,7 +47,7 @@
         background-color: #2c3e50; /* Sidebar background color */
         padding-top: 120px;
         padding-left: 20px;
-        height: 100%;
+        height: 100vh;
         position: absolute;
         width: 250px; /* Adjust the width of the sidebar */
         position: fixed;
