@@ -1,0 +1,11 @@
+get:
+    operationId: getAnnouncements
+    responses:
+        '200':
+            description: ""
+            content:
+                application/json:
+                    schema:
+                        type: array
+                        items:
+                            $ref: '../schemas/announcement.yaml'

@@ -1,0 +1,16 @@
+type: object
+name: "announcement"
+properties:
+    id:
+        type: integer
+        format: int64
+    title:
+        type: string
+        minLength: 6
+        maxLength: 255
+    description:
+        type: string
+    time:
+        type: string
+    # postedby:
+    #     type: string
