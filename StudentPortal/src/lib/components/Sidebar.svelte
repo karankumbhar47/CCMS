@@ -1,8 +1,6 @@
 <!-- Sidebar.svelte -->
 
 <script>
-    import { goto } from "$app/navigation";
-
     /** @type Array.<{name: string; url:string;}> */
     let links = [
         { name: "Announcements", url: "/" },
@@ -12,17 +10,15 @@
     ];
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="sidebar" role="navigation">
     {#each links as link}
-        <div class="sidebar-heading" on:click={() => goto(link.url)}>
+        <a class="sidebar-heading" href={link.url}>
             {link.name}
-        </div>
+        </a>
     {/each}
 </div>
 
-<style>
+<style lang="scss">
     .sidebar {
         display: block;
         background: none;
