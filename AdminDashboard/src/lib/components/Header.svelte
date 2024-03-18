@@ -92,10 +92,9 @@
         display: none;
     }
 
-    .admin-info{
+    .admin-info {
         display: flex;
         flex-direction: row;
         align-items: center;
     }
-
 </style>

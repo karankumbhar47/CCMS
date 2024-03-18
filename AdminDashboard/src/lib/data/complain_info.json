@@ -1,0 +1,142 @@
+[
+    {
+        "serialNumber": 1,
+        "complain": "Internet connectivity issue",
+        "tags": [
+            "Internet",
+            "Connectivity"
+        ],
+        "severity": "High",
+        "location": "Library",
+        "complainer": {
+            "id": 123,
+            "name": "John Doe"
+        }
+    },
+    {
+        "serialNumber": 2,
+        "complain": "Broken chair in classroom",
+        "tags": [
+            "Furniture",
+            "Maintenance"
+        ],
+        "severity": "Medium",
+        "location": "Classroom 102",
+        "complainer": {
+            "id": 456,
+            "name": "Jane Smith"
+        }
+    },
+    {
+        "serialNumber": 3,
+        "complain": "Loud noise from neighboring room",
+        "tags": [
+            "Noise",
+            "Disturbance"
+        ],
+        "severity": "Low",
+        "location": "Residence Hall",
+        "complainer": {
+            "id": 789,
+            "name": "Alex Johnson"
+        }
+    },
+    {
+        "serialNumber": 4,
+        "complain": "Air conditioning not working in lab",
+        "tags": [
+            "Temperature",
+            "Facilities"
+        ],
+        "severity": "High",
+        "location": "Lab 303",
+        "complainer": {
+            "id": 101,
+            "name": "Emma Brown"
+        }
+    },
+    {
+        "serialNumber": 5,
+        "complain": "Trash not collected for days",
+        "tags": [
+            "Cleanliness",
+            "Maintenance"
+        ],
+        "severity": "Medium",
+        "location": "Campus Grounds",
+        "complainer": {
+            "id": 202,
+            "name": "Michael Wilson"
+        }
+    },
+    {
+        "serialNumber": 6,
+        "complain": "Parking lot lights not working",
+        "tags": [
+            "Safety",
+            "Facilities"
+        ],
+        "severity": "Low",
+        "location": "Parking Lot A",
+        "complainer": {
+            "id": 303,
+            "name": "Olivia Garcia"
+        }
+    },
+    {
+        "serialNumber": 7,
+        "complain": "Leaky faucet in washroom",
+        "tags": [
+            "Plumbing",
+            "Maintenance"
+        ],
+        "severity": "Medium",
+        "location": "Main Building, 2nd Floor",
+        "complainer": {
+            "id": 404,
+            "name": "William Martinez"
+        }
+    },
+    {
+        "serialNumber": 8,
+        "complain": "Overcrowded gym during peak hours",
+        "tags": [
+            "Crowd",
+            "Facilities"
+        ],
+        "severity": "Low",
+        "location": "Campus Gymnasium",
+        "complainer": {
+            "id": 505,
+            "name": "Sophia Hernandez"
+        }
+    },
+    {
+        "serialNumber": 9,
+        "complain": "Vending machine out of order",
+        "tags": [
+            "Facilities",
+            "Vending"
+        ],
+        "severity": "Medium",
+        "location": "Student Lounge",
+        "complainer": {
+            "id": 606,
+            "name": "Daniel Adams"
+        }
+    },
+    {
+        "serialNumber": 10,
+        "complain": "Wi-Fi signal weak in cafeteria",
+        "tags": [
+            "Internet",
+            "Connectivity"
+        ],
+        "severity": "Medium",
+        "location": "Cafeteria",
+        "complainer": {
+            "id": 707,
+            "name": "Isabella Thompson"
+        }
+    }
+]
