@@ -1,6 +1,6 @@
 package com.iitbh.ccms.controller;
 
-import com.iitbh.ccms.model.Student;
+import com.iitbh.ccms.model_db.Student;
 import com.iitbh.ccms.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.iitbh.ccms.service;
 
-import com.iitbh.ccms.model.Student;
+import com.iitbh.ccms.model_db.Student;
 import com.iitbh.ccms.repository.StudentRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

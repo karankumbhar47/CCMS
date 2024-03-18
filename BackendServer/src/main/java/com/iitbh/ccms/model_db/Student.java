@@ -1,4 +1,4 @@
-package com.iitbh.ccms.model;
+package com.iitbh.ccms.model_db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
