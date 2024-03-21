@@ -1,7 +1,7 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.UsersDetailApiDelegate;
-import com.iitbh.ccms.model_DB.UserDetailsDB;
+import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.model.UsersDetail;
 import com.iitbh.ccms.service.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;

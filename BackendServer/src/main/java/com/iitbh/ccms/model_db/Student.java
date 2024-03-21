@@ -1,4 +1,4 @@
-package com.iitbh.ccms.model_DB;
+package com.iitbh.ccms.model_db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,16 +7,16 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="complains")
+@Document(collection="student")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Complains {
+public class Student {
+    // mention same variable names
     @Id
     ObjectId objectId;
-    int complainId;
     int studentId;
-    String complainType;
-    String description;
-    String status;
+    String name;
+    String grade;
+    int age;
 }

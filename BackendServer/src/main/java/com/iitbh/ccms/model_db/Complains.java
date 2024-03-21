@@ -1,4 +1,4 @@
-package com.iitbh.ccms.model_DB;
+package com.iitbh.ccms.model_db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,19 +7,16 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-@Document(collection="User-Details")
+@Document(collection="complains")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetailUpdate {
-
+public class Complains {
     @Id
     ObjectId objectId;
-    int userId;
-    String userName;
-    String role;
-    String email;
+    int complainId;
+    int studentId;
+    String complainType;
+    String description;
     String status;
-    String dateRegistered;
 }
