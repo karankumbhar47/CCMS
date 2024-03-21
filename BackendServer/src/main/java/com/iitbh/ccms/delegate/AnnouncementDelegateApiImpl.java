@@ -1,33 +1,32 @@
 package com.iitbh.ccms.delegate;
 
-import com.iitbh.ccms.api.AnnouncementsApiDelegate;
-import com.iitbh.ccms.model.Announcement;
-import com.iitbh.ccms.service.GetAnnouncementService;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.iitbh.ccms.api.AnnouncementsApiDelegate;
+import com.iitbh.ccms.model.Announcement;
+import com.iitbh.ccms.model_db.AnnouncementDoc;
+import com.iitbh.ccms.service.AnnouncementService;
 
 @Service
 public class AnnouncementDelegateApiImpl implements AnnouncementsApiDelegate {
-    private final GetAnnouncementService getAnnouncement;
+    private final AnnouncementService getAnnouncement;
 
-    public AnnouncementDelegateApiImpl(GetAnnouncementService service) {
+    public AnnouncementDelegateApiImpl(AnnouncementService service) {
         this.getAnnouncement = service;
     }
 
     @Override
     public ResponseEntity<List<Announcement>> getAnnouncements() {
-        ArrayList<Announcement> dummy = new ArrayList<Announcement>();
-        Announcement announcement = new Announcement();
-        announcement.setId(1L);
-        announcement.setTitle("First Dummy commit from server");
-        announcement.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut nisl vel tortor bibendum commodo. Sed consequat, quam eget aliquam malesuada, tortor magna fringilla nulla, ac bibendum tellus tellus a lectus.");
-        dummy.add(announcement);
-        return ResponseEntity.ok(dummy);
+       List<AnnouncementDoc> docs = getAnnouncement.getAnnouncements();
+        ArrayList<Announcement> res = new ArrayList<Announcement>();
+        docs.forEach((AnnouncementDoc doc) -> {
+            res.add(doc.toApiAnnouncement());
+        });
+        return ResponseEntity.ok(res);
     }
 
 }
