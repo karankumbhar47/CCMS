@@ -8,4 +8,5 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
+
 }

@@ -1,11 +1,14 @@
 package com.iitbh.ccms.model_db;
 
+import com.iitbh.ccms.model.ComplainOverview;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Document(collection="complains")
 @Data
@@ -14,9 +17,41 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Complains {
     @Id
     ObjectId objectId;
-    int complainId;
-    int studentId;
-    String complainType;
-    String description;
+
+    String complainId;
+    long complainerId;
+    String complain;
+    String dateTime;
+    String location;
+    String complainerName;
+    List<String> tags;
     String status;
+    String severity;
+
+    public ComplainOverview.StatusEnum getStatus() {
+        if(this.status.equalsIgnoreCase("completed")){
+            return ComplainOverview.StatusEnum.COMPLETED;
+        }
+        else if (this.status.equalsIgnoreCase("OnHold")) {
+            return ComplainOverview.StatusEnum.ONHOLD;
+        }
+        else if(this.status.equalsIgnoreCase("InProgress")){
+            return ComplainOverview.StatusEnum.INPROGRESS;
+        }
+        else{
+            return ComplainOverview.StatusEnum.UNSEEN;
+        }
+    }
+
+    public ComplainOverview.SeverityEnum getSeverity() {
+        if (severity.equalsIgnoreCase("high")) {
+            return ComplainOverview.SeverityEnum.HIGH;
+        } else if (severity.equalsIgnoreCase("critical")) {
+            return ComplainOverview.SeverityEnum.CRITICAL;
+        } else if (severity.equalsIgnoreCase("medium")) {
+            return ComplainOverview.SeverityEnum.MEDIUM;
+        } else {
+            return ComplainOverview.SeverityEnum.LOW;
+        }
+    }
 }
