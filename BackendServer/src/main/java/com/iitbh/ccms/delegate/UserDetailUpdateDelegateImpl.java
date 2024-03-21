@@ -18,8 +18,8 @@ public class UserDetailUpdateDelegateImpl implements UserDetailUpdateApiDelegate
     }
 
     @Override
-    public ResponseEntity<Void> userDetailUpdate(UserDetailUpdate userDetailUpdateRequest) {
-        userDetailUpdateService.updateUserDetails(userDetailUpdateRequest.getUserId(),userDetailUpdateRequest);
+    public ResponseEntity<Void> userDetailUpdate(UserDetailUpdate userDetailUpdate) {
+        userDetailUpdateService.updateUserDetails(userDetailUpdate.getUserId(), userDetailUpdate);
         return ResponseEntity.ok().build();
     }
 }

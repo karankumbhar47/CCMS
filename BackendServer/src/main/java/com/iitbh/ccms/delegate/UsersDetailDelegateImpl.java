@@ -1,6 +1,7 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.UsersDetailApiDelegate;
+import com.iitbh.ccms.model.UsersDetail;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.UserDetailsRepository;
 import com.iitbh.ccms.service.UserDetailService;

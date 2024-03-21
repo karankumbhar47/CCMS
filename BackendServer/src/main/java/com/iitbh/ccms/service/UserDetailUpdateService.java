@@ -1,5 +1,6 @@
 package com.iitbh.ccms.service;
 
+import com.iitbh.ccms.model.UserDetailUpdate;
 import com.iitbh.ccms.model_db.UserDetailUpdateDB;
 import com.iitbh.ccms.repository.UserDetailUpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
