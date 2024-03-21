@@ -3,7 +3,7 @@ info:
     title: CCMS
     description: |
         This API is used for communication between CCMS (Campus Complaint Management System) server and client.
-    version: 0.0.1
+    version: 0.0.2
 paths:
     /login:
         post:
@@ -36,8 +36,13 @@ paths:
                     description: "Forbidden"
 
     /announcements:
-        $ref: './paths/announcements.yaml'
+        $ref: "./paths/announcements.yaml"
 
+    /complain_overview:
+        $ref: "./paths/complain_overview.yaml"
+
+    /submit_complain:
+        $ref: "./paths/submit_complaint.yaml"
 
 servers:
-    - url: http://13.233.99.87:8080
+    - url: http://localhost:8080
