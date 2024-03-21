@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetailUpdate {
+public class UserDetailUpdateDB {
 
     @Id
     ObjectId objectId;

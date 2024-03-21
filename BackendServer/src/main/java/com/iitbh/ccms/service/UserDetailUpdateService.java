@@ -1,7 +1,6 @@
 package com.iitbh.ccms.service;
 
-import com.iitbh.ccms.model_db.UserDetailUpdate;
-import com.iitbh.ccms.model.UserDetailUpdateRequest;
+import com.iitbh.ccms.model_db.UserDetailUpdateDB;
 import com.iitbh.ccms.repository.UserDetailUpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,12 @@ public class UserDetailUpdateService {
     @Autowired
     private UserDetailUpdateRepository userDetailUpdateRepository;
 
-    public void updateUserDetails(int userId, UserDetailUpdateRequest userDetailUpdateRequest) {
+    public void updateUserDetails(int userId, UserDetailUpdate userDetailUpdateRequest) {
         // Find the user by userId
-        Optional<UserDetailUpdate> optionalUser = userDetailUpdateRepository.findUserDetailUpdateByUserId(userId);
+        Optional<UserDetailUpdateDB> optionalUser = userDetailUpdateRepository.findUserDetailUpdateByUserId(userId);
 
         if (optionalUser.isPresent()) {
-            UserDetailUpdate existingUser = optionalUser.get();
+            UserDetailUpdateDB existingUser = optionalUser.get();
             // Update the fields of existing user with the updated values
             existingUser.setUserName(userDetailUpdateRequest.getUserName());
             existingUser.setRole(userDetailUpdateRequest.getRole());

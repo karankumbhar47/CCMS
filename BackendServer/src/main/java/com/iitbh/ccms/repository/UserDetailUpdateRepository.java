@@ -1,7 +1,7 @@
 package com.iitbh.ccms.repository;
 
 
-import com.iitbh.ccms.model_db.UserDetailUpdate;
+import com.iitbh.ccms.model_db.UserDetailUpdateDB;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public  interface UserDetailUpdateRepository extends MongoRepository<UserDetailUpdate, ObjectId>{
+public  interface UserDetailUpdateRepository extends MongoRepository<UserDetailUpdateDB, ObjectId>{
 
-    Optional<UserDetailUpdate> findUserDetailUpdateByUserId(int userId);
+    Optional<UserDetailUpdateDB> findUserDetailUpdateByUserId(int userId);
 
 }
