@@ -1,0 +1,38 @@
+[
+    {
+        "serialNumber": 1,
+        "userId": 12141690,
+        "userName": "Vedant Udan",
+        "role": "Complainer",
+        "email": "udanvedant@iitbhilai.ac.in",
+        "status": "active",
+        "dateRegistered": "1-1-2023"
+    },
+    {
+        "serialNumber": 2,
+        "userId": 12141590,
+        "userName": "X",
+        "role": "Complainer",
+        "email": "x@iitbhilai.ac.in",
+        "status": "block",
+        "dateRegistered": "1-1-2023"
+    },
+    {
+        "serialNumber": 3,
+        "userId": 12141480,
+        "userName": "X2",
+        "role": "Moderator",
+        "email": "x2@iitbhilai.ac.in",
+        "status": "active",
+        "dateRegistered": "1-1-2023"
+    },
+    {
+        "serialNumber": 4,
+        "userId": 12141670,
+        "userName": "X3",
+        "role": "Resolver",
+        "email": "resolver@iitbhilai.ac.in",
+        "status": "active",
+        "dateRegistered": "1-1-2023"
+    }
+]

@@ -23,8 +23,11 @@
         complaints = data;
     });
 
-
+    /**
+     * @param {{ serialNumber: number; complain: string; tags: string[]; severity: string; location: string; complainer: { id: number; name: string; }; } | null} complaint
+     */
     function viewComplaint(complaint) {
+        // @ts-ignore
         selectedComplaint.set(complaint);
     }
 </script>

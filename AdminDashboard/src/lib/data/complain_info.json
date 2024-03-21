@@ -2,10 +2,7 @@
     {
         "serialNumber": 1,
         "complain": "Internet connectivity issue",
-        "tags": [
-            "Internet",
-            "Connectivity"
-        ],
+        "tags": ["Internet", "Connectivity"],
         "severity": "High",
         "location": "Library",
         "complainer": {
@@ -16,10 +13,7 @@
     {
         "serialNumber": 2,
         "complain": "Broken chair in classroom",
-        "tags": [
-            "Furniture",
-            "Maintenance"
-        ],
+        "tags": ["Furniture", "Maintenance"],
         "severity": "Medium",
         "location": "Classroom 102",
         "complainer": {
@@ -30,10 +24,7 @@
     {
         "serialNumber": 3,
         "complain": "Loud noise from neighboring room",
-        "tags": [
-            "Noise",
-            "Disturbance"
-        ],
+        "tags": ["Noise", "Disturbance"],
         "severity": "Low",
         "location": "Residence Hall",
         "complainer": {
@@ -44,10 +35,7 @@
     {
         "serialNumber": 4,
         "complain": "Air conditioning not working in lab",
-        "tags": [
-            "Temperature",
-            "Facilities"
-        ],
+        "tags": ["Temperature", "Facilities"],
         "severity": "High",
         "location": "Lab 303",
         "complainer": {
@@ -58,10 +46,7 @@
     {
         "serialNumber": 5,
         "complain": "Trash not collected for days",
-        "tags": [
-            "Cleanliness",
-            "Maintenance"
-        ],
+        "tags": ["Cleanliness", "Maintenance"],
         "severity": "Medium",
         "location": "Campus Grounds",
         "complainer": {
@@ -72,10 +57,7 @@
     {
         "serialNumber": 6,
         "complain": "Parking lot lights not working",
-        "tags": [
-            "Safety",
-            "Facilities"
-        ],
+        "tags": ["Safety", "Facilities"],
         "severity": "Low",
         "location": "Parking Lot A",
         "complainer": {
@@ -86,10 +68,7 @@
     {
         "serialNumber": 7,
         "complain": "Leaky faucet in washroom",
-        "tags": [
-            "Plumbing",
-            "Maintenance"
-        ],
+        "tags": ["Plumbing", "Maintenance"],
         "severity": "Medium",
         "location": "Main Building, 2nd Floor",
         "complainer": {
@@ -100,10 +79,7 @@
     {
         "serialNumber": 8,
         "complain": "Overcrowded gym during peak hours",
-        "tags": [
-            "Crowd",
-            "Facilities"
-        ],
+        "tags": ["Crowd", "Facilities"],
         "severity": "Low",
         "location": "Campus Gymnasium",
         "complainer": {
@@ -114,10 +90,7 @@
     {
         "serialNumber": 9,
         "complain": "Vending machine out of order",
-        "tags": [
-            "Facilities",
-            "Vending"
-        ],
+        "tags": ["Facilities", "Vending"],
         "severity": "Medium",
         "location": "Student Lounge",
         "complainer": {
@@ -128,10 +101,7 @@
     {
         "serialNumber": 10,
         "complain": "Wi-Fi signal weak in cafeteria",
-        "tags": [
-            "Internet",
-            "Connectivity"
-        ],
+        "tags": ["Internet", "Connectivity"],
         "severity": "Medium",
         "location": "Cafeteria",
         "complainer": {
