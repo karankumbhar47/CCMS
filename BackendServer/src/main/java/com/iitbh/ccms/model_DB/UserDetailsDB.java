@@ -1,4 +1,5 @@
-package com.iitbh.ccms.model;
+package com.iitbh.ccms.model_DB;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetailUpdate {
-
+public class UserDetailsDB {
+    // mention same variable names
     @Id
     ObjectId objectId;
     int userId;
@@ -23,3 +24,4 @@ public class UserDetailUpdate {
     String status;
     String dateRegistered;
 }
+
