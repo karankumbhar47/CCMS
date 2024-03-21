@@ -8,7 +8,9 @@
     export const selectedComplaintId = writable(null);
     const api = new DefaultApi();
 
-
+    /**
+     * @type {any[]}
+     */
     let complaintsList = [];
 
     async function fetchComplaints() {
@@ -25,8 +27,17 @@
      * @param {string | number | Date} dateTimeString
      */
     function formatDateTime(dateTimeString) {
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+        const options = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+        };
         const date = new Date(dateTimeString);
+        // @ts-ignore
         return date.toLocaleString(undefined, options); // Return the formatted date and time
     }
 
