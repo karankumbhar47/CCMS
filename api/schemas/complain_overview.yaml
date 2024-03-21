@@ -1,0 +1,36 @@
+type: object
+name: "complaintOverview"
+properties:
+    complainId:
+        type: string 
+        minLength: 40
+        maxLength: 40
+    complainerId:
+        type: integer
+        format: int64
+    complain:
+        type: string
+    dateTime:
+        type: string
+    location:
+        type: string
+    complainerName:
+        type: string
+    tags:
+        type: array
+        items:
+            type: string
+    status:
+        type: string
+        enum:
+            - Unseen
+            - InProgress
+            - OnHold
+            - Completed
+    severity:
+        type: string
+        enum:
+            - Critical
+            - High
+            - Medium
+            - Low

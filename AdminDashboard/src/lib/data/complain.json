@@ -1,0 +1,16 @@
+{
+    "_id": {
+        "$oid": "65eeb60dc135b2c0db3d6571"
+    },
+    "complaintId": 102,
+    "complainerId": 1,
+    "complainerName": "Vedant Udan",
+    "location": "Academic Block",
+    "complain": "The library books are outdated.",
+    "status": "In Progress",
+    "tags": ["Wifi", "AC"],
+    "dateTime": "1/1/2024+15:30",
+    "severity": "Critical",
+    "imageId": "123lkjsdflkj234l2kjljf0",
+    "videoId": "123lkjsdflkj234l2kjljf0"
+}

@@ -1,0 +1,14 @@
+get:
+  summary: Get details of all user.
+  description: Get details like username, id, status, role, email, dateRegistered of all the users including
+    resolver and admin. Return all details as list of json.
+  operationId: usersDetail
+  responses:
+    '200':
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+              type: array
+              items:
+                $ref: "../schemas/users_detail.yaml"

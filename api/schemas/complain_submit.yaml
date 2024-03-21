@@ -1,0 +1,32 @@
+type: object
+name: "complainSubmit"
+properties:
+    complainerId:
+        type: integer
+        format: int64
+    complain:
+        type: string
+    dateTime:
+        type: string
+    location:
+        type: string
+    complainerName:
+        type: string
+    tags:
+        type: array
+        items:
+            type: string
+    status:
+        type: string
+        enum:
+            - Username
+            - Phone
+            - Email
+            - Password
+    severity:
+        type: string
+        enum:
+            - Critical
+            - High
+            - Medium
+            - Low

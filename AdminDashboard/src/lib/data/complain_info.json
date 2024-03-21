@@ -5,10 +5,12 @@
         "tags": ["Internet", "Connectivity"],
         "severity": "High",
         "location": "Library",
+        "status": "Pending",
         "complainer": {
             "id": 123,
             "name": "John Doe"
-        }
+        },
+        "Date": "1-march-2024"
     },
     {
         "serialNumber": 2,

@@ -25,7 +25,6 @@ public class UserDetailUpdateService {
             existingUser.setEmail(userDetailUpdateRequest.getEmail());
             existingUser.setStatus(userDetailUpdateRequest.getStatus());
             existingUser.setDateRegistered(userDetailUpdateRequest.getDateRegistered());
-
             // Save the updated user details
             userDetailUpdateRepository.save(existingUser);
             System.out.println("User details updated successfully.");
