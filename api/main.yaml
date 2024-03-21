@@ -44,5 +44,12 @@ paths:
     /submit_complain:
         $ref: "./paths/submit_complaint.yaml"
 
+    /usersDetail:
+        $ref: "./paths/users_detail.yaml"
+
+    /userDetailUpdate:
+        $ref: "./paths/user_detail_update.yaml"
+
+
 servers:
     - url: http://localhost:8080

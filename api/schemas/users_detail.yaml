@@ -1,0 +1,14 @@
+type: object
+properties:
+  userId:
+    type: integer
+  userName:
+    type: string
+  email:
+    type: string
+  role:
+    type: string
+  status:
+    type: string
+  dateRegistered:
+    type: string

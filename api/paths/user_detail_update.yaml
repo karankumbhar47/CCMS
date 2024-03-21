@@ -1,0 +1,15 @@
+post:
+  summary: post the updated details of user.
+  description: post the updated details of the user.
+  operationId: userDetailUpdate
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/user_detail_update.yaml"
+    required: true
+  responses:
+    '200':
+      description: 'OK'
+    '403':
+      description: 'Forbidden'
