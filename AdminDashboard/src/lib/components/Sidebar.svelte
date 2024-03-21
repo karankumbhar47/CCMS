@@ -1,42 +1,30 @@
-<!-- Sidebar.svelte -->
-
 <script>
-    import { goto } from "$app/navigation";
+    let links = [
+        { name: "Overview", url: "/" },
+        { name: "Manage User", url: "/manage-user" },
+        { name: "Manage Complaint", url: "/manage-complaint" },
+        { name: "Manage Announcement", url: "/announcements" },
+        { name: "System Configuration", url: "/logout" },
+        { name: "Logout", url: "/logout" },
+    ];
 </script>
 
 <div class="sidebar" role="navigation">
-    <button class="sidebar-heading" on:click={() => goto("/")}>
-        Overview
-    </button>
-    <button class="sidebar-heading" on:click={() => goto("/manage-user")}>
-        Manage User
-    </button>
-    <button class="sidebar-heading" on:click={() => goto("/manage-complaint")}>
-        Manage Complaint
-    </button>
-    <button
-        class="sidebar-heading"
-        on:click={() => goto("/manage-announcement")}
-    >
-        Manage Announcement
-    </button>
-    <button
-        class="sidebar-heading"
-        on:click={() => goto("/system-configuration")}
-    >
-        System Configuration
-    </button>
-    <button class="sidebar-heading" on:click={() => goto("/logout")}>
-        Logout
-    </button>
+    {#each links as link}
+        <a href={link.url}>
+            <div class="sidebar-heading">
+                {link.name}
+            </div>
+        </a>
+    {/each}
 </div>
 
 <style>
-    .sidebar button {
+    .sidebar div {
         display: block;
         background: none;
         border: none;
-        padding: 30px 0px;
+        padding: 30px 20px;
         margin: 0;
         font-size: large;
         cursor: pointer;
@@ -46,7 +34,6 @@
     .sidebar {
         background-color: #2c3e50; /* Sidebar background color */
         padding-top: 120px;
-        padding-left: 20px;
         height: 100vh;
         position: absolute;
         width: 250px; /* Adjust the width of the sidebar */

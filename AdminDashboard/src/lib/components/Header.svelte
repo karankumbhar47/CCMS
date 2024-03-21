@@ -1,7 +1,5 @@
 <script>
-    /**
-     * @type {any}
-     */
+    /** @type {string} */
     export let adminName;
     let showProfileDropdown = false;
 
