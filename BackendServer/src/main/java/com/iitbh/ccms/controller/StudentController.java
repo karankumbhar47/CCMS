@@ -21,7 +21,9 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<Student>> getAllStudent(){
+        System.out.println("called student controller");
         return new ResponseEntity<List<Student>>(studentService.getAllStudent(), HttpStatus.OK);
+
     }
 
     @GetMapping("/id/{studentId}")
@@ -32,5 +34,10 @@ public class StudentController {
     @GetMapping("/name/{name}")
     public ResponseEntity<Optional<Student>> getSingleStudentByName(@PathVariable String name) {
         return new ResponseEntity<Optional<Student>>(studentService.getSingleStudentByName(name),HttpStatus.OK);
+    }
+
+    @GetMapping("/age/{age}")
+    public  ResponseEntity<Optional<Student>> getSingleStudentByAgeIs(@PathVariable int age) {
+        return new ResponseEntity<Optional<Student>>(studentService.getSingleStudentByAgeIs(age),HttpStatus.OK);
     }
 }

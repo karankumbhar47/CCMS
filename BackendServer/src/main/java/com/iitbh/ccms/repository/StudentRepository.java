@@ -11,4 +11,9 @@ import java.util.Optional;
 public interface StudentRepository extends MongoRepository<Student, ObjectId> {
     Optional<Student> findStudentByName(String name);
     Optional<Student> findStudentByStudentId(int id);
+
+    Optional<Student> findStudentByAgeIs(int age);
+
+
+
 }

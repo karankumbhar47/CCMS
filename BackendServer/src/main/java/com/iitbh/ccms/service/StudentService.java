@@ -31,4 +31,7 @@ public class StudentService {
     public Optional<Student> getSingleStudentByStudentId(String Id){
         return studentRepository.findStudentByStudentId(Integer.parseInt(Id));
     }
+    public Optional<Student> getSingleStudentByAgeIs(int age){
+        return studentRepository.findStudentByAgeIs(age);
+    }
 }
