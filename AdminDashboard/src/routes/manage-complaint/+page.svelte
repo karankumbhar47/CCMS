@@ -2,31 +2,37 @@
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
     import { writable } from "svelte/store";
-    import data from "$lib/data/complain_info.json"; // Assuming data.json is the file containing your JSON data
+    import { DefaultApi } from "$lib/generated/apis/DefaultApi";
 
-    // Store the selected complaint
     export const selectedComplaint = writable(null);
+    export const selectedComplaintId = writable(null);
+    const api = new DefaultApi();
+
+
+    let complaintsList = [];
+
+    async function fetchComplaints() {
+        try {
+            console.log("try called");
+            const fetchedComplaints = await api.getComplaintsOverview();
+            complaintsList = fetchedComplaints;
+        } catch (error) {
+            console.error("Error fetching complain details:", error);
+        }
+    }
 
     /**
-     * @type {Array<{
-     *    serialNumber: number,
-     *    complain: string,
-     *    tags: string[],
-     *    severity: string,
-     *    location: string,
-     *    complainer: { id: number, name: string }
-     * }>}
+     * @param {string | number | Date} dateTimeString
      */
-    let complaints = [];
+    function formatDateTime(dateTimeString) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+        const date = new Date(dateTimeString);
+        return date.toLocaleString(undefined, options); // Return the formatted date and time
+    }
 
     onMount(() => {
-        complaints = data;
+        fetchComplaints();
     });
-
-
-    function viewComplaint(complaint) {
-        selectedComplaint.set(complaint);
-    }
 </script>
 
 <div>
@@ -41,21 +47,26 @@
             <th>Severity</th>
             <th>Location</th>
             <th>Complainer</th>
+            <th>Status</th>
+            <th>Date</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        {#each complaints as complaint}
+        {#each complaintsList as complaint, index}
             <tr>
-                <td>{complaint.serialNumber}</td>
+                <td>{index + 1}</td>
                 <td>{complaint.complain}</td>
                 <td>{complaint.tags.join(", ")}</td>
                 <td>{complaint.severity}</td>
                 <td>{complaint.location}</td>
-                <td>{complaint.complainer.name}</td>
+                <td>{complaint.complainerName}</td>
+                <td>{complaint.status}</td>
+                <td>{formatDateTime(complaint.dateTime)}</td>
                 <td
-                    ><button on:click={() => viewComplaint(complaint)}
-                        >View</button
+                    ><button
+                        ><a href={`/manage-complaint/${index + 1}`}>View</a
+                        ></button
                     ></td
                 >
             </tr>

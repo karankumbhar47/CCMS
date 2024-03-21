@@ -1,12 +1,22 @@
 <!-- SearchBar.svelte -->
 <script>
-    let searchTerm = '';
-    
+    let searchTerm = "";
+
     function handleSearch() {
         // Perform search logic here, e.g., send search term to server or filter results
-        console.log('Search term:', searchTerm);
+        console.log("Search term:", searchTerm);
     }
 </script>
+
+<div class="search-bar">
+    <input
+        type="text"
+        placeholder="Search..."
+        bind:value={searchTerm}
+        class="search-input"
+    />
+    <button on:click={handleSearch} class="search-button">Search</button>
+</div>
 
 <style>
     .search-bar {
@@ -41,9 +51,3 @@
         background-color: #0056b3;
     }
 </style>
-
-<div class="search-bar">
-    <input type="text" placeholder="Search..." bind:value={searchTerm} class="search-input" />
-    <button on:click={handleSearch} class="search-button">Search</button>
-</div>
-

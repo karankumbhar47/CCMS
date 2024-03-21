@@ -50,6 +50,9 @@ devDependencies:
   svelte-check:
     specifier: ^3.6.0
     version: 3.6.6(postcss@8.4.35)(svelte@4.2.12)
+  svelte-routing:
+    specifier: ^2.12.0
+    version: 2.12.0
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
@@ -2632,6 +2635,10 @@ packages:
       strip-indent: 3.0.0
       svelte: 4.2.12
       typescript: 5.3.3
+    dev: true
+
+  /svelte-routing@2.12.0:
+    resolution: {integrity: sha512-6i4Mncy4P2b7gD7+BOT9JzQvrfGfGXqFra8VXYU5//bpn6AzJ0PLEhH1E/KwY2AxleOiS/8Nm37MGuic2kn15A==}
     dev: true
 
   /svelte@4.2.12:
