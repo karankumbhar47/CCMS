@@ -1,6 +1,10 @@
 <script>
     import ImageHandler from "$lib/components/ImageHandler.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
+    import { DefaultApi } from "$lib/generated";
+    import { ComplainSubmitStatusEnum } from '$lib/generated/models'; // Import the enum type
+    import { ComplainOverviewSeverityEnum } from '$lib/generated/models'; // Import the enum type
+
 
     let selectedTags = ["Complain"];
     const severityOptions = ["Low", "Medium", "High", "Critical"];
@@ -13,16 +17,17 @@
         "Other",
     ];
 
-    let complaintDescription = "";
+    let complaintDescription =
+        "Room Cleaning Not done from 5-6 days. Also No single worker came to our room after writing in complain register ";
     let selectedSeverity = "Low";
-    let selectedLocation = "None";
-    let locationDetails = "";
+    let selectedLocation = "Boys Hostel";
+    let locationDetails = "Room E308";
     let currentDate = "";
 
     function handleTagsChanged(event) {
-        selectedTags = event.detail; // Update the selected tags list with the emitted value
+        selectedTags = event.detail;
     }
-    // Function to format the date and time
+
     function formatDateTime(date) {
         const options = {
             year: "numeric",
@@ -31,7 +36,45 @@
             hour: "2-digit",
             minute: "2-digit",
         };
-        return new Date(date).toLocaleString("en-US", options).replace(",", ""); // Remove comma after the day
+        return new Date(date).toLocaleString("en-US", options).replace(",", "");
+    }
+
+    function severityEnum(severity){
+        if(severity==="High"){
+            return ComplainOverviewSeverityEnum.High;
+        }
+        else if(severity=="Critical"){
+            return ComplainOverviewSeverityEnum.Critical;
+        }
+        else if(severity=="Medium"){
+            return ComplainOverviewSeverityEnum.Medium;
+        }
+        else{
+            return ComplainOverviewSeverityEnum.Low;
+        }
+    }
+
+    async function handleSubmit() {
+        try {
+            const myComplaint = {
+                complainerId: 12140860,
+                complain: complaintDescription,
+                dateTime: currentDate,
+                location: locationDetails,
+                complainerName: "Karan Kumbhar",
+                tags: selectedTags,
+                status: ComplainSubmitStatusEnum.Unseen,
+                severity: severityEnum(selectedSeverity)
+            };
+
+            console.log(myComplaint);
+            const apiClient = new DefaultApi();
+            const requestParameters = { complainSubmit: myComplaint };
+            const response = await apiClient.submitComplaint(requestParameters);
+            console.log("Complaint submitted successfully:", response);
+        } catch (error) {
+            console.error("Error submitting complaint:", error);
+        }
     }
 
     function submitForm() {
@@ -55,11 +98,10 @@
             console.log(selectedLocation);
             console.log(selectedSeverity);
             currentDate = formatDateTime(new Date());
-            console.log(currentDate)
+            console.log(currentDate);
+            handleSubmit();
         }
     }
-
-    
 </script>
 
 <div class="complain-description-box">
