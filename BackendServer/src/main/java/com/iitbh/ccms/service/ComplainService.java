@@ -1,6 +1,7 @@
 package com.iitbh.ccms.service;
 
 import com.iitbh.ccms.model.ComplainOverview;
+import com.iitbh.ccms.model.ComplainSubmit;
 import com.iitbh.ccms.model_db.Complains;
 import com.iitbh.ccms.repository.ComplainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class ComplainService {
             returnList.add(complainOverview);
         }
         return returnList;
+    }
+
+    public String SubmitComplain(ComplainSubmit complainSubmit){
+        System.out.println(complainSubmit.getComplainerId());
+        String complainId = "iiiiiiiiiiiiiiiidddddddddddddddddddddddd";
+        return complainId;
     }
 
 }
