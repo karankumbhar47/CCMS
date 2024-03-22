@@ -19,10 +19,10 @@ properties:
     status:
         type: string
         enum:
-            - Username
-            - Phone
-            - Email
-            - Password
+            - Unseen 
+            - InProgress
+            - OnHold
+            - Completed
     severity:
         type: string
         enum:
