@@ -1,5 +1,12 @@
 <script>
+    /**
+     * @type {string[]}
+     */
     let selectedImages = [];
+
+    /**
+     * @param {{ target: { files: any; }; }} event
+     */
     function handleFileInputChange(event) {
         const files = event.target.files;
         for (let i = 0; i < files.length; i++) {
@@ -12,6 +19,9 @@
         }
     }
 
+    /**
+     * @param {number} index
+     */
     function removeImage(index) {
         selectedImages.splice(index, 1);
     }
@@ -43,26 +53,22 @@
 </div>
 
 <style>
-    /* Style for the image upload container */
     .image-upload {
         margin-bottom: 20px;
     }
 
-    /* Style for the selected images container */
     .selected-images {
         display: flex;
         flex-wrap: wrap;
         margin-top: 10px;
     }
 
-    /* Style for each image container */
     .image-container {
         margin-right: 10px;
         margin-bottom: 10px;
         position: relative;
     }
 
-    /* Style for the remove button */
     .remove-button {
         position: absolute;
         top: 5px;
@@ -75,10 +81,8 @@
         cursor: pointer;
     }
 
-    /* Style for the uploaded image */
     img {
         max-width: 100px;
         max-height: 100px;
     }
-
 </style>

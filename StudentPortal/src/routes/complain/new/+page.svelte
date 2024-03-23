@@ -1,10 +1,8 @@
 <script>
-    import ImageHandler from "$lib/components/ImageHandler.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
     import { DefaultApi } from "$lib/generated";
-    import { ComplainSubmitStatusEnum } from '$lib/generated/models'; // Import the enum type
-    import { ComplainOverviewSeverityEnum } from '$lib/generated/models'; // Import the enum type
-
+    import { ComplainSubmitStatusEnum } from "$lib/generated/models";
+    import { ComplainOverviewSeverityEnum } from "$lib/generated/models";
 
     let selectedTags = ["Complain"];
     const severityOptions = ["Low", "Medium", "High", "Critical"];
@@ -17,45 +15,65 @@
         "Other",
     ];
 
-    let complaintDescription =
-        "Room Cleaning Not done from 5-6 days. Also No single worker came to our room after writing in complain register ";
+    let complaintDescription = "";
     let selectedSeverity = "Low";
-    let selectedLocation = "Boys Hostel";
-    let locationDetails = "Room E308";
+    let selectedLocation = "None";
+    let locationDetails = "";
     let currentDate = "";
 
+    /**
+     * Taking tags array from TagsHandler component
+     * @param {{ detail: string[]; }} event
+     */
     function handleTagsChanged(event) {
         selectedTags = event.detail;
     }
 
+    /**
+     * formatting date in required format
+     * @param {string | number | Date} date
+     */
     function formatDateTime(date) {
         const options = {
             year: "numeric",
-            month: "long",
-            day: "numeric",
+            month: "2-digit",
+            day: "2-digit",
             hour: "2-digit",
             minute: "2-digit",
+            timeZoneName: "short",
         };
-        return new Date(date).toLocaleString("en-US", options).replace(",", "");
+
+        const dateString = new Date(date).toLocaleString("en-US", options);
+        return dateString.replace(/\//g, "-").replace(",", "");
     }
 
-    function severityEnum(severity){
-        if(severity==="High"){
+    /**
+     * convert severity string value to
+     * respective Enum value
+     * @param {string} severity
+     */
+    function severityEnum(severity) {
+        if (severity === "High") {
             return ComplainOverviewSeverityEnum.High;
-        }
-        else if(severity=="Critical"){
+        } else if (severity == "Critical") {
             return ComplainOverviewSeverityEnum.Critical;
-        }
-        else if(severity=="Medium"){
+        } else if (severity == "Medium") {
             return ComplainOverviewSeverityEnum.Medium;
-        }
-        else{
+        } else {
             return ComplainOverviewSeverityEnum.Low;
         }
     }
 
     async function handleSubmit() {
         try {
+            currentDate = formatDateTime(new Date());
+
+            /**
+             * @todo get complainer id from local storage
+             * @todo get complainer name from local storage
+             * @todo also save complain id locally if want to 
+             *       show the complain
+             */
             const myComplaint = {
                 complainerId: 12140860,
                 complain: complaintDescription,
@@ -64,14 +82,13 @@
                 complainerName: "Karan Kumbhar",
                 tags: selectedTags,
                 status: ComplainSubmitStatusEnum.Unseen,
-                severity: severityEnum(selectedSeverity)
+                severity: severityEnum(selectedSeverity),
             };
 
-            console.log(myComplaint);
-            const apiClient = new DefaultApi();
             const requestParameters = { complainSubmit: myComplaint };
+            const apiClient = new DefaultApi();
             const response = await apiClient.submitComplaint(requestParameters);
-            console.log("Complaint submitted successfully:", response);
+            alert("Complaint submitted successfully");
         } catch (error) {
             console.error("Error submitting complaint:", error);
         }
@@ -92,13 +109,6 @@
         if (!flag) {
             alert("Please fill all Information");
         } else {
-            console.log(complaintDescription);
-            console.log(selectedTags);
-            console.log(locationDetails);
-            console.log(selectedLocation);
-            console.log(selectedSeverity);
-            currentDate = formatDateTime(new Date());
-            console.log(currentDate);
             handleSubmit();
         }
     }
@@ -140,8 +150,6 @@
 <TagsHandler on:tagsChanged={handleTagsChanged} />
 
 <button class="submit-button" on:click={submitForm}>Submit</button>
-
-<!-- <ImageHandler /> -->
 
 <style>
     .location-dropdown {

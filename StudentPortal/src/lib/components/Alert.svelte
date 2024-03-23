@@ -1,9 +1,9 @@
 <script>
-    export let message = '';
-    export let type = 'info'; 
-    
+    export let message = "";
+    export let type = "info";
+
     function closeAlert() {
-        message = '';
+        message = "";
     }
 </script>
 
@@ -23,19 +23,19 @@
     }
 
     .info {
-        background-color: #2196F3; /* Blue */
+        background-color: #2196f3;
         color: white;
     }
     .success {
-        background-color: #4CAF50; /* Green */
+        background-color: #4caf50;
         color: white;
     }
     .warning {
-        background-color: #ff9800; /* Orange */
+        background-color: #ff9800;
         color: white;
     }
     .error {
-        background-color: #f44336; /* Red */
+        background-color: #f44336;
         color: white;
     }
     .close {

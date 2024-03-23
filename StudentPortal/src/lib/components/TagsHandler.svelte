@@ -11,19 +11,25 @@
     let selectedTags = ["complain"];
     const dispatch = createEventDispatcher();
 
+    /**
+     * @param {string} tag
+     */
     function addTag(tag) {
         if (!selectedTags.includes(tag)) {
-            selectedTags = [...selectedTags, tag]; 
+            selectedTags = [...selectedTags, tag];
             availableTags = availableTags.filter((t) => t !== tag);
-            dispatch("tagsChanged", selectedTags); 
+            dispatch("tagsChanged", selectedTags);
         }
     }
 
+    /**
+     * @param {string} tag
+     */
     function removeTag(tag) {
         selectedTags = selectedTags.filter((t) => t !== tag);
         if (!availableTags.includes(tag)) {
             availableTags = [...availableTags, tag];
-            dispatch("tagsChanged", selectedTags); 
+            dispatch("tagsChanged", selectedTags);
         }
     }
 </script>
