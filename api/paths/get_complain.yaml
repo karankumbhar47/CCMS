@@ -1,0 +1,18 @@
+get:
+    operationId: getComplaint
+    parameters:
+        - in: query
+          name: complaintId
+          description: ID of the complaint
+          required: true
+          schema:
+              type: string
+              minLength: 40
+              maxLength: 40
+    responses:
+        "200":
+            description: "Get complaint info by complain id"
+            content:
+                application/json:
+                    schema:
+                        $ref: "../schemas/complain_overview.yaml"

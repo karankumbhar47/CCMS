@@ -54,6 +54,7 @@ paths:
     /userDetailUpdate:
         $ref: "./paths/user_detail_update.yaml"
 
-
+    /getComplaint:
+        $ref: "./paths/get_complain.yaml"
 servers:
     - url: http://localhost:8080
