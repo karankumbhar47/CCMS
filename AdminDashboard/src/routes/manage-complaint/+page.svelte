@@ -15,9 +15,9 @@
 
     async function fetchComplaints() {
         try {
-            console.log("try called");
             const fetchedComplaints = await api.getComplaintsOverview();
             complaintsList = fetchedComplaints;
+            console.log(complaintsList);
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
@@ -27,6 +27,7 @@
      * @param {string | number | Date} dateTimeString
      */
     function formatDateTime(dateTimeString) {
+        console.log(dateTimeString);
         const options = {
             weekday: "long",
             year: "numeric",
@@ -44,7 +45,6 @@
     onMount(() => {
         fetchComplaints();
     });
-
 </script>
 
 <div>
@@ -77,7 +77,8 @@
                 <td>{formatDateTime(complaint.dateTime)}</td>
                 <td
                     ><button
-                        ><a href={`/manage-complaint/${index + 1}`}>View</a
+                        ><a href={`/manage-complaint/${complaint.complainId}`}
+                            >View</a
                         ></button
                     ></td
                 >

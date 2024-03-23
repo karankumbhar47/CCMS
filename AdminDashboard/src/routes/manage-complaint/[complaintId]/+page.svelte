@@ -1,11 +1,11 @@
-<!-- ComplaintDetails.svelte -->
 <script>
     // @ts-nocheck
 
-    import data from "$lib/data/complain_info.json";
     import { page } from "$app/stores";
+    import { DefaultApi } from "$lib/generated";
+    import { onMount } from "svelte";
 
-    const serialNumber = $page.params.complaintId;
+    const complainId = $page.params.complaintId;
 
     /**
      * @type {
@@ -33,7 +33,25 @@
      * }
      */
     let complaint;
-    complaint = data.find((item) => item.serialNumber === +serialNumber);
+
+    /**
+     * @param {string} complainId
+     */
+    async function fetchComplaint(complainId) {
+        try {
+            const api = new DefaultApi();
+            const getComplaintRequest = { complaintId: complainId }; // Corrected parameter name
+            const param = { complaintId: getComplaintRequest }; // Corrected parameter name
+            // @ts-ignore
+            complaint = await api.getComplaint(param);
+        } catch (error) {
+            console.error("Error fetching complain details:", error);
+        }
+    }
+
+    onMount(() => {
+        fetchComplaint(complainId);
+    });
 </script>
 
 <h2 class="main-title">Complaint Details</h2>
