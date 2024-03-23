@@ -11,7 +11,6 @@ import java.util.List;
 @Service
 public class ComplainOverviewDelegateImpl implements ComplainOverviewApiDelegate {
     private final ComplainService complainService;
-
     public ComplainOverviewDelegateImpl(ComplainService complainService) {
         this.complainService  = complainService;
     }

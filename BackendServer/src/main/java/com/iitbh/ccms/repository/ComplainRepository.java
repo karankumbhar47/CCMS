@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ComplainRepository extends MongoRepository<Complains, ObjectId> {
 
+    public Complains findComplainsByComplainId(String complainId);
+
 }
 
 

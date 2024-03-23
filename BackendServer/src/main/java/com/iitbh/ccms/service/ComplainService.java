@@ -7,12 +7,15 @@ import com.iitbh.ccms.repository.ComplainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ComplainService {
     private final ComplainRepository complainRepository;
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final SecureRandom random = new SecureRandom();
 
     @Autowired
     public ComplainService(ComplainRepository complainRepository) {
@@ -23,25 +26,41 @@ public class ComplainService {
         List<ComplainOverview> returnList = new ArrayList<>();
         List<Complains> list = complainRepository.findAll();
         for(Complains complains: list){
-            ComplainOverview complainOverview = new ComplainOverview();
-            complainOverview.setComplainerId(complains.getComplainerId());
-            complainOverview.setComplainerName(complains.getComplainerName());
-            complainOverview.setComplain(complains.getComplain());
-            complainOverview.setComplainId(complains.getComplainId());
-            complainOverview.setTags(complains.getTags());
-            complainOverview.setStatus(complains.getStatus());
-            complainOverview.setSeverity(complains.getSeverity());
-            complainOverview.setDateTime(complains.getDateTime());
-            complainOverview.setLocation(complains.getLocation());
+            ComplainOverview complainOverview = complains.convertToComplainOverView();
             returnList.add(complainOverview);
         }
         return returnList;
     }
 
     public String SubmitComplain(ComplainSubmit complainSubmit){
-        System.out.println(complainSubmit.getComplainerId());
-        String complainId = "iiiiiiiiiiiiiiiidddddddddddddddddddddddd";
-        return complainId;
+        List<Complains> list =  complainRepository.findAll();
+        String id = "";
+        while(true) {
+            id = generateRandomId(40);
+            for (Complains complains : list) {
+                if(!id.equals(complains.getComplainId())){
+                    Complains complainsWithId = new Complains();
+                    complainsWithId.convertToComplains(complainSubmit,id);
+                    complainRepository.save(complainsWithId);
+                    return id;
+                }
+            }
+        }
+    }
+
+    public String generateRandomId(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+        return sb.toString();
+    }
+
+    public ComplainOverview getSingleComplain(String complainId){
+        Complains complains = complainRepository.findComplainsByComplainId(complainId);
+        return complains.convertToComplainOverView();
     }
 
 }

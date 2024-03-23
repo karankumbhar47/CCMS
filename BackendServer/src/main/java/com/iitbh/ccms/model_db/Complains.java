@@ -1,6 +1,7 @@
 package com.iitbh.ccms.model_db;
 
 import com.iitbh.ccms.model.ComplainOverview;
+import com.iitbh.ccms.model.ComplainSubmit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,5 +54,31 @@ public class Complains {
         } else {
             return ComplainOverview.SeverityEnum.LOW;
         }
+    }
+
+    public void convertToComplains(ComplainSubmit complainSubmit, String complainId){
+        this.setComplainId(complainId);
+        this.setComplain(complainSubmit.getComplain());
+        this.setComplainerName(complainSubmit.getComplainerName());
+        this.setComplainerId(complainSubmit.getComplainerId());
+        this.setLocation(complainSubmit.getLocation());
+        this.setTags(complainSubmit.getTags());
+        this.setSeverity(complainSubmit.getSeverity().getValue());
+        this.setStatus(complainSubmit.getStatus().getValue());
+        this.setDateTime(complainSubmit.getDateTime());
+    }
+
+    public ComplainOverview convertToComplainOverView(){
+        ComplainOverview complainOverview = new ComplainOverview();
+        complainOverview.setComplainerId(this.getComplainerId());
+        complainOverview.setComplainerName(this.getComplainerName());
+        complainOverview.setComplain(this.getComplain());
+        complainOverview.setComplainId(this.getComplainId());
+        complainOverview.setTags(this.getTags());
+        complainOverview.setStatus(this.getStatus());
+        complainOverview.setSeverity(this.getSeverity());
+        complainOverview.setDateTime(this.getDateTime());
+        complainOverview.setLocation(this.getLocation());
+        return complainOverview;
     }
 }
