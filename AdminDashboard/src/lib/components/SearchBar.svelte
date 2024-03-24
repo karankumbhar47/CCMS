@@ -1,9 +1,7 @@
-<!-- SearchBar.svelte -->
 <script>
     let searchTerm = "";
 
     function handleSearch() {
-        // Perform search logic here, e.g., send search term to server or filter results
         console.log("Search term:", searchTerm);
     }
 </script>

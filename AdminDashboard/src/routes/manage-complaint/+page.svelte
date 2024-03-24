@@ -1,34 +1,34 @@
 <script>
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
-    import { writable } from "svelte/store";
     import { DefaultApi } from "$lib/generated/apis/DefaultApi";
 
-    export const selectedComplaint = writable(null);
-    export const selectedComplaintId = writable(null);
-    const api = new DefaultApi();
-
     /**
-     * @type {any[]}
+     * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
      */
+
+    /** @type {Array<ComplainOverview>} */
     let complaintsList = [];
+
+    const api = new DefaultApi();
 
     async function fetchComplaints() {
         try {
             const fetchedComplaints = await api.getComplaintsOverview();
             complaintsList = fetchedComplaints;
-            console.log(complaintsList);
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
     }
 
     /**
-     * @param {string | number | Date} dateTimeString
+     *  @param {string | undefined} dateTimeString
      */
     function formatDateTime(dateTimeString) {
-        console.log(dateTimeString);
-        const options = {
+        if (!dateTimeString) {
+            return "Not specified";
+        }
+        const options /** @type {DateTimeFormatOptions} */ = {
             weekday: "long",
             year: "numeric",
             month: "long",
@@ -39,7 +39,7 @@
         };
         const date = new Date(dateTimeString);
         // @ts-ignore
-        return date.toLocaleString(undefined, options); // Return the formatted date and time
+        return date.toLocaleString(undefined, options);
     }
 
     onMount(() => {
@@ -67,28 +67,32 @@
     <tbody>
         {#each complaintsList as complaint, index}
             <tr>
-                <td>{index + 1}</td>
-                <td>{complaint.complain}</td>
-                <td>{complaint.tags.join(", ")}</td>
-                <td>{complaint.severity}</td>
-                <td>{complaint.location}</td>
-                <td>{complaint.complainerName}</td>
-                <td>{complaint.status}</td>
-                <td>{formatDateTime(complaint.dateTime)}</td>
-                <td
-                    ><button
-                        ><a href={`/manage-complaint/${complaint.complainId}`}
-                            >View</a
-                        ></button
-                    ></td
-                >
+                {#if complaint}
+                    <td>{index + 1}</td>
+                    <td>{complaint.complain}</td>
+                    <td>{complaint.tags?.join(", ")}</td>
+                    <td>{complaint.severity}</td>
+                    <td>{complaint.location}</td>
+                    <td>{complaint.complainerName}</td>
+                    <td>{complaint.status}</td>
+                    <td>{formatDateTime(complaint.dateTime)}</td>
+                    <td
+                        ><button
+                            ><a
+                                href={`/manage-complaint/${complaint.complainId}`}
+                                >View</a
+                            ></button
+                        ></td
+                    >
+                {:else}
+                    <td colspan="8">No complaint data available</td>
+                {/if}
             </tr>
         {/each}
     </tbody>
 </table>
 
 <style>
-    /* Add your table styling here */
     table {
         width: 100%;
         border-collapse: collapse;
