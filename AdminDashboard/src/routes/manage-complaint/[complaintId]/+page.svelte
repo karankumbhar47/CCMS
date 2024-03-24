@@ -1,55 +1,31 @@
 <script>
-    // @ts-nocheck
-
     import { page } from "$app/stores";
     import { DefaultApi } from "$lib/generated";
     import { onMount } from "svelte";
 
-    const complainId = $page.params.complaintId;
+    /**
+     * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
+     */
 
     /**
-     * @type {
-     * {
-     * serialNumber: number;
-     * complain: string;
-     * tags: string[];
-     * severity: string;
-     * location: string;
-     * status: string;
-     * complainer: { id: number; name: string; };
-     * Date: string;
-     * } |
-     * {
-     * serialNumber: number;
-     * complain: string;
-     * tags: string[];
-     * severity: string;
-     * location: string;
-     * complainer: { id: number; name: string; };
-     * status?: undefined;
-     *  Date?: undefined;
-     * } |
-     * undefined
-     * }
+     * @type {ComplainOverview | undefined}
      */
     let complaint;
 
     /**
-     * @param {string} complainId
+     * @param {string} id
      */
-    async function fetchComplaint(complainId) {
+    async function fetchComplaint(id) {
         try {
             const api = new DefaultApi();
-            const getComplaintRequest = { complaintId: complainId }; // Corrected parameter name
-            const param = { complaintId: getComplaintRequest }; // Corrected parameter name
-            // @ts-ignore
-            complaint = await api.getComplaint(param);
+            complaint = await api.getComplaintInfo({ id });
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
     }
 
     onMount(() => {
+        const complainId = $page.params.complaintId;
         fetchComplaint(complainId);
     });
 </script>
@@ -57,15 +33,32 @@
 <h2 class="main-title">Complaint Details</h2>
 <div class="complaint-details">
     <ul>
-        <li><strong>Serial Number:</strong> {complaint.serialNumber}</li>
-        <li><strong>Complain:</strong> {complaint.complain}</li>
-        <li><strong>Tags:</strong> {complaint.tags.join(", ")}</li>
-        <li><strong>Severity:</strong> {complaint.severity}</li>
-        <li><strong>Location:</strong> {complaint.location}</li>
-        <li><strong>Status:</strong> {complaint.status || "Not specified"}</li>
-        <li><strong>Complainer ID:</strong> {complaint.complainer.id}</li>
-        <li><strong>Complainer Name:</strong> {complaint.complainer.name}</li>
-        <li><strong>Date:</strong> {complaint.Date || "Not specified"}</li>
+        <li>
+            <strong>Complain:</strong>
+            {complaint?.complain || "Not specified"}
+        </li>
+        <li>
+            <strong>Tags:</strong>
+            {complaint?.tags?.join(", ") || "Not specified"}
+        </li>
+        <li>
+            <strong>Severity:</strong>
+            {complaint?.severity || "Not specified"}
+        </li>
+        <li>
+            <strong>Location:</strong>
+            {complaint?.location || "Not specified"}
+        </li>
+        <li><strong>Status:</strong> {complaint?.status || "Not specified"}</li>
+        <li>
+            <strong>Complainer ID:</strong>
+            {complaint?.complainerId || "Not specified"}
+        </li>
+        <li>
+            <strong>Complainer Name:</strong>
+            {complaint?.complainerName || "Not specified"}
+        </li>
+        <li><strong>Date:</strong> {complaint?.dateTime || "Not specified"}</li>
     </ul>
 </div>
 
