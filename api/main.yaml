@@ -35,7 +35,6 @@ paths:
                 "403":
                     description: "Forbidden"
 
-
     /auth/login:
         $ref: "./paths/login.yaml"
 
@@ -57,7 +56,9 @@ paths:
     /userDetailUpdate:
         $ref: "./paths/user_detail_update.yaml"
 
-    /getComplaint:
-        $ref: "./paths/get_complain.yaml"
+    /getComplaintInfo/{id}:
+        $ref: "./paths/get_complaint_info.yaml"
+
+
 servers:
     - url: http://localhost:8080
