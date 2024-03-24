@@ -59,7 +59,11 @@ public class ComplainService {
     }
 
     public ComplainOverview getSingleComplain(String complainId){
+        System.out.println("complain Id "+complainId);
         Complains complains = complainRepository.findComplainsByComplainId(complainId);
+        System.out.println(complains.getComplain());
+        System.out.println(complains.getComplainerName());
+        System.out.println(complains.getDateTime());
         return complains.convertToComplainOverView();
     }
 
