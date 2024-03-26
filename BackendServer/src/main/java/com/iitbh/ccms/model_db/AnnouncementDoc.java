@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 public class AnnouncementDoc {
     @Id
     ObjectId _id;
-    Long id;
-    String title;
-    String description;
-    String time;
+    public Long id;
+    public String title;
+    public String description;
+    public String time;
 
     public Announcement toApiAnnouncement() {
         Announcement announcement = new Announcement();
