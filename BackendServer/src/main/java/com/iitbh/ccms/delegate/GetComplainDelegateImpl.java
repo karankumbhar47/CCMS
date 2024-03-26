@@ -1,11 +1,11 @@
 package com.iitbh.ccms.delegate;
 
-import com.iitbh.ccms.api.GetComplainApiDelegate;
+import com.iitbh.ccms.api.GetComplaintApiDelegate;
 import com.iitbh.ccms.model.ComplainOverview;
 import com.iitbh.ccms.service.ComplainService;
 import org.springframework.http.ResponseEntity;
 
-public class GetComplainDelegateImpl implements GetComplainApiDelegate {
+public class GetComplainDelegateImpl implements GetComplaintApiDelegate {
     private final ComplainService complainService;
 
     public GetComplainDelegateImpl(ComplainService complainService) {
