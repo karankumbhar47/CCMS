@@ -42,6 +42,9 @@ paths:
     /announcements:
         $ref: "./paths/announcements.yaml"
 
+    /announcements/new:
+        $ref: "./paths/new_announcement.yaml"
+
     /complain_overview:
         $ref: "./paths/complain_overview.yaml"
 

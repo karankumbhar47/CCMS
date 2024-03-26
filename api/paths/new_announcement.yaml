@@ -6,7 +6,7 @@ post:
         content:
             application/json:
                 schema:
-                    $ref: ../schemas/announcement.yaml
+                    $ref: ../schemas/new_announcement.yaml
         required: true
     responses:
         "200":
