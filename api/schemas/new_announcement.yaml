@@ -1,0 +1,11 @@
+type: object
+name: "new_announcement"
+properties:
+    title:
+        type: string
+        minLength: 6
+        maxLength: 255
+    description:
+        type: string
+    time:
+        type: string
