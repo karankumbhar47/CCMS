@@ -1,9 +1,19 @@
 <script>
+    import DemoImage from "$lib/components/DemoImage.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
     import { DefaultApi } from "$lib/generated";
     import { ComplainSubmitStatusEnum } from "$lib/generated/models";
     import { ComplainOverviewSeverityEnum } from "$lib/generated/models";
 
+    /**
+     * @type {DemoImage}
+     */
+    let uploadImage;
+
+    /**
+     * @type {any[]}
+     */
+    let FileIds = [];
     let selectedTags = ["Complain"];
     const severityOptions = ["Low", "Medium", "High", "Critical"];
     const locationOptions = [
@@ -27,6 +37,13 @@
      */
     function handleTagsChanged(event) {
         selectedTags = event.detail;
+    }
+
+    /**
+     * @param {{ detail: any[]; }} event
+     */
+    function handleFileIds(event) {
+        FileIds = event.detail;
     }
 
     /**
@@ -71,7 +88,7 @@
             /**
              * @todo get complainer id from local storage
              * @todo get complainer name from local storage
-             * @todo also save complain id locally if want to 
+             * @todo also save complain id locally if want to
              *       show the complain
              */
             const myComplaint = {
@@ -83,8 +100,10 @@
                 tags: selectedTags,
                 status: ComplainSubmitStatusEnum.Unseen,
                 severity: severityEnum(selectedSeverity),
+                fileIds: FileIds,
             };
 
+            console.log(FileIds)
             const requestParameters = { complainSubmit: myComplaint };
             const apiClient = new DefaultApi();
             const response = await apiClient.submitComplaint(requestParameters);
@@ -95,6 +114,8 @@
     }
 
     function submitForm() {
+        uploadImage.handleSubmit()
+        console.log(uploadImage.fileIds)
         let flag = true;
         if (selectedLocation === "None" || locationDetails.trim() === "") {
             flag = false;
@@ -148,6 +169,7 @@
 </div>
 
 <TagsHandler on:tagsChanged={handleTagsChanged} />
+<DemoImage bind:this={uploadImage} on:list={handleFileIds} />
 
 <button class="submit-button" on:click={submitForm}>Submit</button>
 
