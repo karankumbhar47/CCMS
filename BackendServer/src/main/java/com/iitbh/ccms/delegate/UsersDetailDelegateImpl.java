@@ -28,6 +28,7 @@ public class UsersDetailDelegateImpl implements UsersDetailApiDelegate {
             UsersDetail usersDetail = new UsersDetail();
             usersDetail.setUserId(userDetailsDB.getUserId());
             usersDetail.setUserName(userDetailsDB.getUserName());
+            usersDetail.setEmail(userDetailsDB.getEmail());
             usersDetail.setRole(userDetailsDB.getRole());
             usersDetail.setStatus(userDetailsDB.getStatus());
             usersDetail.dateRegistered(userDetailsDB.getDateRegistered());
