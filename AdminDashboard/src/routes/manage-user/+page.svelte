@@ -1,52 +1,55 @@
 <script>
-    // @ts-nocheck
-
+    // // @ts-nocheck
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
-    import { writable } from "svelte/store";
-    import data from "$lib/data/user_info.json"; // Assuming data.json is the file containing your JSON data
+    import { get } from "svelte/store";
+    import { defaultApi } from '$lib/store'; // Import the defaultApi store
 
-    // Store the selected user
-    export const selectedUser = writable(null);
+    /** @typedef {import("$lib/generated/models/UsersDetail").UsersDetail} UsersDetail */
 
-    /**
-     * @type {Array<{
-     *    serialNumber: number,
-     *    userId: number,
-     *    userName: string,
-     *    role: string,
-     *    email: string,
-     *    status: string,
-     *    dateRegistered: string
-     * }>}
-     */
-    let users = [];
+    /**@type {UsersDetail}*/
+    export let data;
 
     onMount(() => {
-        users = data;
+        console.log("Loading data");
     });
+    console.log(data);
 
-    /**
-     * @type {{ serialNumber: number; userId: number; userName: string; role: string; email: string; status: string; dateRegistered: string; } | null}
-     */
     let editingUser = null;
 
+    // Function to toggle edit mode for a user
+    function toggleEditMode(user) {
+        editingUser = editingUser === user ? null : user;
+    }
+
     /**
-     * @param {{ serialNumber: number; userId: number; userName: string; role: string; email: string; status: string; dateRegistered: string; } | null} user
+     * @description Update user details on the server.
+     * @param {import('$lib/generated').UserDetailUpdate} updatedUser - The updated user details.
+     * @returns {Promise<void>}
      */
-    function viewUserDetail(user) {
-        if (editingUser !== user) {
-            // @ts-ignore
-            selectedUser.set(user);
-            editingUser = user;
-        } else {
-            selectedUser.set(null);
-            editingUser = null;
+    export async function updateUser(updatedUser) {
+        try {
+            // Send a request to the server to update user details using the generated OpenAPI client
+            await get(defaultApi).userDetailUpdate({
+                userDetailUpdate: updatedUser,
+            });
+            console.log("User details updated successfully.");
+        } catch (error) {
+            console.error("Failed to update user details:", error);
         }
     }
-    function saveUserChanges() {
-        // Save user changes here if needed
-        selectedUser.set(null);
+
+    // Function to save user changes
+    async function saveUserChanges(user) {
+        try {
+            console.log(user);
+            54;
+            // Call the updateUser function to update user details on the server
+            await updateUser(user);
+            console.log("User details saved successfully.");
+        } catch (error) {
+            console.error("Failed to save user details:", error);
+        }
         editingUser = null;
     }
 </script>
@@ -57,20 +60,20 @@
 <table>
     <thead>
         <tr>
-            <th>Serial Number</th>
-            <th>userId</th>
-            <th>userName</th>
-            <th>role</th>
-            <th>email</th>
-            <th>status</th>
-            <th>dateRegistered</th>
+            <!-- <th>Serial Number</th> -->
+            <th>User ID</th>
+            <th>User Name</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Date Registered</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        {#each users as user}
+        {#each data.users as user}
             <tr>
-                <td>{user.serialNumber}</td>
+                <!-- <td>{user.serialNumber}</td> -->
                 <td>{user.userId}</td>
                 <td>
                     {#if editingUser === user}
@@ -107,7 +110,7 @@
                             >Update</button
                         >
                     {:else}
-                        <button on:click={() => viewUserDetail(user)}
+                        <button on:click={() => toggleEditMode(user)}
                             >Edit</button
                         >
                     {/if}
