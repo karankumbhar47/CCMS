@@ -52,7 +52,7 @@
                     time: dt,
                 },
             });
-            if (res == true) {
+            if (res === true) {
                 title = "";
                 description = "";
                 dt = "";
@@ -63,7 +63,28 @@
         }
     }
 
-    function updateAnnouncement() {}
+    async function updateAnnouncement() {
+        sidebarState = SidebarStateEnum.Wait;
+
+        try {
+            let res = await api.updateAnnouncement({
+                announcement: {
+                    id: data.announcements[get(currentIndex)].id,
+                    title: title,
+                    description: description,
+                    time: dt,
+                },
+            });
+            if (res === true) {
+                sidebarState = SidebarStateEnum.View;
+                console.log("Announcement Update Sucessful");
+            } else {
+                sidebarState = SidebarStateEnum.Update;
+            }
+        } catch {
+            sidebarState = SidebarStateEnum.Update;
+        }
+    }
 
     function cancelEdit() {
         let index = get(currentIndex);
