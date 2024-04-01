@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.iitbh.ccms.model.Announcement;
 import com.iitbh.ccms.model.NewAnnouncement;
 import com.iitbh.ccms.model_db.AnnouncementDoc;
 import com.iitbh.ccms.repository.AnnouncementRepository;
@@ -27,11 +28,11 @@ public class AnnouncementService {
         LocalDateTime currentTime = LocalDateTime.now();
         Long id;
 
-        if(announcement.getTitle().isEmpty()){
+        if (announcement.getTitle().isEmpty()) {
             return false;
         }
 
-        if(announcement.getTime().isEmpty()){
+        if (announcement.getTime().isEmpty()) {
             announcement.setTime(timeFormatter.format(currentTime));
         }
 
@@ -59,6 +60,27 @@ public class AnnouncementService {
                 System.err.println(e);
                 return false;
             }
+        }
+    }
+
+    public boolean updateAnnouncement(Announcement announcement) {
+        System.out.println("[AnnouncementService] updating doc with document id");
+        System.out.println(announcement.getId());
+        AnnouncementDoc doc = announcementRepository.findAnnouncementsById(announcement.getId());
+        if (doc != null) {
+            doc.title = announcement.getTitle();
+            doc.description = announcement.getDescription();
+            doc.time = announcement.getTime();
+            try {
+                announcementRepository.save(doc);
+                return true;
+            } catch (Exception e) {
+                System.err.println("[AnnouncementService] Failed to save updated doc");
+                System.err.println(e);
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }

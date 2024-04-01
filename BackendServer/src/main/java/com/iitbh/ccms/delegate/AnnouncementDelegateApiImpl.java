@@ -36,4 +36,9 @@ public class AnnouncementDelegateApiImpl implements AnnouncementsApiDelegate {
         return ResponseEntity.ok(res);
     }
 
+    @Override
+    public ResponseEntity<Boolean> updateAnnouncement(Announcement newAnnouncement) {
+        boolean res = announcementService.updateAnnouncement(newAnnouncement);
+        return ResponseEntity.ok(res);
+    }
 }

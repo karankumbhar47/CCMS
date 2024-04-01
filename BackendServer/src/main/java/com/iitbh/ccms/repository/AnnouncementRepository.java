@@ -8,4 +8,5 @@ import com.iitbh.ccms.model_db.AnnouncementDoc;
 
 @Repository
 public interface AnnouncementRepository extends MongoRepository<AnnouncementDoc, ObjectId> {
+    public AnnouncementDoc findAnnouncementsById(Long id);
 }
