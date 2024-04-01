@@ -3,7 +3,7 @@
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
     import { get } from "svelte/store";
-    import { defaultApi } from '$lib/store'; // Import the defaultApi store
+    import { defaultApi } from "$lib/store"; // Import the defaultApi store
 
     /** @typedef {import("$lib/generated/models/UsersDetail").UsersDetail} UsersDetail */
 

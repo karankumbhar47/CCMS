@@ -42,8 +42,12 @@ public class AuthController {
 
         System.out.println("Authcontroller called");
 
-        this.doAuthenticate(request.getUsername(), request.getPassword());
-
+        try {
+            this.doAuthenticate(request.getUsername(), request.getPassword());
+        }
+        catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         UserDetails userDetails = User.builder().username(request.getUsername())
                 .password(passwordEncoder().encode(request.getPassword()))
                 .roles("ADMIN").build();

@@ -1,7 +1,8 @@
 <script>
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
-    import { DefaultApi } from "$lib/generated/apis/DefaultApi";
+    import { defaultApi } from "$lib/store";
+    import { get } from "svelte/store";
 
     /**
      * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
@@ -10,7 +11,7 @@
     /** @type {Array<ComplainOverview>} */
     let complaintsList = [];
 
-    const api = new DefaultApi();
+    const api = get(defaultApi);
 
     async function fetchComplaints() {
         try {
