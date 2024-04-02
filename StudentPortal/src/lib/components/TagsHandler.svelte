@@ -38,6 +38,8 @@
     <label for="tags-selection">Select Tags:</label>
     <div class="selected-tags">
         {#each selectedTags as tag}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="tag" on:click={() => removeTag(tag)}>
                 {tag}
                 <span class="remove-tag">&#10006;</span>
@@ -48,6 +50,8 @@
     <label for="available-tags">Available Tags:</label>
     <div class="available-tags">
         {#each availableTags as tag}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="tag" on:click={() => addTag(tag)}>
                 {tag}
             </div>

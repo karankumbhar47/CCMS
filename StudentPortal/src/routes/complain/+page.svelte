@@ -1,5 +1,5 @@
 <script>
-    import ViewComplains from "$lib/components/ViewComplains.svelte"  
+    import ViewComplains from "$lib/components/ViewComplains.svelte";
 </script>
 
-<ViewComplains/>
+<ViewComplains />

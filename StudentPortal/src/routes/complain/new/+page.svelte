@@ -1,5 +1,7 @@
 <script>
-    import DemoImage from "$lib/components/DemoImage.svelte";
+    // @ts-nocheck
+
+    // import DemoImage from "$lib/components/DemoImage.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
     import { DefaultApi } from "$lib/generated";
     import { ComplainSubmitStatusEnum } from "$lib/generated/models";
@@ -42,9 +44,9 @@
     /**
      * @param {{ detail: any[]; }} event
      */
-    function handleFileIds(event) {
-        FileIds = event.detail;
-    }
+    // function handleFileIds(event) {
+    //     FileIds = event.detail;
+    // }
 
     /**
      * formatting date in required format
@@ -103,19 +105,20 @@
                 fileIds: FileIds,
             };
 
-            console.log(FileIds)
+            console.log(FileIds);
             const requestParameters = { complainSubmit: myComplaint };
             const apiClient = new DefaultApi();
             const response = await apiClient.submitComplaint(requestParameters);
             alert("Complaint submitted successfully");
+            console.log(response);
         } catch (error) {
             console.error("Error submitting complaint:", error);
         }
     }
 
     function submitForm() {
-        uploadImage.handleSubmit()
-        console.log(uploadImage.fileIds)
+        uploadImage.handleSubmit();
+        console.log(uploadImage.fileIds);
         let flag = true;
         if (selectedLocation === "None" || locationDetails.trim() === "") {
             flag = false;

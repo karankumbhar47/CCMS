@@ -1,4 +1,6 @@
 <script>
+    // @ts-nocheck
+
     /**
      * @type {string[]}
      */
@@ -41,6 +43,7 @@
         <div class="selected-images">
             {#each selectedImages as image, index}
                 <div class="image-container">
+                    <!-- svelte-ignore a11y-img-redundant-alt -->
                     <img src={image} alt="Selected Image" />
                     <button
                         class="remove-button"

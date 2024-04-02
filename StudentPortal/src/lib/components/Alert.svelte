@@ -9,6 +9,8 @@
 
 {#if message}
     <div class="alert" class:type>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <span class="close" on:click={closeAlert}>&times;</span>
         <p>{message}</p>
     </div>
@@ -22,7 +24,7 @@
         font-size: 16px;
     }
 
-    .info {
+    /* .info {
         background-color: #2196f3;
         color: white;
     }
@@ -37,7 +39,7 @@
     .error {
         background-color: #f44336;
         color: white;
-    }
+    } */
     .close {
         float: right;
         font-size: 20px;
