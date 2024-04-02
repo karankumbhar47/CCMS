@@ -4,6 +4,17 @@ info:
     description: |
         This API is used for communication between CCMS (Campus Complaint Management System) server and client.
     version: 0.0.2
+
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+
+security:
+    - bearerAuth: []
+
 paths:
     /login:
         post:
@@ -111,6 +122,8 @@ paths:
 #                    description: File not found
 #                "500":
 #                    description: Internal server error
+    /createUser:
+        $ref: "./paths/create_user.yaml"
 
 servers:
     -   url: http://localhost:8080

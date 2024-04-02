@@ -1,0 +1,17 @@
+post:
+  summary: Create New User.
+  description: Create new user.
+  operationId: createUser
+  security:
+    - Bearer: [ ]
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/user_detail_update.yaml"
+    required: true
+  responses:
+    '200':
+      description: 'OK'
+    '403':
+      description: 'Forbidden'
