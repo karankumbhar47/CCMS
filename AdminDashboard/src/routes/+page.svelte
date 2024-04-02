@@ -5,6 +5,14 @@
     export let totalComplaints = 10;
     export let pendingComplaints = 2;
     export let resolverCount = 2;
+
+    // import Cookies from 'js-cookie';
+
+    // const authToken = Cookies.get("authToken");
+    // if (!authToken && window.location.pathname !== "/login") {
+    //     window.location.href = '/login';
+    // }
+
 </script>
 
 <div class="overview-content">

@@ -1,7 +1,6 @@
 <script>
     import Header from "$lib/components/Header.svelte";
     import Sidebar from "$lib/components/Sidebar.svelte";
-
     let adminName = "Admin Name"; // Replace with the actual admin name
 </script>
 
@@ -41,3 +40,5 @@
         position: absolute;
     }
 </style>
+
+
