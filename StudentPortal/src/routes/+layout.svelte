@@ -1,6 +1,7 @@
 <script>
     import Header from "$lib/components/Header.svelte";
     import Sidebar from "$lib/components/Sidebar.svelte";
+    import ViewComplains from "$lib/components/ViewComplains.svelte";
 
     let userName = "User Name"; // Replace with the actual admin name
 </script>

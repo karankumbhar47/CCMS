@@ -1,8 +1,8 @@
 package com.iitbh.ccms;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -10,8 +10,28 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
     @Override
-    public void addCorsMappings(CorsRegistry registry){
-        registry.addMapping("/**").allowedOrigins("*");
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*");
     }
+
+//    @Bean
+//    public UrlBasedCorsConfigurationSource corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.addAllowedOrigin("*"); // Allow all origins for demo purposes, you can specify your frontend URL here
+//        config.addAllowedMethod("*"); // Allow all HTTP methods
+//        config.addAllowedHeader("*"); // Allow all headers
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
+//
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        converters.add(new ByteArrayHttpMessageConverter());
+//        converters.add(new MappingJackson2HttpMessageConverter());
+//    }
 
 }

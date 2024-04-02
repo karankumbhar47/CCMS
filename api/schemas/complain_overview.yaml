@@ -34,3 +34,9 @@ properties:
             - High
             - Medium
             - Low
+    fileIds:
+        type: array
+        items:
+            type: string
+            maxLength: 40
+            minLength: 40

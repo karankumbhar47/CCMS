@@ -26,6 +26,7 @@ public class Complains {
     String location;
     String complainerName;
     List<String> tags;
+    List<String> fileIds;
     String status;
     String severity;
 
@@ -44,22 +45,6 @@ public class Complains {
         }
     }
 
-//    public GetComplaintInfo200Response.StatusEnum getStatusFromResponse() {
-//        if(this.status.equalsIgnoreCase("completed")){
-//            return GetComplaintInfo200Response.StatusEnum.COMPLETED;
-//        }
-//        else if (this.status.equalsIgnoreCase("OnHold")) {
-//            return GetComplaintInfo200Response.StatusEnum.ONHOLD;
-//        }
-//        else if(this.status.equalsIgnoreCase("InProgress")){
-//            return GetComplaintInfo200Response.StatusEnum.INPROGRESS;
-//        }
-//        else{
-//            return GetComplaintInfo200Response.StatusEnum.UNSEEN;
-//        }
-//    }
-
-
     public ComplainOverview.SeverityEnum getSeverity() {
         if (severity.equalsIgnoreCase("high")) {
             return ComplainOverview.SeverityEnum.HIGH;
@@ -72,20 +57,9 @@ public class Complains {
         }
     }
 
-//    public GetComplaintInfo200Response.SeverityEnum getSeverityFromResponse() {
-//        if (severity.equalsIgnoreCase("high")) {
-//            return GetComplaintInfo200Response.SeverityEnum.HIGH;
-//        } else if (severity.equalsIgnoreCase("critical")) {
-//            return GetComplaintInfo200Response.SeverityEnum.CRITICAL;
-//        } else if (severity.equalsIgnoreCase("medium")) {
-//            return GetComplaintInfo200Response.SeverityEnum.MEDIUM;
-//        } else {
-//            return GetComplaintInfo200Response.SeverityEnum.LOW;
-//        }
-//    }
-
     public void convertToComplains(ComplainSubmit complainSubmit, String complainId){
         this.setComplainId(complainId);
+        this.setFileIds(complainSubmit.getFileIds());
         this.setComplain(complainSubmit.getComplain());
         this.setComplainerName(complainSubmit.getComplainerName());
         this.setComplainerId(complainSubmit.getComplainerId());
@@ -98,6 +72,7 @@ public class Complains {
 
     public ComplainOverview convertToComplainOverView(){
         ComplainOverview complainOverview = new ComplainOverview();
+        complainOverview.setFileIds(this.getFileIds());
         complainOverview.setComplainerId(this.getComplainerId());
         complainOverview.setComplainerName(this.getComplainerName());
         complainOverview.setComplain(this.getComplain());
@@ -107,26 +82,6 @@ public class Complains {
         complainOverview.setSeverity(this.getSeverity());
         complainOverview.setDateTime(this.getDateTime());
         complainOverview.setLocation(this.getLocation());
-        System.out.println(complainOverview.getComplain());
-        System.out.println(complainOverview.getComplainerName());
-        System.out.println(complainOverview.getDateTime());
         return complainOverview;
     }
-
-/*
-    public ComplainOverview convertToResponse(){
-        ComplainOverview complainOverview = new ComplainOverview();
-        complainOverview.setComplainerId(this.getComplainerId());
-        complainOverview.setComplainerName(this.getComplainerName());
-        complainOverview.setComplain(this.getComplain());
-        complainOverview.setComplainId(this.getComplainId());
-        complainOverview.setTags(this.getTags());
-        complainOverview.setStatus(this.getStatusFromResponse());
-        complainOverview.setSeverity(this.getSeverityFromResponse());
-        complainOverview.setDateTime(this.getDateTime());
-        complainOverview.setLocation(this.getLocation());
-        return complainOverview;
-    }
-*/
-
 }
