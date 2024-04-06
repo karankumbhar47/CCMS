@@ -1,11 +1,7 @@
-package com.iitbh.ccms.security.config;
+package com.iitbh.ccms.config;
 
-import com.iitbh.ccms.model.LoginRequest;
-import com.iitbh.ccms.security.models.JwtRequest;
-import com.iitbh.ccms.security.models.JwtResponse;
-import com.iitbh.ccms.security.models.Myuser;
-import com.iitbh.ccms.security.security.JWTHelper;
-import com.iitbh.ccms.security.services.MyuserService;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +14,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Optional;
+import com.iitbh.ccms.model.LoginRequest;
+import com.iitbh.ccms.model_db.JwtResponse;
+import com.iitbh.ccms.model_db.Myuser;
+import com.iitbh.ccms.security.JWTHelper;
+import com.iitbh.ccms.service.MyuserService;
+
 @Component
 public class AuthController {
 
@@ -44,8 +43,7 @@ public class AuthController {
 
         try {
             this.doAuthenticate(request.getUsername(), request.getPassword());
-        }
-        catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
@@ -54,8 +52,10 @@ public class AuthController {
         UserDetails userDetails = User.builder().username(request.getUsername())
                 .password(passwordEncoder().encode(request.getPassword()))
                 .roles(user.get().getRole()).build();
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-        String token = this.helper.generateToken(userDetails, user.get().getFirstname()+" "+user.get().getLastname());
+        // UserDetails userDetails =
+        // userDetailsService.loadUserByUsername(request.getEmail());
+        String token = this.helper.generateToken(userDetails,
+                user.get().getFirstname() + " " + user.get().getLastname());
 
         JwtResponse response = JwtResponse.builder()
                 .jwtToken(token)
@@ -70,17 +70,18 @@ public class AuthController {
     }
 
     private void doAuthenticate(String email, String password) {
-//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-//
-//        try{
-//            manager.authenticate(authentication);
-//        } catch (BadCredentialsException e) {
-//            throw new RuntimeException("Invalid Username or Password !!");
-//        }
-//        if (!password.equals("pass")) {
-//            throw new RuntimeException("Invalid Username or Password !!");
-//        }
-//        System.out.println(myuserService.singleEmail(email));
+        // UsernamePasswordAuthenticationToken authentication = new
+        // UsernamePasswordAuthenticationToken(email, password);
+        //
+        // try{
+        // manager.authenticate(authentication);
+        // } catch (BadCredentialsException e) {
+        // throw new RuntimeException("Invalid Username or Password !!");
+        // }
+        // if (!password.equals("pass")) {
+        // throw new RuntimeException("Invalid Username or Password !!");
+        // }
+        // System.out.println(myuserService.singleEmail(email));
 
         Optional<Myuser> user = myuserService.singleEmail(email);
 
@@ -91,6 +92,5 @@ public class AuthController {
 
         }
     }
-
 
 }

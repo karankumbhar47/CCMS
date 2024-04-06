@@ -1,13 +1,11 @@
 <script>
     import ImageHandler from "$lib/components/ImageHandler.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
-    import { defaultApi } from "$lib/store";
     import { ComplainSubmitStatusEnum } from "$lib/generated/models";
     import { ComplainOverviewSeverityEnum } from "$lib/generated/models";
-    import { get } from "svelte/store";
-    import { onMount } from "svelte";
     import { jwtDecode } from "jwt-decode";
     import Cookies from "js-cookie";
+    import { getDefaultApi } from "$lib/utils/auth";
 
     let isLoading = false;
     /**
@@ -19,8 +17,12 @@
      * @type {any[]}
      */
     let FileIds = [];
-    const token = Cookies.get('StudentPortalAuthToken');
-    console.log(jwtDecode(token).name);
+    /** @type {string | undefined} token */
+    const token = Cookies.get("StudentPortalAuthToken");
+
+    if (token !== undefined) {
+        console.log(jwtDecode(token).name);
+    }
 
     let selectedTags = ["Complain"];
     const severityOptions = ["Low", "Medium", "High", "Critical"];
@@ -113,7 +115,7 @@
             };
 
             const requestParameters = { complainSubmit: myComplaint };
-            const apiClient = get(defaultApi);
+            const apiClient = getDefaultApi();
             const response = await apiClient.submitComplaint(requestParameters);
             alert("Complaint submitted successfully");
             console.log(response);

@@ -1,11 +1,7 @@
 <script>
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
-    import { defaultApi } from "$lib/store";
-    import { get } from "svelte/store";
-    import Cookies from "js-cookie";
-
-    const token = Cookies.get("authToken");
+    import { getDefaultApi } from "$lib/utils/auth";
 
     /**
      * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
@@ -14,11 +10,10 @@
     /** @type {Array<ComplainOverview>} */
     let complaintsList = [];
 
-    const api = get(defaultApi);
-
     async function fetchComplaints() {
         try {
-            const fetchedComplaints = await api.getComplaintsOverview();
+            const fetchedComplaints =
+                await getDefaultApi().getComplaintsOverview();
             complaintsList = fetchedComplaints;
         } catch (error) {
             console.error("Error fetching complain details:", error);

@@ -1,22 +1,27 @@
-<!-- https://github.com/sveltejs/svelte-virtual-list -->
-
 <script>
+    import { getDefaultApi } from "$lib/utils/auth";
     import AnnouncementCard from "$lib/components/AnnouncementCard.svelte";
     import { onMount } from "svelte";
 
     /** @typedef {import("$lib/generated/models/Announcement").Announcement} Announcement*/
 
-    /** @type {{announcements: Array.<Announcement>}} */
-    export let data;
+    /** @type {Array.<Announcement>} announcements */
+    let announcements = [];
 
-    onMount(() => {
-        console.log(data);
+    onMount(async () => {
+        try {
+            let api = getDefaultApi();
+            console.log("got new getDefaultApi");
+            announcements = await api.getAnnouncements();
+        } catch (e) {
+            console.log("Failed to fetch announcements");
+        }
     });
 </script>
 
 <h1>Announcements</h1>
 <div class="container">
-    {#each data.announcements as announcement}
+    {#each announcements as announcement}
         <AnnouncementCard {announcement} />
     {/each}
 </div>

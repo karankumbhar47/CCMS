@@ -1,11 +1,12 @@
-package com.iitbh.ccms.security.services;
+package com.iitbh.ccms.service;
 
-import com.iitbh.ccms.security.models.Myuser;
-import com.iitbh.ccms.security.repository.MyuserRepository;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.iitbh.ccms.model_db.Myuser;
+import com.iitbh.ccms.repository.MyuserRepository;
 
 @Service
 public class MyuserService {

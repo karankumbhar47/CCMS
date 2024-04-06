@@ -1,4 +1,4 @@
-package com.iitbh.ccms.security.config;
+package com.iitbh.ccms.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

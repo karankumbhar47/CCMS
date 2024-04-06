@@ -1,25 +1,26 @@
 <script>
     import Cookies from "js-cookie";
-    import { DefaultApi } from "$lib/generated";
-    import { onDestroy } from "svelte";
+    import { getDefaultApi } from "$lib/utils/auth";
+    import { goto } from "$app/navigation";
 
     let username = "";
     let password = "";
 
-    const api = new DefaultApi();
+    // const api = new DefaultApi();
 
     async function handleLogin() {
         try {
-            let res = await api.login({
+            let res = await getDefaultApi().login({
                 loginRequest: {
                     username: username,
                     password: password,
                 },
             });
             setCookie("StudentPortalAuthToken", res);
-            window.location.href = "/";
+            goto("/");
         } catch (e) {
             console.log("Invalid username or password");
+            console.log(e);
         }
     }
 

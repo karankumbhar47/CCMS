@@ -1,5 +1,5 @@
 <script>
-    import { DefaultApi } from "$lib/generated";
+    import { getDefaultApi } from "$lib/utils/auth";
     import { createEventDispatcher } from "svelte";
 
     /**
@@ -8,13 +8,13 @@
     let fileId = null;
 
     /**
-     * @type {never[]}
+     * @type {string[]}
      */
     let fileIds = [];
     const MAX_BOXES = 5;
     const dispatch = createEventDispatcher();
-    const api = new DefaultApi();
 
+    /** @type {Array.<{selectedFile: File | null; fileId: string | null; imageUrl: string | null}>} */
     let boxes = Array.from({ length: MAX_BOXES }, () => ({
         selectedFile: null,
         fileId: null,
@@ -29,7 +29,9 @@
         const { selectedFile } = boxes[index];
         if (selectedFile) {
             try {
-                const response = await api.uploadFile({ body: selectedFile });
+                const response = await getDefaultApi().uploadFile({
+                    body: selectedFile,
+                });
                 const id = response;
                 boxes[index].fileId = id;
                 fileIds[index] = id;

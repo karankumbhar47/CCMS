@@ -1,6 +1,6 @@
 <script>
     import { page } from "$app/stores";
-    import { DefaultApi } from "$lib/generated";
+    import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
 
     /**
@@ -17,7 +17,7 @@
      */
     async function fetchComplaint(id) {
         try {
-            const api = new DefaultApi();
+            const api = getDefaultApi();
             complaint = await api.getComplaintInfo({ id });
         } catch (error) {
             console.error("Error fetching complain details:", error);

@@ -2,19 +2,24 @@
     // @ts-nocheck
 
     import SearchBar from "$lib/components/SearchBar.svelte";
+    import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
-    import { get } from "svelte/store";
-    import { defaultApi } from "$lib/store"; // Import the defaultApi store
 
     /** @typedef {import("$lib/generated/models/UsersDetail").UsersDetail} UsersDetail */
 
-    /**@type {UsersDetail}*/
-    export let data;
+    /**@type {Array.<UsersDetail>}*/
+    let users = [];
 
-    onMount(() => {
+    onMount(async () => {
         console.log("Loading data");
+        try {
+            // Fetch user details from the server using the generated OpenAPI client
+            users = await getDefaultApi().usersDetail();
+        } catch (error) {
+            console.error("Failed to fetch user details:", error);
+        }
+        console.log(users);
     });
-    console.log(data);
 
     /**
      * @type {null}
@@ -58,7 +63,7 @@
     async function updateUser(updatedUser) {
         try {
             // Send a request to the server to update user details using the generated OpenAPI client
-            await get(defaultApi).userDetailUpdate({
+            await getDefaultApi().userDetailUpdate({
                 userDetailUpdate: updatedUser,
             });
             console.log("User details updated successfully.");
@@ -106,7 +111,7 @@
             };
 
             // Send a request to the server to create a new user using the generated OpenAPI client
-            await get(defaultApi).createUser({
+            await getDefaultApi().createUser({
                 userDetailUpdate: newUser,
             });
             console.log("User created successfully.");
@@ -181,7 +186,7 @@
         </tr>
     </thead>
     <tbody>
-        {#each data.users as user}
+        {#each users as user}
             <tr>
                 <!-- <td>{user.serialNumber}</td> -->
                 <td>{user.userId}</td>

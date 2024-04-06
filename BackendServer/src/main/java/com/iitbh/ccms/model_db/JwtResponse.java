@@ -1,4 +1,4 @@
-package com.iitbh.ccms.security.models;
+package com.iitbh.ccms.model_db;
 
 import lombok.*;
 
@@ -8,7 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
-public class JwtRequest {
+public class JwtResponse {
+    private String jwtToken;
     private String username;
-    private String password;
+
 }

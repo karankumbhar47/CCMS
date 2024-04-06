@@ -1,8 +1,22 @@
 <script>
     import Header from "$lib/components/Header.svelte";
     import Sidebar from "$lib/components/Sidebar.svelte";
+    import { onMount } from "svelte";
+    import Cookies from "js-cookie";
+    import { page } from "$app/stores";
+    import { goto } from "$app/navigation";
 
     let userName = "User Name"; // Replace with the actual admin name
+
+    onMount(() => {
+        /** type {string | undefined} token */
+        const token = Cookies.get("StudentPortalAuthToken");
+        console.log($page.url.pathname);
+
+        if (token === undefined && $page.url.pathname !== "/login") {
+            goto("/login");
+        }
+    });
 </script>
 
 <div class="container">

@@ -19,8 +19,8 @@
 
     // Function to handle logout
     function logout() {
-        const a = Cookies.get("authToken");
-        if (a) {
+        const token = Cookies.get("authToken");
+        if (token) {
             Cookies.remove("authToken");
             window.location.href = "/";
         } else {

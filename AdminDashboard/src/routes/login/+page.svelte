@@ -45,7 +45,7 @@
 <script>
     import Cookies from "js-cookie";
     import { DefaultApi } from "$lib/generated";
-    import { onDestroy } from "svelte";
+    import { goto } from "$app/navigation";
 
     let username = "";
     let password = "";
@@ -61,7 +61,7 @@
                 },
             });
             setCookie("authToken", res);
-            window.location.href = "/";
+            goto("/");
         } catch (e) {
             console.log("Invalid username or password");
         }

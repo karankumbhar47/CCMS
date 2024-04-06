@@ -3,18 +3,12 @@
     import { onMount } from "svelte";
     import { get, writable } from "svelte/store";
     import { getDate, getTime } from "$lib/utils/dateTime";
-    import { defaultApi } from "$lib/store";
-    import Cookies from "js-cookie";
+    import { getDefaultApi } from "$lib/utils/auth";
 
     /**@typedef {import("$lib/generated").Announcement} Announcement */
-    /**@typedef {import("$lib/generated").NewAnnouncement} NewAnnoucement */
-    /**@typedef {import("$lib/generated").NewAnnouncementRequest} NewAnnouncementRequest */
 
-    /** @type {{announcements: Array.<Announcement>}} */
-    export let data;
-    export const selectedComplaint = writable(null);
-    export const selectedComplaintId = writable(null);
-    const api = get(defaultApi);
+    /** @type {Array.<Announcement>} announcements */
+    let announcements = [];
 
     /** @type import('svelte/store').Writable.<number> */
     const currentIndex = writable(-1);
@@ -45,7 +39,7 @@
         sidebarState = SidebarStateEnum.Wait;
 
         try {
-            let res = await api.newAnnouncement({
+            let res = await getDefaultApi().newAnnouncement({
                 newAnnouncement: {
                     title: title,
                     description: description,
@@ -67,9 +61,9 @@
         sidebarState = SidebarStateEnum.Wait;
 
         try {
-            let res = await api.updateAnnouncement({
+            let res = await getDefaultApi().updateAnnouncement({
                 announcement: {
-                    id: data.announcements[get(currentIndex)].id,
+                    id: announcements[get(currentIndex)].id,
                     title: title,
                     description: description,
                     time: dt,
@@ -89,9 +83,9 @@
     function cancelEdit() {
         let index = get(currentIndex);
         sidebarState = SidebarStateEnum.View;
-        title = data.announcements[index].title;
-        description = data.announcements[index].description;
-        dt = data.announcements[index].time;
+        title = announcements[index].title;
+        description = announcements[index].description;
+        dt = announcements[index].time;
     }
 
     function startEdit() {
@@ -110,12 +104,19 @@
         sidebarState = SidebarStateEnum.View;
     }
 
-    onMount(() => {
+    onMount(async () => {
+        try {
+            announcements = await getDefaultApi().getAnnouncements();
+        } catch (e) {
+            console.log("Failed to fetch announcements");
+            console.log(e);
+        }
+
         currentIndex.subscribe((index) => {
             if (index != -1) {
-                title = data.announcements[index].title;
-                description = data.announcements[index].description;
-                dt = data.announcements[index].time;
+                title = announcements[index].title;
+                description = announcements[index].description;
+                dt = announcements[index].time;
             } else {
                 title = "";
                 description = "";
@@ -141,7 +142,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each data.announcements as announcement, index}
+                {#each announcements as announcement, index}
                     <tr>
                         <td>{announcement.id}</td>
                         <td>{getDate(announcement.time)}</td>

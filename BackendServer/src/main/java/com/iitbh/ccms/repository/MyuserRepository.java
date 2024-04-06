@@ -1,6 +1,6 @@
-package com.iitbh.ccms.security.repository;
+package com.iitbh.ccms.repository;
 
-import com.iitbh.ccms.security.models.Myuser;
+import com.iitbh.ccms.model_db.Myuser;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

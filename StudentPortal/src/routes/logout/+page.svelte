@@ -1,16 +1,15 @@
 <script>
+    import { goto } from "$app/navigation";
     import Cookies from "js-cookie";
 
     // Function to handle logout
     function logout() {
-        const a = Cookies.get("StudentPortalAuthToken");
-        if (a) {
+        const token = Cookies.get("StudentPortalAuthToken");
+        if (token !== undefined) {
             Cookies.remove("StudentPortalAuthToken");
-            window.location.href = "/";
+            goto("/login");
         } else {
-            alert("You are already logged out!");
-            // Optionally, redirect the user to another page
-            // window.location.href = "/"; // Redirect to home page
+            goto("/login");
         }
     }
 </script>
