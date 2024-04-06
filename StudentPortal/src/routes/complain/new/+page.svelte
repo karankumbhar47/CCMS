@@ -9,7 +9,7 @@
     import { get } from "svelte/store";
     import { onMount } from "svelte";
     import { jwtDecode } from "jwt-decode";
-    import Cookies from 'js-cookie';
+    import Cookies from "js-cookie";
 
     /**
      * @type {DemoImage}
@@ -22,7 +22,7 @@
     let FileIds = [];
     const token = Cookies.get('StudentPortalAuthToken');
     console.log(jwtDecode(token).name);
-    
+
     let selectedTags = ["Complain"];
     const severityOptions = ["Low", "Medium", "High", "Critical"];
     const locationOptions = [
