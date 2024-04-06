@@ -127,6 +127,8 @@ paths:
 #                    description: Internal server error
     /createUser:
         $ref: "./paths/create_user.yaml"
+    /deleteUser:
+        $ref: "./paths/delete_user.yaml"
 
 servers:
     -   url: http://localhost:8080
