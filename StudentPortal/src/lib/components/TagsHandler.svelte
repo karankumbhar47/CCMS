@@ -26,10 +26,12 @@
      * @param {string} tag
      */
     function removeTag(tag) {
-        selectedTags = selectedTags.filter((t) => t !== tag);
-        if (!availableTags.includes(tag)) {
-            availableTags = [...availableTags, tag];
-            dispatch("tagsChanged", selectedTags);
+        if (!(tag === "complain")) {
+            selectedTags = selectedTags.filter((t) => t !== tag);
+            if (!availableTags.includes(tag)) {
+                availableTags = [...availableTags, tag];
+                dispatch("tagsChanged", selectedTags);
+            }
         }
     }
 </script>

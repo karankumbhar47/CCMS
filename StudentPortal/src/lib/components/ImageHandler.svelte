@@ -1,91 +1,138 @@
 <script>
-    // @ts-nocheck
+    import { DefaultApi } from "$lib/generated";
+    import { createEventDispatcher } from "svelte";
 
     /**
-     * @type {string[]}
+     * @type {string | null}
      */
-    let selectedImages = [];
+    let fileId = null;
 
     /**
-     * @param {{ target: { files: any; }; }} event
+     * @type {never[]}
      */
-    function handleFileInputChange(event) {
-        const files = event.target.files;
-        for (let i = 0; i < files.length; i++) {
-            if (selectedImages.length < 5) {
-                selectedImages.push(URL.createObjectURL(files[i]));
-            } else {
-                alert("Maximum 5 images can be selected.");
-                break;
+    let fileIds = [];
+    const MAX_BOXES = 5;
+    const dispatch = createEventDispatcher();
+    const api = new DefaultApi();
+
+    let boxes = Array.from({ length: MAX_BOXES }, () => ({
+        selectedFile: null,
+        fileId: null,
+        imageUrl: null,
+    }));
+
+    /**
+     * @param {number} index
+     */
+    async function handleFileUpload(index) {
+        console.log(index);
+        const { selectedFile } = boxes[index];
+        if (selectedFile) {
+            try {
+                const response = await api.uploadFile({ body: selectedFile });
+                const id = response;
+                boxes[index].fileId = id;
+                fileIds[index] = id;
+                dispatch("list", fileIds);
+                console.log("File uploaded successfully. File ID:", fileId);
+            } catch (error) {
+                console.error("Error uploading image:", error);
             }
         }
+    }
+
+    /**
+     * @param {{target: {files: FileList;};}} event
+     * @param {number} index
+     */
+    function handleFileChange(index, event) {
+        const selectedFile = event.target.files[0];
+        const imageUrl = URL.createObjectURL(selectedFile);
+        boxes[index] = { selectedFile, imageUrl, fileId: null };
     }
 
     /**
      * @param {number} index
      */
     function removeImage(index) {
-        selectedImages.splice(index, 1);
+        boxes[index] = { selectedFile: null, imageUrl: null, fileId: null };
     }
+
+    async function handleSubmit() {
+        fileIds = [];
+        for (let i = 0; i < MAX_BOXES; i++) {
+            if (boxes[i].selectedFile) {
+                console.log("Uploading file at index:", i);
+                await handleFileUpload(i);
+            }
+        }
+    }
+
+    export { handleSubmit };
 </script>
 
-<div class="image-upload">
-    <!-- Input field for uploading images -->
-    <input
-        type="file"
-        accept="image/*"
-        multiple
-        onchange={handleFileInputChange}
-    />
-
-    <!-- Display selected images -->
-    {#if selectedImages.length > 0}
-        <div class="selected-images">
-            {#each selectedImages as image, index}
+<div class="box-container">
+    {#each boxes as box, index (index)}
+        <div class="box">
+            <input
+                class="input-taker"
+                type="file"
+                accept="image/*"
+                on:change={() => handleFileChange(index, event)}
+            />
+            {#if box.imageUrl}
                 <div class="image-container">
                     <!-- svelte-ignore a11y-img-redundant-alt -->
-                    <img src={image} alt="Selected Image" />
-                    <button
-                        class="remove-button"
-                        on:click={() => removeImage(index)}>Remove</button
-                    >
+                    <img src={box.imageUrl} alt="Selected Image" />
+                    <button on:click={() => removeImage(index)}>Remove</button>
                 </div>
-            {/each}
+            {/if}
         </div>
-    {/if}
+    {/each}
 </div>
 
+{#if fileId}
+    <p>File uploaded successfully. File ID: {fileId}</p>
+{/if}
+
 <style>
-    .image-upload {
-        margin-bottom: 20px;
-    }
-
-    .selected-images {
+    .box-container {
         display: flex;
+        justify-content: space-around;
+        align-items: center;
         flex-wrap: wrap;
-        margin-top: 10px;
+        height: fit-content;
     }
-
-    .image-container {
-        margin-right: 10px;
-        margin-bottom: 10px;
+    .box {
         position: relative;
+        width: 30vw;
+        height: 40vh;
+        margin: 2rem;
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
-
-    .remove-button {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        padding: 5px;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
+    .image-container {
+        position: relative;
+        width: 90%;
+        height: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-
     img {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        z-index: 0;
+        border: 2px greenyellow solid;
+    }
+    button {
+        z-index: 100;
+        position: absolute;
+        bottom: 0;
+        right: 0;
     }
 </style>
