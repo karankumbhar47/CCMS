@@ -118,6 +118,17 @@
             console.error("Failed to create user:", error);
         }
     }
+
+    async function deleteUser(user) {
+        try {
+            // Send a request to delete the user
+            await get(defaultApi).deleteUser({ deleteUserRequest: user });
+            console.log('User deleted successfully.');
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+        }
+    }
+
 </script>
 
 <SearchBar />
@@ -166,6 +177,7 @@
             <th>Status</th>
             <th>Date Registered</th>
             <th>Action</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -182,7 +194,11 @@
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <input type="text" bind:value={user.role} />
+                        <select bind:value={user.role}>
+                            <option value="admin">Admin</option>
+                            <option value="resolver">Resolver</option>
+                            <option value="student">Student</option>
+                        </select>
                     {:else}
                         {user.role}
                     {/if}
@@ -196,7 +212,10 @@
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <input type="text" bind:value={user.status} />
+                        <select bind:value={user.status}>
+                            <option value="active">Active</option>
+                            <option value="block">Block</option>
+                        </select>
                     {:else}
                         {user.status}
                     {/if}
@@ -213,6 +232,9 @@
                         >
                     {/if}
                 </td>
+                <td>
+                    <button on:click={() => deleteUser(user)}>Delete</button>
+                </td>
             </tr>
         {/each}
     </tbody>
@@ -223,7 +245,6 @@
 </div>
 
 <style>
-    /* Add your table and modal styles here */
     table {
         width: 100%;
         border-collapse: collapse;
@@ -239,7 +260,6 @@
         background-color: #f2f2f2;
     }
 
-    /* Add input field and button styling */
     label {
         display: block;
         margin-top: 10px;
@@ -263,7 +283,6 @@
         background-color: #45a049;
     }
 
-    /* Modal styles */
     .modal {
         display: block;
         position: fixed;
