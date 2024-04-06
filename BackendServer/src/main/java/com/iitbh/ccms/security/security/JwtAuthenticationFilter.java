@@ -78,7 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Optional<Myuser> user = myuserService.singleEmail(username);
             UserDetails userDetails = User.builder().username(user.get().getEmail())
                     .password(passwordEncoder().encode(user.get().getPassword()))
-                    .roles("ADMIN").build();
+                    .roles(user.get().getRole()).build();
 // end
 
             Boolean validToken = this.jwtHelper.validateToken(token, userDetails);

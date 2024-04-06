@@ -3,9 +3,9 @@
     import { onMount } from "svelte";
     import { defaultApi } from "$lib/store";
     import { get } from "svelte/store";
-    import Cookies from 'js-cookie';
+    import Cookies from "js-cookie";
 
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
 
     /**
      * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview

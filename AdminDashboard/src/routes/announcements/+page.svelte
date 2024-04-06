@@ -4,7 +4,7 @@
     import { get, writable } from "svelte/store";
     import { getDate, getTime } from "$lib/utils/dateTime";
     import { defaultApi } from "$lib/store";
-    import Cookies from 'js-cookie';
+    import Cookies from "js-cookie";
 
     /**@typedef {import("$lib/generated").Announcement} Announcement */
     /**@typedef {import("$lib/generated").NewAnnouncement} NewAnnoucement */

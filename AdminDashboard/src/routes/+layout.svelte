@@ -40,5 +40,3 @@
         position: absolute;
     }
 </style>
-
-

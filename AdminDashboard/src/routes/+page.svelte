@@ -12,7 +12,6 @@
     // if (!authToken && window.location.pathname !== "/login") {
     //     window.location.href = '/login';
     // }
-
 </script>
 
 <div class="overview-content">

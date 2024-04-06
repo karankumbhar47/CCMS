@@ -18,6 +18,7 @@ public class Myuser {
     private String lastname;
     private String email;
     private String password;
+    private String role;
 
     public ObjectId getId() {
         return id;

@@ -48,11 +48,14 @@ public class AuthController {
         catch (RuntimeException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        Optional<Myuser> user = myuserService.singleEmail(request.getUsername());
+
         UserDetails userDetails = User.builder().username(request.getUsername())
                 .password(passwordEncoder().encode(request.getPassword()))
-                .roles("ADMIN").build();
+                .roles(user.get().getRole()).build();
 //        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-        String token = this.helper.generateToken(userDetails);
+        String token = this.helper.generateToken(userDetails, user.get().getFirstname()+" "+user.get().getLastname());
 
         JwtResponse response = JwtResponse.builder()
                 .jwtToken(token)
