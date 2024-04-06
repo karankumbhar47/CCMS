@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -23,21 +21,22 @@ public class FileService{
         this.fileRepository = fileRepository;
     }
 
-    public String SaveImageFile(MultipartFile file){
-        try {
-            byte[] fileBytes = file.getBytes();
-            String base64EncodedImage = Base64.getEncoder().encodeToString(fileBytes);
-            String fileId = getFileUniqueId();
-
-            FileDB fileDB = new FileDB();
-            fileDB.setFileId(fileId);
-            fileDB.setImageData(base64EncodedImage);
-            fileRepository.save(fileDB);
-            return fileId;
-        } catch (IOException e) {
-            System.out.println("Error in saving file "+e);
-            return null;
+    public String SaveImageFile(Resource body) {
+        byte[] fileBytes;
+        if (body instanceof ByteArrayResource) {
+            ByteArrayResource byteArrayResource = (ByteArrayResource) body;
+            fileBytes = byteArrayResource.getByteArray();
+        } else {
+            throw new IllegalArgumentException("Unsupported resource type");
         }
+
+        String base64EncodedImage = Base64.getEncoder().encodeToString(fileBytes);
+        String fileId = getFileUniqueId();
+        FileDB fileDB = new FileDB();
+        fileDB.setFileId(fileId);
+        fileDB.setImageData(base64EncodedImage);
+        fileRepository.save(fileDB);
+        return fileId;
     }
 
     public String getFileUniqueId(){
