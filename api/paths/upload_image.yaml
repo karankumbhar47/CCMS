@@ -1,0 +1,43 @@
+post:
+    operationId: uploadFile
+    summary: Upload Image
+    description: |
+        Uploads an image and returns its corresponding file ID.
+    requestBody:
+        required: true
+        content:
+            image/png:
+                schema:
+                    type: string
+                    format: file
+            image/jpeg:
+                schema:
+                    type: string
+                    format: file
+    responses:
+        "200":
+            description: Successful response
+            content:
+                text/plain:
+                    schema:
+                        type: string
+                        minLength: 40
+                        maxLength: 40
+        "400":
+            description: Bad request
+        "500":
+            description: Internal server error
+
+components:
+    responses:
+        CorsHeaders:
+            headers:
+                Access-Control-Allow-Origin:
+                    schema:
+                        type: "string"
+                Access-Control-Allow-Methods:
+                    schema:
+                        type: "string"
+                Access-Control-Allow-Headers:
+                    schema:
+                        type: "string"

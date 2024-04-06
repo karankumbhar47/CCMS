@@ -46,9 +46,6 @@ paths:
                 "403":
                     description: "Forbidden"
 
-    /auth/login:
-        $ref: "./paths/login.yaml"
-
     /announcements:
         $ref: "./paths/announcements.yaml"
 
@@ -127,8 +124,15 @@ paths:
 #                    description: Internal server error
     /createUser:
         $ref: "./paths/create_user.yaml"
+
     /deleteUser:
         $ref: "./paths/delete_user.yaml"
+
+    /upload/image:
+        $ref: "./paths/upload_image.yaml"
+       
+    # /download/image/{fileId}:
+    #     $ref: "./paths/download_image.yaml"
 
 servers:
     -   url: http://localhost:8080
