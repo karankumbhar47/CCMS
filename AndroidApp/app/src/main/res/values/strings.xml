@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">AndroidApp</string>
+    <string name="userName">User Name</string>
+    <string name="password">Password</string>
+    <string name="forgotPassword">Forgot Password</string>
+    <string name="login">Login</string>
+    <string name="ccms">CCMS</string>
+    <string name="completedOrders">Completed Orders</string>
+    <string name="ongoingOrders">Ongoing Orders</string>
+    <string name="title">Complain Title:</string>
+    <string name="category">Category:</string>
+    <string name="location">Location:</string>
+    <string name="complainDetail">Complain Detail:</string>
+    <string name="date">Date:</string>
+    <string name="severity">Severity:</string>
+    <string name="backButton">Back</string>
+    <string name="resolvedButton">Mark as resolved</string>
 </resources>

@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+    title: CCMS
+    description: |
+        This API is used for communication between CCMS (Campus Complaint Management System) server and client.
+    version: 0.0.2
+paths:
+    /login:
+        post:
+            summary: Login to user account
+            description: Get username and password and authenticate the user.
+                Returns sessionId for further requests
+            operationId: login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                required: true
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                "403":
+                    description: "Forbidden"
+
+    /auth/login:
+        $ref: "./paths/login.yaml"
+
+    /complain_overview:
+        $ref: "./paths/complain_overview.yaml"
+
+    /resolution_submit:
+        $ref: "./paths/resolution_submit.yaml"
+
+    /getComplaintInfo/{id}:
+        $ref: "./paths/get_complaint_info.yaml"
+
+  
+    
+
+   
+servers:
+    - url: http://13.233.99.87:8080
