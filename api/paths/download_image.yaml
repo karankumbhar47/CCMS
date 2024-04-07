@@ -13,7 +13,15 @@ get:
     responses:
         "200":
             content:
-                image/*:
+                image/png:
+                    schema:
+                        type: string
+                        format: binary
+                image/jpeg:
+                    schema:
+                        type: string
+                        format: binary
+                image/jpg:
                     schema:
                         type: string
                         format: binary

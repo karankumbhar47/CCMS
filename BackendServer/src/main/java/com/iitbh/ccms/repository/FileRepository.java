@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface FileRepository extends MongoRepository<FileDB, ObjectId> {
 
     FileDB getFileDBByFileId(String fileId);
+
 }

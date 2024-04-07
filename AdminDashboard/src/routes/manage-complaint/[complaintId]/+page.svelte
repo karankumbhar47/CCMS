@@ -1,25 +1,35 @@
 <script>
     import { page } from "$app/stores";
-    import { defaultApi } from "$lib/store";
-    import { get } from "svelte/store";
+    import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
+    import ImageHandler from "$lib/components/ImageHandler.svelte";
 
-    /**
-     * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
-     */
-
-    /**
-     * @type {ComplainOverview | undefined}
-     */
+    /** @typedef {import("$lib/generated").ComplainOverview} ComplainOverview */
+    /** @type {ComplainOverview | undefined} */
     let complaint;
 
-    /**
-     * @param {string} id
-     */
+    /** @type {string[]} */
+    let imageUrls = [];
+
+    /** @param {string} id */
     async function fetchComplaint(id) {
         try {
-            const api = get(defaultApi);
+            const api = getDefaultApi();
             complaint = await api.getComplaintInfo({ id });
+
+            if (complaint.fileIds) {
+                for (const fileId of complaint.fileIds) {
+                    try {
+                        const fileBlob = await api.downloadFile({ fileId });
+                        const imageUrl = URL.createObjectURL(fileBlob);
+                        imageUrls = [...imageUrls, imageUrl];
+                    } catch (error) {
+                        console.error("Error downloading file:", error);
+                    }
+                }
+            } else {
+                console.warn("File IDs are undefined in the complaint object.");
+            }
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
@@ -62,6 +72,7 @@
         <li><strong>Date:</strong> {complaint?.dateTime || "Not specified"}</li>
     </ul>
 </div>
+<ImageHandler bind:imageUrls />
 
 <style>
     .complaint-details {

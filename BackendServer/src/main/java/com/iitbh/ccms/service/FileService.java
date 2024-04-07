@@ -8,7 +8,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -54,14 +53,22 @@ public class FileService{
 
     public Resource getFile(String fileId){
         FileDB fileDB = fileRepository.getFileDBByFileId(fileId);
-        System.out.println(fileDB.getFileId());
+        if (fileDB == null) {
+            return null;
+        }
+
         String base64Data = fileDB.getImageData();
-        System.out.println("imageData 1 "+base64Data +"imageData 1 ");
         byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
-        System.out.println(Arrays.toString(decodedBytes));
-        Resource response = new ByteArrayResource(decodedBytes);
-        System.out.println(response.exists());
-        return response;
+        return new ByteArrayResource(decodedBytes);
+//        FileDB fileDB = fileRepository.getFileDBByFileId(fileId);
+//        System.out.println(fileDB.getFileId());
+//        String base64Data = fileDB.getImageData();
+//        System.out.println("imageData 1 "+base64Data +"imageData 1 ");
+//        byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+//        System.out.println(Arrays.toString(decodedBytes));
+//        Resource response = new ByteArrayResource(decodedBytes);
+//        System.out.println(response.exists());
+//        return response;
     }
 
 }
