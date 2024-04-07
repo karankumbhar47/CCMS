@@ -1,37 +1,43 @@
 <script>
-    // @ts-nocheck
-
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
 
-    /** @typedef {import("$lib/generated/models/UsersDetail").UsersDetail} UsersDetail */
-
-    /**@type {Array.<UsersDetail>}*/
     let users = [];
+    let page = 1; // Initial page number
+    let totalPages = 0;
+    let isLoading = false;
 
     onMount(async () => {
         console.log("Loading data");
-        try {
-            // Fetch user details from the server using the generated OpenAPI client
-            users = await getDefaultApi().usersDetail();
-        } catch (error) {
-            console.error("Failed to fetch user details:", error);
-        }
-        console.log(users);
+        await loadUsers();
     });
 
-    /**
-     * @type {null}
-     */
+    async function loadUsers() {
+        try {
+            console.log("loading 1");
+            isLoading = true;
+            console.log(page);
+            console.log("loading 2");
+            const response = await getDefaultApi().getUsers({
+                page: page,
+                size: 10,
+            });
+            console.log("loading 3");
+            totalPages = response.totalPages ? response.totalPages : 1;
+            console.log("totalPages:", totalPages);
+            users = response.users ? response.users : [];
+        } catch (error) {
+            console.error("Failed to fetch user details:", error);
+        } finally {
+            isLoading = false;
+        }
+        console.log(users);
+    }
+
     let editingUser = null;
     let isAddingUser = false;
 
-    // Function to toggle edit mode for a user
-
-    /**
-     * @param {null} user
-     */
     function toggleEditMode(user) {
         editingUser = editingUser === user ? null : user;
     }
@@ -56,14 +62,8 @@
     //     closeAddUserModal();
     // }
 
-    /**
-     * @description Update user details on the server.
-     * @param {import('$lib/generated').UserDetailUpdate} updatedUser - The updated user details.
-     * @returns {Promise<void>}
-     */
     async function updateUser(updatedUser) {
         try {
-            // Send a request to the server to update user details using the generated OpenAPI client
             await getDefaultApi().userDetailUpdate({
                 userDetailUpdate: updatedUser,
             });
@@ -73,14 +73,9 @@
         }
     }
 
-    // Function to save user changes
-    /**
-     * @param {import("$lib/generated").UserDetailUpdate} user
-     */
     async function saveUserChanges(user) {
         try {
             console.log(user);
-            // Call the updateUser function to update user details on the server
             await updateUser(user);
             console.log("User details saved successfully.");
         } catch (error) {
@@ -89,10 +84,8 @@
         editingUser = null;
     }
 
-    // Function to handle the creation of a new user
     async function createUser() {
         try {
-            // Get user input from the input fields
             const userId = document.getElementById("userId").value;
             const userName = document.getElementById("userName").value;
             const role = document.getElementById("role").value;
@@ -101,7 +94,6 @@
             const dateRegistered =
                 document.getElementById("dateRegistered").value;
 
-            // Prepare user object
             const newUser = {
                 userId: userId,
                 userName: userName,
@@ -111,15 +103,11 @@
                 dateRegistered: dateRegistered,
             };
 
-            // Send a request to the server to create a new user using the generated OpenAPI client
             await getDefaultApi().createUser({
                 userDetailUpdate: newUser,
             });
             console.log("User created successfully.");
             closeAddUserModal();
-
-            // Dispatch an event to inform the parent component about the user creation
-            // dispatch("userCreated");
         } catch (error) {
             console.error("Failed to create user:", error);
         }
@@ -127,11 +115,26 @@
 
     async function deleteUser(user) {
         try {
-            // Send a request to delete the user
             await getDefaultApi().deleteUser({ deleteUserRequest: user });
             console.log("User deleted successfully.");
         } catch (error) {
             console.error("Failed to delete user:", error);
+        }
+    }
+
+    async function nextPage() {
+        if (page < totalPages ) {
+            page++;
+            console.log("nextpage:", page);
+            await loadUsers();
+        }
+    }
+
+    async function previousPage() {
+        if (page > 1) {
+            page--;
+            console.log("previouspage:", page);
+            await loadUsers();
         }
     }
 </script>
@@ -144,39 +147,38 @@
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <span class="close" on:click={closeAddUserModal}>&times;</span>
-            <div>
+            <div class="form-group">
                 <label for="userId">User ID:</label>
-                <input type="text" id="userId" />
+                <input type="text" id="userId" class="form-control" />
             </div>
-            <div>
+            <div class="form-group">
                 <label for="userName">User Name:</label>
-                <input type="text" id="userName" />
+                <input type="text" id="userName" class="form-control" />
             </div>
-            <div>
+            <div class="form-group">
                 <label for="role">Role:</label>
-                <input type="text" id="role" />
+                <input type="text" id="role" class="form-control" />
             </div>
-            <div>
+            <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="text" id="email" />
+                <input type="text" id="email" class="form-control" />
             </div>
-            <div>
+            <div class="form-group">
                 <label for="status">Status:</label>
-                <input type="text" id="status" />
+                <input type="text" id="status" class="form-control" />
             </div>
-            <div>
+            <div class="form-group">
                 <label for="dateRegistered">Date Registered:</label>
-                <input type="text" id="dateRegistered" />
+                <input type="text" id="dateRegistered" class="form-control" />
             </div>
-            <button on:click={createUser}>Add user</button>
+            <button on:click={createUser} class="btn btn-primary">Add user</button>
         </div>
     </div>
 {/if}
 
-<table>
+<table class="table">
     <thead>
         <tr>
-            <!-- <th>Serial Number</th> -->
             <th>User ID</th>
             <th>User Name</th>
             <th>Role</th>
@@ -190,21 +192,20 @@
     <tbody>
         {#each users as user}
             <tr>
-                <!-- <td>{user.serialNumber}</td> -->
                 <td>{user.userId}</td>
                 <td>
                     {#if editingUser === user}
-                        <input type="text" bind:value={user.userName} />
+                        <input type="text" bind:value={user.userName} class="form-control" />
                     {:else}
                         {user.userName}
                     {/if}
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <select bind:value={user.role}>
-                            <option value="admin">admin</option>
-                            <option value="resolver">resolver</option>
-                            <option value="student">student</option>
+                        <select bind:value={user.role} class="form-control">
+                            <option value="admin">Admin</option>
+                            <option value="resolver">Resolver</option>
+                            <option value="student">Student</option>
                         </select>
                     {:else}
                         {user.role}
@@ -212,16 +213,16 @@
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <input type="text" bind:value={user.email} />
+                        <input type="text" bind:value={user.email} class="form-control" />
                     {:else}
                         {user.email}
                     {/if}
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <select bind:value={user.status}>
-                            <option value="active">active</option>
-                            <option value="block">block</option>
+                        <select bind:value={user.status} class="form-control">
+                            <option value="active">Active</option>
+                            <option value="block">Blocked</option>
                         </select>
                     {:else}
                         {user.status}
@@ -230,68 +231,29 @@
                 <td>{user.dateRegistered}</td>
                 <td>
                     {#if editingUser === user}
-                        <button on:click={() => saveUserChanges(user)}
-                            >Update</button
-                        >
+                        <button on:click={() => saveUserChanges(user)} class="btn btn-success">Update</button>
                     {:else}
-                        <button on:click={() => toggleEditMode(user)}
-                            >Edit</button
-                        >
+                        <button on:click={() => toggleEditMode(user)} class="btn btn-primary">Edit</button>
                     {/if}
                 </td>
                 <td>
-                    <button on:click={() => deleteUser(user)}>Delete</button>
+                    <button on:click={() => deleteUser(user)} class="btn btn-danger">Delete</button>
                 </td>
             </tr>
         {/each}
     </tbody>
 </table>
 
-<div>
-    <button on:click={openAddUserModal}>Add User</button>
+<div class="buttons">
+    <button on:click={previousPage} class="btn btn-secondary">Previous</button>
+    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button>
+    <button on:click={nextPage} class="btn btn-secondary">Next</button>
 </div>
 
 <style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-    th,
-    td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-
-    label {
-        display: block;
-        margin-top: 10px;
-    }
-    input[type="text"] {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
-    button {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #45a049;
-    }
-
+    /* CSS Styles */
     .modal {
-        display: block;
+        display: none;
         position: fixed;
         z-index: 1;
         left: 0;
@@ -299,7 +261,6 @@
         width: 100%;
         height: 100%;
         overflow: auto;
-        background-color: rgb(0, 0, 0);
         background-color: rgba(0, 0, 0, 0.4);
     }
 
@@ -309,6 +270,7 @@
         padding: 20px;
         border: 1px solid #888;
         width: 80%;
+        border-radius: 5px;
     }
 
     .close {
@@ -316,12 +278,83 @@
         float: right;
         font-size: 28px;
         font-weight: bold;
+        cursor: pointer;
     }
 
     .close:hover,
     .close:focus {
         color: black;
         text-decoration: none;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
         cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
     }
 </style>
