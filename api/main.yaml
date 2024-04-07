@@ -17,34 +17,7 @@ security:
 
 paths:
     /login:
-        post:
-            summary: Login to user account
-            description: Get username and password and authenticate the user.
-                Returns sessionId for further requests
-            operationId: login
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - username
-                                - password
-                            properties:
-                                username:
-                                    type: string
-                                password:
-                                    type: string
-                required: true
-            responses:
-                "200":
-                    description: "OK"
-                    content:
-                        text/plain:
-                            schema:
-                                type: string
-                "403":
-                    description: "Forbidden"
+        $ref: "./paths/login.yaml"
 
     /announcements:
         $ref: "./paths/announcements.yaml"
@@ -73,58 +46,6 @@ paths:
     /resolution_submit:
         $ref: "./paths/resolution_submit.yaml"
 
-#    /upload/image:
-#        post:
-#            operationId: uploadFile
-#            summary: Upload Image
-#            description: |
-#                Uploads an image and returns its corresponding file ID.
-#            requestBody:
-#                required: true
-#                content:
-#                    image/*:
-#                        schema:
-#                            type: string
-#                            format: binary
-#            responses:
-#                '200':
-#                    description: Successful response
-#                    content:
-#                        text/plain:
-#                            schema:
-#                                type: string
-#                                minLength: 40
-#                                maxLength: 40
-#                '400':
-#                    description: Bad request
-#                '500':
-#                    description: Internal server error
-#
-#    /download/image/{fileId}:
-#        get:
-#            operationId: downloadFile
-#            summary: Download Image
-#            description: |
-#                Downloads the image corresponding to the provided file ID.
-#            parameters:
-#                -   in: path
-#                    name: fileId
-#                    required: true
-#                    description: The ID of the file to download
-#                    schema:
-#                        type: string
-#            responses:
-#                "200":
-#                    content:
-#                        image/*:
-#                            schema:
-#                                type: string
-#                                format: binary
-#                    description: Successful response
-#                "404":
-#                    description: File not found
-#                "500":
-#                    description: Internal server error
     /createUser:
         $ref: "./paths/create_user.yaml"
 

@@ -1,0 +1,28 @@
+post:
+    summary: Login to user account
+    description: Get username and password and authenticate the user.
+        Returns sessionId for further requests
+    operationId: login
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    type: object
+                    required:
+                        - username
+                        - password
+                    properties:
+                        username:
+                            type: string
+                        password:
+                            type: string
+        required: true
+    responses:
+        "200":
+            description: "OK"
+            content:
+                text/plain:
+                    schema:
+                        type: string
+        "403":
+            description: "Forbidden"

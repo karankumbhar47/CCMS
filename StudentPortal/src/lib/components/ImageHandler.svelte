@@ -8,13 +8,13 @@
     let fileId = null;
 
     /**
-     * @type {string[]}
+     * @type {Array.<string>}
      */
     let fileIds = [];
     const MAX_BOXES = 5;
     const dispatch = createEventDispatcher();
 
-    /** @type {Array.<{selectedFile: File | null; fileId: string | null; imageUrl: string | null}>} */
+    /** @type {Array.<{selectedFile: null | string; fileId: string | null; imageUrl: string | null}>} boxes*/
     let boxes = Array.from({ length: MAX_BOXES }, () => ({
         selectedFile: null,
         fileId: null,

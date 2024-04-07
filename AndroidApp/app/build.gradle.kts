@@ -46,7 +46,7 @@ android {
 
 openApiGenerate {
     generatorName.set("android")
-    inputSpec.set("$rootDir/app/api.yaml")
+    inputSpec.set("../$rootDir/api/main.yaml")
     outputDir.set("$buildDir/CCMS_Api")
     apiPackage.set("com.openapi.resolverApp.api")
     invokerPackage.set("com.openapi.resolverApp.invoker")

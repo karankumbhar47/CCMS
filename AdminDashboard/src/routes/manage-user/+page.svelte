@@ -200,9 +200,9 @@
                 <td>
                     {#if editingUser === user}
                         <select bind:value={user.role}>
-                            <option value="admin">Admin</option>
-                            <option value="resolver">Resolver</option>
-                            <option value="student">Student</option>
+                            <option value="admin">admin</option>
+                            <option value="resolver">resolver</option>
+                            <option value="student">student</option>
                         </select>
                     {:else}
                         {user.role}
@@ -218,8 +218,8 @@
                 <td>
                     {#if editingUser === user}
                         <select bind:value={user.status}>
-                            <option value="active">Active</option>
-                            <option value="block">Block</option>
+                            <option value="active">active</option>
+                            <option value="block">block</option>
                         </select>
                     {:else}
                         {user.status}
