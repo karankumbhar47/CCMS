@@ -70,6 +70,9 @@ paths:
     /getComplaintInfo/{id}:
         $ref: "./paths/get_complaint_info.yaml"
 
+    /resolution_submit:
+        $ref: "./paths/resolution_submit.yaml"
+
 #    /upload/image:
 #        post:
 #            operationId: uploadFile
