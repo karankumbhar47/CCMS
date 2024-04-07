@@ -1,0 +1,62 @@
+openapi: 3.0.0
+info:
+    title: CCMS
+    description: |
+        This API is used for communication between CCMS (Campus Complaint Management System) server and client.
+    version: 0.0.2
+
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+
+security:
+    - bearerAuth: []
+
+paths:
+    /login:
+        $ref: "./paths/login.yaml"
+
+    /announcements:
+        $ref: "./paths/announcements.yaml"
+
+    /announcements/new:
+        $ref: "./paths/new_announcement.yaml"
+
+    /announcements/update:
+        $ref: "./paths/update_announcement.yaml"
+
+    /complain_overview:
+        $ref: "./paths/complain_overview.yaml"
+
+    /submit_complain:
+        $ref: "./paths/submit_complaint.yaml"
+
+    /usersDetail:
+        $ref: "./paths/users_detail.yaml"
+
+    /userDetailUpdate:
+        $ref: "./paths/user_detail_update.yaml"
+
+    /getComplaintInfo/{id}:
+        $ref: "./paths/get_complaint_info.yaml"
+
+    /resolution_submit:
+        $ref: "./paths/resolution_submit.yaml"
+
+    /createUser:
+        $ref: "./paths/create_user.yaml"
+
+    /deleteUser:
+        $ref: "./paths/delete_user.yaml"
+
+    /upload/image:
+        $ref: "./paths/upload_image.yaml"
+       
+    # /download/image/{fileId}:
+    #     $ref: "./paths/download_image.yaml"
+
+servers:
+    -   url: http://localhost:8080

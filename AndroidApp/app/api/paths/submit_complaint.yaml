@@ -1,0 +1,23 @@
+post:
+    summary: New Complaint from complainer
+    description: "Send All complaint details, also get complaint id in return"
+    operationId: submitComplaint
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    $ref: "../schemas/complain_submit.yaml"
+        required: true
+    responses:
+        "200":
+            description: OK
+            content:
+                text/plain:
+                    schema:
+                        type: string
+                        minLength: 40
+                        maxLength: 40
+        "400":
+            description: Bad Request
+        "401":
+            description: Unauthorized

@@ -1,0 +1,14 @@
+post:
+    summary: Resolve Complaint
+    operationId: resolverResolveComplaint
+    requestBody:
+    required: true
+    content:
+        multipart/form-data:
+        schema:
+            $ref: "../schemas/resolution_complain.yaml"
+    responses:
+    "200":
+        description: OK
+    "400":
+        description: Bad Request

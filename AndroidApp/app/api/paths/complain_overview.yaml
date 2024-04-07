@@ -1,0 +1,11 @@
+get:
+    operationId: getComplaintsOverview
+    responses:
+        "200":
+            description: "Get all complaints"
+            content:
+                application/json:
+                    schema:
+                        type: array
+                        items:
+                            $ref: "../schemas/complain_overview.yaml"

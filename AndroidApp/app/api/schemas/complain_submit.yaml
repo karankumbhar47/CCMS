@@ -1,0 +1,38 @@
+type: object
+name: "complainSubmit"
+properties:
+    complainerId:
+        type: integer
+        format: int64
+    complain:
+        type: string
+    dateTime:
+        type: string
+    location:
+        type: string
+    complainerName:
+        type: string
+    tags:
+        type: array
+        items:
+            type: string
+    status:
+        type: string
+        enum:
+            - Unseen 
+            - InProgress
+            - OnHold
+            - Completed
+    severity:
+        type: string
+        enum:
+            - Critical
+            - High
+            - Medium
+            - Low
+    fileIds:
+        type: array
+        items:
+            type: string
+            maxLength: 40
+            minLength: 40

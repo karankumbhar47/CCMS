@@ -1,0 +1,15 @@
+type: object
+name: resolvercomplaint
+properties:
+sessionId:
+    type: string
+    description: Session ID of the resolver person
+complaintId:
+    type: integer
+    description: ID of the complaint being resolved
+images:
+    type: array
+    description: Images showing resolution of the complaint
+    items:
+        type: string
+        format: binary

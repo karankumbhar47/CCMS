@@ -157,14 +157,6 @@
                         android:padding="12dp" />
                 </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/forget_password_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginRight="20dp"
-                    android:text="@string/forgotPassword" />
-
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

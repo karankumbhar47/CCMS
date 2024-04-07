@@ -1,0 +1,19 @@
+post:
+    operationId: updateAnnouncement
+    summary: Update existing announcement
+    description: Update existing announcement with title and description provided
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    $ref: ../schemas/announcement.yaml
+        required: true
+    responses:
+        "200":
+            description: "OK"
+            content:
+                application/json:
+                    schema:
+                        type: boolean
+        "403":
+            description: "Forbidden"
