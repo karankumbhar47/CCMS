@@ -1,26 +1,20 @@
 <script>
     import { page } from "$app/stores";
-    import { defaultApi } from "$lib/store";
-    import { get } from "svelte/store";
+    import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
     import ImageHandler from "$lib/components/ImageHandler.svelte";
 
-    /**
-     * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
-     */
-
+    /** @typedef {import("$lib/generated").ComplainOverview} ComplainOverview */
     /** @type {ComplainOverview | undefined} */
     let complaint;
 
     /** @type {string[]} */
     let imageUrls = [];
 
-    /**
-     * @param {string} id
-     */
+    /** @param {string} id */
     async function fetchComplaint(id) {
         try {
-            const api = get(defaultApi);
+            const api = getDefaultApi();
             complaint = await api.getComplaintInfo({ id });
 
             if (complaint.fileIds) {

@@ -43,17 +43,18 @@
     function closeAddUserModal() {
         isAddingUser = false;
     }
-    /**
-     * @description Update user details on the server.
-     * @param {import('$lib/generated').UserDetailUpdate} newUser - The updated user details.
-     */
-    function handleSaveUser(newUser) {
-        console.log("New user:", newUser);
-        // Send a request to the server to save the new user
-        // You can use the generated OpenAPI client to call the API endpoint here
-        // After saving the user, close the modal
-        closeAddUserModal();
-    }
+
+    // /**
+    //  * @description Update user details on the server.
+    //  * @param {import('$lib/generated').UserDetailUpdate} newUser - The updated user details.
+    //  */
+    // function handleSaveUser(newUser) {
+    //     console.log("New user:", newUser);
+    //     // Send a request to the server to save the new user
+    //     // You can use the generated OpenAPI client to call the API endpoint here
+    //     // After saving the user, close the modal
+    //     closeAddUserModal();
+    // }
 
     /**
      * @description Update user details on the server.
@@ -127,7 +128,7 @@
     async function deleteUser(user) {
         try {
             // Send a request to delete the user
-            await get(defaultApi).deleteUser({ deleteUserRequest: user });
+            await getDefaultApi().deleteUser({ deleteUserRequest: user });
             console.log("User deleted successfully.");
         } catch (error) {
             console.error("Failed to delete user:", error);
@@ -140,6 +141,8 @@
 {#if isAddingUser}
     <div class="modal">
         <div class="modal-content">
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <span class="close" on:click={closeAddUserModal}>&times;</span>
             <div>
                 <label for="userId">User ID:</label>
