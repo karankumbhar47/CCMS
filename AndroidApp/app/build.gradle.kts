@@ -23,8 +23,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
 
@@ -46,7 +46,7 @@ android {
 
 openApiGenerate {
     generatorName.set("android")
-    inputSpec.set("../$rootDir/api/main.yaml")
+    inputSpec.set("$rootDir/app/api/main.yaml")
     outputDir.set("$buildDir/CCMS_Api")
     apiPackage.set("com.openapi.resolverApp.api")
     invokerPackage.set("com.openapi.resolverApp.invoker")
@@ -56,8 +56,8 @@ openApiGenerate {
 }
 
 tasks.named("preBuild") {
-       dependsOn("openApiGenerate")
-   }
+    dependsOn("openApiGenerate")
+}
 
 
 dependencies {
@@ -84,7 +84,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.0")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("org.apache.httpcomponents:httpclient-android:4.3.5.1")
-    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("io.springfox:springfox-swagger2:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
     implementation("org.apache.httpcomponents:httpclient-android:4.3.5.1")
