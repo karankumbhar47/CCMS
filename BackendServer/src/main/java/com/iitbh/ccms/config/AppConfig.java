@@ -15,7 +15,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 public class AppConfig {
     @Bean
     public UserDetailsService userDetailsService() {
-        System.out.println("App config --> userdetailsservice called");
+        System.out.println("App config --> user details Service called");
         UserDetails user = User.builder().username("user1")
                 .password(passwordEncoder().encode("pass"))
                 .roles("ADMIN").build();
@@ -30,7 +30,7 @@ public class AppConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception{
-        System.out.println("Appconfig --> authentication manager called");
+        System.out.println("AppConfig --> authentication manager called");
         return builder.getAuthenticationManager();
     }
 }
