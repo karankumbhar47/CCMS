@@ -52,8 +52,8 @@ paths:
     /upload/image:
         $ref: "./paths/upload_image.yaml"
        
-    # /download/image/{fileId}:
-    #     $ref: "./paths/download_image.yaml"
+    /download/image/{fileId}:
+        $ref: "./paths/download_image.yaml"
 
 servers:
     -   url: http://localhost:8080
