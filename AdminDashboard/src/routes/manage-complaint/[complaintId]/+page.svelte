@@ -3,15 +3,17 @@
     import { defaultApi } from "$lib/store";
     import { get } from "svelte/store";
     import { onMount } from "svelte";
+    import ImageHandler from "$lib/components/ImageHandler.svelte";
 
     /**
      * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
      */
 
-    /**
-     * @type {ComplainOverview | undefined}
-     */
+    /** @type {ComplainOverview | undefined} */
     let complaint;
+
+    /** @type {string[]} */
+    let imageUrls = [];
 
     /**
      * @param {string} id
@@ -20,6 +22,20 @@
         try {
             const api = get(defaultApi);
             complaint = await api.getComplaintInfo({ id });
+
+            if (complaint.fileIds) {
+                for (const fileId of complaint.fileIds) {
+                    try {
+                        const fileBlob = await api.downloadFile({ fileId });
+                        const imageUrl = URL.createObjectURL(fileBlob);
+                        imageUrls = [...imageUrls, imageUrl];
+                    } catch (error) {
+                        console.error("Error downloading file:", error);
+                    }
+                }
+            } else {
+                console.warn("File IDs are undefined in the complaint object.");
+            }
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
@@ -62,6 +78,7 @@
         <li><strong>Date:</strong> {complaint?.dateTime || "Not specified"}</li>
     </ul>
 </div>
+<ImageHandler bind:imageUrls />
 
 <style>
     .complaint-details {

@@ -128,12 +128,11 @@
         try {
             // Send a request to delete the user
             await get(defaultApi).deleteUser({ deleteUserRequest: user });
-            console.log('User deleted successfully.');
+            console.log("User deleted successfully.");
         } catch (error) {
-            console.error('Failed to delete user:', error);
+            console.error("Failed to delete user:", error);
         }
     }
-
 </script>
 
 <SearchBar />
