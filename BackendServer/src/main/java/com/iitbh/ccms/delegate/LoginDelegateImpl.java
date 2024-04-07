@@ -2,7 +2,7 @@ package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.LoginApiDelegate;
 import com.iitbh.ccms.model.LoginRequest;
-import com.iitbh.ccms.security.config.AuthController;
+import com.iitbh.ccms.config.AuthController;
 import com.iitbh.ccms.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
