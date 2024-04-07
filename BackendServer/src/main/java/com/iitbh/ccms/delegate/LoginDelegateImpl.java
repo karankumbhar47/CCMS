@@ -1,6 +1,5 @@
 package com.iitbh.ccms.delegate;
 
-import com.iitbh.ccms.api.AuthApiDelegate;
 import com.iitbh.ccms.api.LoginApiDelegate;
 import com.iitbh.ccms.model.LoginRequest;
 import com.iitbh.ccms.security.config.AuthController;
