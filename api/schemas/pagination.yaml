@@ -1,0 +1,18 @@
+type: object
+properties:
+  totalPages:
+    type: integer
+    description: Total number of pages
+  totalElements:
+    type: integer
+    description: Total number of elements
+  page:
+    type: integer
+    description: Current page number
+  size:
+    type: integer
+    description: Number of elements per page
+  users:
+    type: array
+    items:
+      $ref: '../schemas/users_detail.yaml'
