@@ -2,28 +2,23 @@
     import { getDefaultApi } from "$lib/utils/auth";
     import { createEventDispatcher } from "svelte";
 
-    /**
-     * @type {string | null}
-     */
+    /** @type {string | null} */
     let fileId = null;
 
-    /**
-     * @type {Array.<string>}
-     */
+    /** @type {Array.<string>} */
     let fileIds = [];
+
     const MAX_BOXES = 5;
     const dispatch = createEventDispatcher();
 
-    /** @type {Array.<{selectedFile: null | string; fileId: string | null; imageUrl: string | null}>} boxes*/
+    /** @type {Array.<{selectedFile: null | File; fileId: string | null; imageUrl: string | null}>} boxes*/
     let boxes = Array.from({ length: MAX_BOXES }, () => ({
         selectedFile: null,
         fileId: null,
         imageUrl: null,
     }));
 
-    /**
-     * @param {number} index
-     */
+    /** @param {number} index */
     async function handleFileUpload(index) {
         console.log(index);
         const { selectedFile } = boxes[index];
@@ -53,11 +48,25 @@
         boxes[index] = { selectedFile, imageUrl, fileId: null };
     }
 
-    /**
-     * @param {number} index
-     */
+    /** @param {number} index */
     function removeImage(index) {
         boxes[index] = { selectedFile: null, imageUrl: null, fileId: null };
+        const input = document.querySelectorAll('input[type="file"]')[index];
+        if (input) {
+            input.value = null; // Reset the input field value
+        }
+    }
+
+    export function resetAllImages() {
+        boxes = Array.from({ length: MAX_BOXES }, () => ({
+            selectedFile: null,
+            fileId: null,
+            imageUrl: null,
+        }));
+        const inputs = document.querySelectorAll('input[type="file"]');
+        inputs.forEach((input) => {
+            input.value = null; // Reset the input field value
+        });
     }
 
     async function handleSubmit() {
