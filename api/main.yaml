@@ -46,6 +46,7 @@ paths:
     # /resolution_submit:
     #     $ref: "./paths/resolution_submit.yaml"
     #
+
     /createUser:
         $ref: "./paths/create_user.yaml"
 
