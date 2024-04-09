@@ -1,7 +1,6 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.UsersDetailApiDelegate;
-import com.iitbh.ccms.model.GetUsersRequest;
 import com.iitbh.ccms.model.Pagination;
 import com.iitbh.ccms.model.UsersDetail;
 import com.iitbh.ccms.model_db.UserDetailsDB;
@@ -26,6 +25,7 @@ public class UsersDetailDelegateImpl implements UsersDetailApiDelegate {
 
     @Override
     public ResponseEntity<Pagination> getUsers(Integer page , Integer size) {
+
 //        System.out.println(getUsersRequest);
 //        if (getUsersRequest != null) {
 //            page = getUsersRequest.getPage() != null ? getUsersRequest.getPage() : page;

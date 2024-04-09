@@ -6,24 +6,17 @@
     import { jwtDecode } from "jwt-decode";
     import Cookies from "js-cookie";
     import { getDefaultApi } from "$lib/utils/auth";
+    import resetAllImages from "$lib/components/ImageHandler.svelte"
 
-    let isLoading = false;
-    /**
-     * @type {ImageHandler}
-     */
+
+    /**@type {ImageHandler}*/
     let uploadImage;
 
-    /**
-     * @type {any[]}
-     */
+    /**@type {string[]}*/
     let FileIds = [];
+
     /** @type {string | undefined} token */
     const token = Cookies.get("StudentPortalAuthToken");
-
-    if (token !== undefined) {
-        console.log(jwtDecode(token).name);
-    }
-
     let selectedTags = ["Complain"];
     const severityOptions = ["Low", "Medium", "High", "Critical"];
     const locationOptions = [
@@ -34,33 +27,33 @@
         "Mess",
         "Other",
     ];
+    const availableTagsDefault = [
+        "AC",
+        "Wifi",
+        "Mess",
+        "Room Cleaning",
+        "Electic Issues",
+    ];
 
+    let isLoading = false;
+    let availableTags = availableTagsDefault;
     let complaintDescription = "";
     let selectedSeverity = "Low";
     let selectedLocation = "None";
     let locationDetails = "";
     let currentDate = "";
 
-    /**
-     * Taking tags array from TagsHandler component
-     * @param {{ detail: string[]; }} event
-     */
-    function handleTagsChanged(event) {
-        selectedTags = event.detail;
+    if (token !== undefined) {
+        console.log(jwtDecode(token).name);
     }
 
-    /**
-     * @param {{ detail: any[]; }} event
-     */
+    /** @param {{ detail: string[]; }} event */
     function handleFileIds(event) {
         FileIds = event.detail;
         console.log("fileids in main ", FileIds);
     }
 
-    /**
-     * formatting date in required format
-     * @param {string | number | Date} date
-     */
+    /** @param {string | number | Date} date */
     function formatDateTime(date) {
         const options = {
             year: "numeric",
@@ -114,19 +107,35 @@
                 fileIds: FileIds,
             };
 
+            console.log(selectedTags);
+
             const requestParameters = { complainSubmit: myComplaint };
             const apiClient = getDefaultApi();
             const response = await apiClient.submitComplaint(requestParameters);
             alert("Complaint submitted successfully");
+            resetAllVars();
             console.log(response);
         } catch (error) {
             console.error("Error submitting complaint:", error);
         }
     }
 
+    function resetAllVars() {
+        selectedTags = ["Complain"];
+        availableTags = availableTagsDefault;
+        complaintDescription = "";
+        selectedSeverity = "Low";
+        selectedLocation = "None";
+        locationDetails = "";
+        currentDate = "";
+        resetAllImages();
+    }
+
     async function submitForm() {
         console.log("start");
         isLoading = true;
+        console.log(selectedTags);
+        resetAllVars()
         try {
             let flag = true;
             if (selectedLocation === "None" || locationDetails.trim() === "") {
@@ -200,7 +209,7 @@
         </div>
     </div>
 
-    <TagsHandler on:tagsChanged={handleTagsChanged} />
+    <TagsHandler bind:selectedTags={selectedTags} bind:availableTags={availableTags}/>
     <div class="image-container">
         <ImageHandler bind:this={uploadImage} on:list={handleFileIds} />
     </div>

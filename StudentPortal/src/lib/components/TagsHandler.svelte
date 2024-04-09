@@ -1,15 +1,16 @@
 <script>
-    import { createEventDispatcher } from "svelte";
+    // import { createEventDispatcher } from "svelte";
 
-    let availableTags = [
+
+    export let availableTags = [
         "AC",
         "Wifi",
         "Mess",
         "Room Cleaning",
         "Electic Issues",
     ];
-    let selectedTags = ["complain"];
-    const dispatch = createEventDispatcher();
+    export let selectedTags = ["complain"];
+    // const dispatch = createEventDispatcher();
 
     /**
      * @param {string} tag
@@ -18,7 +19,7 @@
         if (!selectedTags.includes(tag)) {
             selectedTags = [...selectedTags, tag];
             availableTags = availableTags.filter((t) => t !== tag);
-            dispatch("tagsChanged", selectedTags);
+            // dispatch("tagsChanged", selectedTags);
         }
     }
 
@@ -30,7 +31,7 @@
             selectedTags = selectedTags.filter((t) => t !== tag);
             if (!availableTags.includes(tag)) {
                 availableTags = [...availableTags, tag];
-                dispatch("tagsChanged", selectedTags);
+                // dispatch("tagsChanged", selectedTags);
             }
         }
     }
