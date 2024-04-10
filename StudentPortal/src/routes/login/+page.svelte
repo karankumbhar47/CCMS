@@ -2,6 +2,7 @@
     import Cookies from "js-cookie";
     import { getDefaultApi } from "$lib/utils/auth";
     import { goto } from "$app/navigation";
+    import { Role } from "$lib/generated";
 
     let username = "";
     let password = "";
@@ -14,6 +15,7 @@
                 loginRequest: {
                     username: username,
                     password: password,
+                    role: Role.User,
                 },
             });
             setCookie("StudentPortalAuthToken", res);
