@@ -10,10 +10,9 @@
     /** @type {Array<ComplainOverview>} */
     let complaintsList = [];
 
-    const api = getDefaultApi();
-
     async function fetchComplaints() {
         try {
+            const api = getDefaultApi();
             const fetchedComplaints = await api.getComplaintsOverview();
             complaintsList = fetchedComplaints;
         } catch (error) {
@@ -70,7 +69,7 @@
                     <td>{index + 1}</td>
                     <td>{complaint.complain}</td>
                     <td>{complaint.tags?.join(", ")}</td>
-                    <td>{complaint.severity}</td>
+                    <!-- <td>{complaint.severity}</td> -->
                     <td>{complaint.location}</td>
                     <td>{complaint.complainerName}</td>
                     <td>{complaint.status}</td>

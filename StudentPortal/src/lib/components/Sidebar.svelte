@@ -3,7 +3,7 @@
 <script>
     /** @type Array.<{name: string; url:string;}> */
     let links = [
-        { name: "Announcements", url: "/annoucements" },
+        { name: "Announcements", url: "/announcements" },
         { name: "New Complain", url: "/complain/new" },
         { name: "View Complains", url: "/complain" },
         { name: "Logout", url: "/logout" },

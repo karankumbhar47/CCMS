@@ -2,12 +2,10 @@
     import ImageHandler from "$lib/components/ImageHandler.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
     import { ComplainSubmitStatusEnum } from "$lib/generated/models";
-    import { ComplainOverviewSeverityEnum } from "$lib/generated/models";
     import { jwtDecode } from "jwt-decode";
     import Cookies from "js-cookie";
     import { getDefaultApi } from "$lib/utils/auth";
-    import resetAllImages from "$lib/components/ImageHandler.svelte"
-
+    import resetAllImages from "$lib/components/ImageHandler.svelte";
 
     /**@type {ImageHandler}*/
     let uploadImage;
@@ -102,7 +100,7 @@
                 location: locationDetails,
                 complainerName: jwtDecode(token).name,
                 tags: selectedTags,
-                status: ComplainSubmitStatusEnum.Unseen,
+                status: ComplainSubmitStatusEnum.Open,
                 severity: severityEnum(selectedSeverity),
                 fileIds: FileIds,
             };
@@ -135,7 +133,7 @@
         console.log("start");
         isLoading = true;
         console.log(selectedTags);
-        resetAllVars()
+        resetAllVars();
         try {
             let flag = true;
             if (selectedLocation === "None" || locationDetails.trim() === "") {
@@ -209,7 +207,7 @@
         </div>
     </div>
 
-    <TagsHandler bind:selectedTags={selectedTags} bind:availableTags={availableTags}/>
+    <TagsHandler bind:selectedTags bind:availableTags />
     <div class="image-container">
         <ImageHandler bind:this={uploadImage} on:list={handleFileIds} />
     </div>
