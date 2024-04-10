@@ -9,7 +9,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Document(collection="Complaints")
@@ -41,9 +40,8 @@ public class Complaints {
         overview.setComplaintId(this.getComplaintId());
         overview.setComplainerId(this.getComplainerId());
         overview.setDescription(this.getRemarkByUser());
-        overview.setRegistrationDate(OffsetDateTime.parse(this.getRegistrationDate()));
-        if(!this.getResolutionDate().isEmpty())
-            overview.setResolutionDate(OffsetDateTime.parse(this.getResolutionDate()));
+        overview.setRegistrationDate(this.getRegistrationDate());
+        overview.setResolutionDate(this.getResolutionDate());
         overview.setBuildingName(this.getBuildingName());
         overview.setLocationDetails(this.getLocationDetails());
         overview.setRemarkByUser(this.getRemarkByUser());
@@ -81,13 +79,13 @@ public class Complaints {
     public void convertToComplaints(ComplainSubmit complainSubmit, String ComplaintId) {
         this.setComplaintId(ComplaintId);
         this.setComplainerId(complainSubmit.getComplainerId());
-        this.setRegistrationDate(complainSubmit.getRegistrationDate().toString());
+        this.setRegistrationDate(complainSubmit.getRegistrationDate());
         this.setZone(complainSubmit.getZone().getValue());
         this.setBuildingName(complainSubmit.getBuildingName());
         this.setLocationDetails(complainSubmit.getLocationDetails());
         this.setAttachmentIds(complainSubmit.getAttachmentIds());
         this.setPriority(complainSubmit.getPriority().getValue());
-        this.setResolutionDate(complainSubmit.getResolutionDate().toString());
+        this.setResolutionDate(complainSubmit.getResolutionDate());
         this.setStatus(complainSubmit.getStatus().getValue());
         this.setRemarkByUser(complainSubmit.getRemarkByUser());
         this.setRemarkByMaintainer(complainSubmit.getRemarkByMaintainer());
