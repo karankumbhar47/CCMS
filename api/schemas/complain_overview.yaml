@@ -14,11 +14,9 @@ properties:
         description: "Description about complaint"
     registrationDate:
         type: string
-        format: date-time
         description: "The registration date of the complaint"
     resolutionDate:
         type: string
-        format: date-time
         description: "Date when the complaint was resolved"
     buildingName:
         type: string
@@ -32,7 +30,6 @@ properties:
     remarkByMaintainer:
         type: string
         description: "Remarks provided by the maintainer"
-
     attachmentIds:
         type: array
         description: "IDs of attachments related to the complaint"

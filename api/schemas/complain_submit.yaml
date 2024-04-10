@@ -9,11 +9,9 @@ properties:
         description: "Description about complaint"
     registrationDate:
         type: string
-        format: date-time
         description: "The registration date of the complaint"
     resolutionDate:
         type: string
-        format: date-time
         description: "Date when the complaint was resolved"
     buildingName:
         type: string
