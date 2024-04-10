@@ -17,6 +17,6 @@ public class GetComplainDelegateImpl implements GetComplaintInfoApiDelegate {
 
     @Override
     public ResponseEntity<ComplainOverview> getComplaintInfo(String id) {
-        return ResponseEntity.ok(complainService.getSingleComplain(id));
+        return ResponseEntity.ok(complainService.getSingleComplaint(id));
     }
 }

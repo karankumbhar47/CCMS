@@ -1,40 +1,40 @@
 get:
-  summary: Get details of all users.
-  description: Retrieve details like username, id, status, role, email, dateRegistered of all the users, including resolver and admin.
-  operationId: getUsers
-  parameters:
-    - in: query
-      name: page
-      schema:
-        type: integer
-      description: Page number for pagination default0
-      required: true
-    - in: query
-      name: size
-      schema:
-        type: integer
-      description: Number of records per page default10
-      required: true
-  # requestBody:
-  #   required: true
-  #   content:
-  #     application/json:
-  #       schema:
-  #         type: object
-  #         required:
-  #           - page
-  #           - size
-  #         properties:
-  #           page:
-  #             type: integer
-  #             description: Page number for pagination default is0
-  #           size:
-  #             type: integer
-  #             description: Number of records per page default is15 
-  responses:
-    '200':
-      description: OK
-      content:
-        application/json:
+    summary: Get details of all users.
+    description: Retrieve details like username, id, status, role, email, dateRegistered of all the users, including resolver and admin.
+    operationId: getUsers
+    parameters:
+        - in: query
+          name: page
           schema:
-            $ref: '../schemas/pagination.yaml'
+              type: integer
+          description: Page number for pagination default0
+          required: true
+        - in: query
+          name: size
+          schema:
+              type: integer
+          description: Number of records per page default10
+          required: true
+    # requestBody:
+    #   required: true
+    #   content:
+    #     application/json:
+    #       schema:
+    #         type: object
+    #         required:
+    #           - page
+    #           - size
+    #         properties:
+    #           page:
+    #             type: integer
+    #             description: Page number for pagination default is0
+    #           size:
+    #             type: integer
+    #             description: Number of records per page default is15
+    responses:
+        '200':
+            description: OK
+            content:
+                application/json:
+                    schema:
+                        $ref: '../schemas/pagination.yaml'

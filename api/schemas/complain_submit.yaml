@@ -2,37 +2,77 @@ type: object
 name: "complainSubmit"
 properties:
     complainerId:
-        type: integer
-        format: int64
-    complain:
         type: string
-    dateTime:
+        description: "User ID of complainer"
+    description:
         type: string
-    location:
+        description: "Description about complaint"
+    registrationDate:
         type: string
-    complainerName:
+        format: date-time
+        description: "The registration date of the complaint"
+    resolutionDate:
         type: string
-    tags:
+        format: date-time
+        description: "Date when the complaint was resolved"
+    buildingName:
+        type: string
+        description: "The name of the building where the complaint was registered"
+    locationDetails:
+        type: string
+        description: "Details about the location where the complaint was registered"
+    remarkByUser:
+        type: string
+        description: "Remarks provided by the user"
+    remarkByMaintainer:
+        type: string
+        description: "Remarks provided by the maintainer"
+
+    attachmentIds:
         type: array
+        description: "IDs of attachments related to the complaint"
         items:
             type: string
+    closureAttachmentIds:
+        type: array
+        description: "IDs of attachments related to the closure of the complaint"
+        items:
+            type: string
+
+    zone:
+        type: string
+        enum:
+            - academicArea
+            - hostelArea
+            - residentArea
+        description: "The zone where the complaint was registered"
+    priority:
+        type: string
+        enum:
+            - Urgent
+            - Medium
+            - Normal
+        description: "Priority level of the complaint"
     status:
         type: string
         enum:
-            - Unseen 
+            - Open
             - InProgress
-            - OnHold
-            - Completed
-    severity:
+            - Close
+        description: "Status of the complaint"
+    level:
         type: string
         enum:
-            - Critical
-            - High
-            - Medium
-            - Low
-    fileIds:
-        type: array
-        items:
-            type: string
-            maxLength: 40
-            minLength: 40
+            - L1
+            - L2
+            - L3
+        description: "Level of the complaint"
+    complaintCriteria:
+        type: string
+        enum:
+            - AC
+            - Wifi
+            - Civil
+            - Others
+            - Electrical
+        description: "Criteria of the complaint"

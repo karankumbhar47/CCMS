@@ -43,6 +43,7 @@ public class FileService{
         List<String> fileIds = list.stream()
                 .map(FileDB::getFileId)
                 .toList();
+//        List<String> fileIds = fileRepository.findAllFileIds();
         while (true) {
             String fileId = Utils.generateId(40);
             if (!fileIds.contains(fileId)) {
