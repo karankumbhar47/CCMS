@@ -1,0 +1,32 @@
+get:
+  operationId: filterComplaintNew
+  parameters:
+    - name: tags
+      in: query
+      description: Tags for search
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+    - name: totime
+      in: query
+      description: End date
+      required: true
+      schema:
+        type: string
+    - name: fromtime
+      in: query
+      description: End date
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../schemas/complain_overview.yaml"
