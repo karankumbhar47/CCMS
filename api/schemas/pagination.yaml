@@ -15,4 +15,4 @@ properties:
   users:
     type: array
     items:
-      $ref: '../schemas/users_detail.yaml'
+      $ref: '../schemas/user_details.yaml'

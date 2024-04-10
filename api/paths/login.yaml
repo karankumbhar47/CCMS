@@ -11,11 +11,14 @@ post:
                     required:
                         - username
                         - password
+                        - role
                     properties:
                         username:
                             type: string
                         password:
                             type: string
+                        role:
+                            $ref: ../schemas/role.yaml
         required: true
     responses:
         "200":

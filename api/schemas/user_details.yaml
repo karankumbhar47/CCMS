@@ -2,6 +2,7 @@ type: object
 required:
   - userId
   - userName
+  - name
   - email
   - role
   - status
@@ -11,11 +12,22 @@ properties:
     type: integer
   userName:
     type: string
-  email:
+  name:
     type: string
-  role:
+  roles:
+    type: array
+    items:
+      $ref: role.yaml
+  email:
     type: string
   status:
     type: string
+    enum:
+      - Blocked
+      - Active
+  password:
+    type: string
   dateRegistered:
     type: string
+    format: date
+

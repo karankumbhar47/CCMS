@@ -8,7 +8,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: "../schemas/user_detail_update.yaml"
+          $ref: "../schemas/user_details.yaml"
     required: true
   responses:
     '200':

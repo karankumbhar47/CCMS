@@ -34,11 +34,11 @@ paths:
     /submit_complain:
         $ref: "./paths/submit_complaint.yaml"
 
-    /usersDetail:
-        $ref: "./paths/users_detail.yaml"
+    /userDetails:
+        $ref: "./paths/user_details.yaml"
 
-    /userDetailUpdate:
-        $ref: "./paths/user_detail_update.yaml"
+    /userDetailsUpdate:
+        $ref: "./paths/user_details_update.yaml"
 
     /getComplaintInfo/{id}:
         $ref: "./paths/get_complaint_info.yaml"
