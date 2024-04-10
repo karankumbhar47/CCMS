@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,5 +71,43 @@ public class ComplainService {
             }
         }
     }
+
+    public List<ComplainOverview> getFilteredComplain(List<String> tags, String totime, String fromtime) {
+        List<ComplainOverview> allComplaints = getAllComplains();
+        List<ComplainOverview> tagFilteredComplaints = filterComplaintByTag(allComplaints, tags);
+        List<ComplainOverview> filteredComplaints = new ArrayList<>();
+
+        for (ComplainOverview complaint: tagFilteredComplaints){
+            if (dateIsInBetween(complaint.getRegistrationDate(), totime, fromtime)){
+                filteredComplaints.add(complaint);
+            }
+        }
+        return filteredComplaints;
+    }
+
+    public List<ComplainOverview> filterComplaintByTag(List<ComplainOverview> complaints, List<String> tags){
+        List<ComplainOverview> filtered = new ArrayList<>();
+        if (tags.isEmpty()){
+            return complaints;
+        }
+        for (ComplainOverview complaint: complaints){
+            if (tags.stream().anyMatch(tag->tag.equals(complaint.getBuildingName()))){
+                filtered.add(complaint);
+            }
+        }
+        return filtered;
+    }
+
+    public boolean dateIsInBetween(String date, String todate, String fromdate){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (todate.isEmpty()){ todate = "9999-01-01";}
+        if (fromdate.isEmpty()){ fromdate = "0000-01-01";}
+        LocalDate regDate = LocalDate.parse(date.substring(0,10), formatter);
+        LocalDate toDate = LocalDate.parse(todate, formatter);
+        LocalDate fromDate = LocalDate.parse(fromdate, formatter);
+        return (regDate.isEqual(fromDate) || regDate.isAfter(fromDate)) && (regDate.isEqual(toDate) || regDate.isBefore(toDate));
+
+    }
+
 }
 
