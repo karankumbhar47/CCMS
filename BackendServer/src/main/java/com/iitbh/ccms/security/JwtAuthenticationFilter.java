@@ -10,15 +10,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.iitbh.ccms.model_db.Myuser;
-import com.iitbh.ccms.service.MyuserService;
+import com.iitbh.ccms.model_db.UserDetailsDB;
+import com.iitbh.ccms.service.UsersService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -33,12 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
     @Autowired
     private JWTHelper jwtHelper;
-    @Autowired
-    private UserDetailsService userDetailsService;
+    // @Autowired
+    // private UserDetailsService userDetailsService;
 
 
     @Autowired
-    private MyuserService myuserService;
+    private UsersService usersService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -77,10 +76,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
 // start
-            Optional<Myuser> user = myuserService.singleEmail(username);
+            Optional<UserDetailsDB> user = usersService.singleUser(username);
             UserDetails userDetails = User.builder().username(user.get().getEmail())
                     .password(passwordEncoder().encode(user.get().getPassword()))
-                    .roles(user.get().getRole()).build();
+                    .roles(user.get().getRoles().get(0)).build();
 // end
 
             Boolean validToken = this.jwtHelper.validateToken(token, userDetails);

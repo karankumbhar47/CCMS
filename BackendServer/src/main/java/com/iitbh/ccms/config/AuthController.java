@@ -1,9 +1,8 @@
 package com.iitbh.ccms.config;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +13,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.iitbh.ccms.model.LoginRequest;
 import com.iitbh.ccms.model_db.JwtResponse;
-import com.iitbh.ccms.model_db.Myuser;
+import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.security.JWTHelper;
-import com.iitbh.ccms.service.MyuserService;
+import com.iitbh.ccms.service.UsersService;
 
 @Component
 public class AuthController {
 
     @Autowired
-    private MyuserService myuserService;
+    private UsersService userService;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -35,62 +32,45 @@ public class AuthController {
     @Autowired
     private JWTHelper helper;
 
-    private Logger logger = LoggerFactory.getLogger(AuthController.class);
+    // private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> login(String username, String password, String role) {
 
-        System.out.println("Authcontroller called");
-
-        try {
-            this.doAuthenticate(request.getUsername(), request.getPassword());
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        Optional<UserDetailsDB> optionalUser = userService.singleUser(username);
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>("User not found", HttpStatus.UNAUTHORIZED);
+        }
+        assert !optionalUser.isEmpty();
+        UserDetailsDB user = optionalUser.get();
+        if (!user.getPassword().equals(password)) {
+            System.out.println("Password not matched");
+            return new ResponseEntity<>("Password not matched", HttpStatus.UNAUTHORIZED);
         }
 
-        Optional<Myuser> user = myuserService.singleEmail(request.getUsername());
+        ArrayList<String> roles = user.getRoles();
+        if(roles.size() == 0){
+            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUserName() + "; No Role found");
+            return new ResponseEntity<>("No Valid role", HttpStatus.UNAUTHORIZED);
+        }
+        if(!roles.contains(role)){
+            return new ResponseEntity<>("You are at wrong portal", HttpStatus.UNAUTHORIZED);
+        }
 
-        UserDetails userDetails = User.builder().username(request.getUsername())
-                .password(passwordEncoder().encode(request.getPassword()))
-                .roles(user.get().getRole()).build();
-        // UserDetails userDetails =
-        // userDetailsService.loadUserByUsername(request.getEmail());
-        String token = this.helper.generateToken(userDetails,
-                user.get().getFirstname() + " " + user.get().getLastname());
+        UserDetails userDetails = User.builder().username(username)
+                .password(passwordEncoder().encode(password))
+                .roles(user.getRoles().get(0)).build();
+
+        String token = this.helper.generateToken(userDetails, user.getName());
 
         JwtResponse response = JwtResponse.builder()
                 .jwtToken(token)
                 .username(userDetails.getUsername())
                 .build();
-        return new ResponseEntity<>(response.getJwtToken(), HttpStatus.OK);
 
+        return new ResponseEntity<>(response.getJwtToken(), HttpStatus.OK);
     }
 
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    private void doAuthenticate(String email, String password) {
-        // UsernamePasswordAuthenticationToken authentication = new
-        // UsernamePasswordAuthenticationToken(email, password);
-        //
-        // try{
-        // manager.authenticate(authentication);
-        // } catch (BadCredentialsException e) {
-        // throw new RuntimeException("Invalid Username or Password !!");
-        // }
-        // if (!password.equals("pass")) {
-        // throw new RuntimeException("Invalid Username or Password !!");
-        // }
-        // System.out.println(myuserService.singleEmail(email));
-
-        Optional<Myuser> user = myuserService.singleEmail(email);
-
-        if (user.isEmpty()) {
-            throw new RuntimeException("Email does not exist!!");
-        } else if (!user.get().getPassword().equals(password)) {
-            throw new RuntimeException("Wrong password!!");
-
-        }
-    }
-
 }
