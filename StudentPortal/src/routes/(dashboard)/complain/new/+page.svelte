@@ -1,7 +1,10 @@
 <script>
     import ImageHandler from "$lib/components/ImageHandler.svelte";
     import TagsHandler from "$lib/components/TagsHandler.svelte";
-    import { ComplainSubmitStatusEnum } from "$lib/generated/models";
+    import {
+        ComplainOverviewPriorityEnum,
+        ComplainSubmitStatusEnum,
+    } from "$lib/generated/models";
     import { jwtDecode } from "jwt-decode";
     import Cookies from "js-cookie";
     import { getDefaultApi } from "$lib/utils/auth";
@@ -72,14 +75,14 @@
      * @param {string} severity
      */
     function severityEnum(severity) {
-        if (severity === "High") {
-            return ComplainOverviewSeverityEnum.High;
-        } else if (severity == "Critical") {
-            return ComplainOverviewSeverityEnum.Critical;
+        if (severity === "Urgent") {
+            return ComplainOverviewPriorityEnum.Urgent;
+        } else if (severity == "Normal") {
+            return ComplainOverviewPriorityEnum.Normal;
         } else if (severity == "Medium") {
-            return ComplainOverviewSeverityEnum.Medium;
+            return ComplainOverviewPriorityEnum.Medium;
         } else {
-            return ComplainOverviewSeverityEnum.Low;
+            return ComplainOverviewPriorityEnum.Normal;
         }
     }
 
