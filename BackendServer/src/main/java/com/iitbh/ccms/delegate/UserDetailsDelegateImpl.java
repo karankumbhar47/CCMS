@@ -41,7 +41,7 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
             UserDetails userDetails = new UserDetails();
             // usersDetail.setUserId(userDetailsDB.getUserId());
             userDetails.setUserId(1); // TODO: Fix this
-            userDetails.setUserName(userDetailsDB.getUserName());
+            userDetails.setUserName(userDetailsDB.getUsername());
             userDetails.setEmail(userDetailsDB.getEmail());
             // TODO: Update this
             try {
@@ -52,7 +52,7 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
                                 .collect(Collectors.toCollection(ArrayList::new)));
 
             } catch(IllegalArgumentException e) {
-                System.err.println("Curropted user data for user + " + userDetailsDB.getUserName() + "; Invalid value for role");
+                System.err.println("Curropted user data for user + " + userDetailsDB.getUsername() + "; Invalid value for role");
             }
             try {
                 userDetails.setStatus(StatusEnum.fromValue(userDetailsDB.getStatus()));

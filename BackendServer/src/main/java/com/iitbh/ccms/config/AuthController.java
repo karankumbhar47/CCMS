@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -25,8 +22,6 @@ public class AuthController {
     @Autowired
     private UsersService userService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
     @Autowired
     private AuthenticationManager manager;
     @Autowired
@@ -49,22 +44,18 @@ public class AuthController {
 
         ArrayList<String> roles = user.getRoles();
         if(roles.size() == 0){
-            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUserName() + "; No Role found");
+            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUsername() + "; No Role found");
             return new ResponseEntity<>("No Valid role", HttpStatus.UNAUTHORIZED);
         }
         if(!roles.contains(role)){
             return new ResponseEntity<>("You are at wrong portal", HttpStatus.UNAUTHORIZED);
         }
 
-        UserDetails userDetails = User.builder().username(username)
-                .password(passwordEncoder().encode(password))
-                .roles(user.getRoles().get(0)).build();
-
-        String token = this.helper.generateToken(userDetails, user.getName());
+        String token = this.helper.generateToken(user, user.getName());
 
         JwtResponse response = JwtResponse.builder()
                 .jwtToken(token)
-                .username(userDetails.getUsername())
+                .username(user.getUsername())
                 .build();
 
         return new ResponseEntity<>(response.getJwtToken(), HttpStatus.OK);

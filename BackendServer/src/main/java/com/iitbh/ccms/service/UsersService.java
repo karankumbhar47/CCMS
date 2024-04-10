@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.iitbh.ccms.model.UserDetails;
@@ -15,7 +17,7 @@ import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.UsersRepository;
 
 @Service
-public class UsersService {
+public class UsersService implements UserDetailsService {
 
     @Autowired
     private UsersRepository usersRepository;
@@ -72,7 +74,7 @@ public class UsersService {
         // Mapping UserDetailUpdate to UserDetailUpdateDB
         UserDetailsDB userDetailDB = new UserDetailsDB();
         userDetailDB.setUserId(userDetailUpdate.getUserId());
-        userDetailDB.setUserName(userDetailUpdate.getUserName());
+        userDetailDB.setUserName(userDetailUpdate.getUsername());
         userDetailDB.setRoles(userDetailUpdate.getRoles());
         userDetailDB.setEmail(userDetailUpdate.getEmail());
         userDetailDB.setStatus(userDetailUpdate.getStatus());
@@ -82,7 +84,17 @@ public class UsersService {
         usersRepository.save(userDetailDB);
     }
 
-    public Optional<UserDetailsDB> singleUser(String email) {
-        return usersRepository.findUsersByUserName(email);
+    public Optional<UserDetailsDB> singleUser(String username) {
+        return usersRepository.findUsersByUserName(username);
+    }
+
+    @Override
+    public UserDetailsDB loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+        Optional<UserDetailsDB> user = usersRepository.findUsersByUserName(username);
+        if(user.isEmpty()){
+            throw new UsernameNotFoundException("User Not Found");
+        }
+        return user.get();
     }
 }

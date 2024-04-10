@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -15,7 +14,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -36,16 +35,19 @@ public class JWTHelper {
     }
 
     // retrieve username from jwt token
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws ExpiredJwtException, UnsupportedJwtException,
+            MalformedJwtException, SignatureException, IllegalArgumentException {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
     // retrieve expiration date from jwt token
-    public Date getExpirationDateFromToken(String token) {
+    public Date getExpirationDateFromToken(String token) throws ExpiredJwtException, UnsupportedJwtException,
+            MalformedJwtException, SignatureException, IllegalArgumentException {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) throws ExpiredJwtException,
+            UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
@@ -55,10 +57,10 @@ public class JWTHelper {
             MalformedJwtException, SignatureException, IllegalArgumentException {
 
         return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     // check if the token has expired
@@ -88,7 +90,11 @@ public class JWTHelper {
 
     // validate token
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = getUsernameFromToken(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

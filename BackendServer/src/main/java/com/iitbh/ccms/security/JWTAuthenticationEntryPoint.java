@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        System.out.println("JWTAuthenticationEntryPoint called");
+        // System.out.println("JWTAuthenticationEntryPoint called");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         PrintWriter writer = response.getWriter();
         writer.println("Access Denied !!"+ authException.getMessage());

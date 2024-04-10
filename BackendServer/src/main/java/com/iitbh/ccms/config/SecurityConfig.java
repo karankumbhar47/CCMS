@@ -29,10 +29,21 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers("/manage-user", "/manage-complaint").hasAnyRole("admin")
-                        .requestMatchers("/announcements").hasAnyRole("admin", "resolver", "student")
-                        .anyRequest().authenticated())
+                        // .requestMatchers("/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/announcements").hasAnyAuthority("User", "Admin")
+                        .requestMatchers("/announcements/*").hasAnyAuthority("Admin")
+                        .requestMatchers("/complain_overview").hasAnyAuthority("User", "Admin")
+                        .requestMatchers("/submit_complain").hasAnyAuthority("User")
+                        .requestMatchers("/userDetails").hasAnyAuthority("User", "Admin")
+                        .requestMatchers("/userDetailsUpdate").hasAuthority("Admin")
+                        .requestMatchers("/getComplaintInfo/*").hasAnyAuthority("User", "Admin")
+                        .requestMatchers("/createUser").hasAuthority("Admin")
+                        .requestMatchers("/deleteUser").hasAuthority("Admin")
+                        .requestMatchers("/upload/image").hasAuthority("User")
+                        .requestMatchers("/download/image/*").hasAnyAuthority("Admin", "User")
+                        .anyRequest().authenticated()
+                        )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // try with add filter after
