@@ -1,30 +1,33 @@
 package com.iitbh.ccms.service;
 
-import com.iitbh.ccms.Utils;
 import com.iitbh.ccms.model.ComplainOverview;
 import com.iitbh.ccms.model.ComplainSubmit;
 import com.iitbh.ccms.model_db.Complaints;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import com.iitbh.ccms.repository.ComplainRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.mongodb.core.query.Query;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 @Service
 public class ComplainService {
-    private static final Logger log = LoggerFactory.getLogger(ComplainService.class);
     private final ComplainRepository complaintRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public ComplainService(ComplainRepository complainRepository) {
-        this.complaintRepository = complainRepository;
+    public ComplainService(MongoTemplate mongoTemplate, ComplainRepository complaintRepository) {
+        this.complaintRepository = complaintRepository;
+        this.mongoTemplate = mongoTemplate;
     }
+
 
     public List<ComplainOverview> getAllComplains(){
         List<ComplainOverview> returnList = new ArrayList<>();
@@ -59,17 +62,20 @@ public class ComplainService {
         return complains.convertToComplainOverview();
     }
 
-    public String getUniqueComplaintId(){
-        List<Complaints> list =  complaintRepository.findAll();
-        List<String> complainIds = list.stream()
-                .map(Complaints::getComplaintId)
-                .toList();
-        while (true) {
-            String complainId = Utils.generateId(40);
-            if (!complainIds.contains(complainId)) {
-                return complainId;
-            }
-        }
+    public String getUniqueComplaintId() {
+        LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        List<Complaints> complaintsForToday = findByDate(currentDate);
+        int complaintNumber = complaintsForToday.size() + 1;
+        String formattedComplaintNumber = String.format("%03d", complaintNumber);
+        return formattedDate + "_" + formattedComplaintNumber;
+    }
+
+    public List<Complaints> findByDate(LocalDate date) {
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+        String regexPattern = "^" + formattedDate.replace("-", "\\-") + ".*"; // Adjust the regex pattern
+        Query query = Query.query(Criteria.where("registrationDate").regex(regexPattern));
+        return mongoTemplate.find(query, Complaints.class);
     }
 
     public List<ComplainOverview> getFilteredComplain(List<String> tags, String totime, String fromtime) {

@@ -13,4 +13,5 @@ public interface UsersRepository extends MongoRepository<UserDetailsDB, ObjectId
     Optional<UserDetailsDB> findUsersByUserName(String userId);
     Optional<UserDetailsDB> findUsersByEmail(String email);
     UserDetailsDB findByUserId(int id);
+    UserDetailsDB findByUserId(String userId);
 }

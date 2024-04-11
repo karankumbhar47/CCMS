@@ -34,12 +34,13 @@ public class Complaints {
     private String level;
     private String complainerId;
     private String complaintCriteria;
+    private String description;
 
     public ComplainOverview convertToComplainOverview() {
         ComplainOverview overview = new ComplainOverview();
         overview.setComplaintId(this.getComplaintId());
         overview.setComplainerId(this.getComplainerId());
-        overview.setDescription(this.getRemarkByUser());
+        overview.setDescription(this.getDescription());
         overview.setRegistrationDate(this.getRegistrationDate());
         overview.setResolutionDate(this.getResolutionDate());
         overview.setBuildingName(this.getBuildingName());
@@ -48,17 +49,14 @@ public class Complaints {
         overview.setRemarkByMaintainer(this.getRemarkByMaintainer());
         overview.setAttachmentIds(this.getAttachmentIds());
         overview.setClosureAttachmentIds(this.getClosureAttachmentIds());
-        overview.setZone(getZoneEnum(this.getZone()));
+        overview.setZone(this.getZone());
         overview.setPriority(getPriorityEnum(this.getPriority()));
         overview.setStatus(getStatusEnum(this.getStatus()));
         overview.setLevel(getLevelEnum(this.getLevel()));
-        overview.setComplaintCriteria(getComplaintCriteriaEnum(this.getComplaintCriteria()));
+        overview.setComplaintCriteria(this.getComplaintCriteria());
         return overview;
     }
 
-    private static ComplainOverview.ZoneEnum getZoneEnum(String zone) {
-        return ComplainOverview.ZoneEnum.fromValue(zone);
-    }
 
     private static ComplainOverview.PriorityEnum getPriorityEnum(String priority) {
         return ComplainOverview.PriorityEnum.fromValue(priority);
@@ -72,15 +70,12 @@ public class Complaints {
         return ComplainOverview.LevelEnum.fromValue(level);
     }
 
-    private static ComplainOverview.ComplaintCriteriaEnum getComplaintCriteriaEnum(String criteria) {
-        return ComplainOverview.ComplaintCriteriaEnum.fromValue(criteria);
-    }
 
     public void convertToComplaints(ComplainSubmit complainSubmit, String ComplaintId) {
         this.setComplaintId(ComplaintId);
         this.setComplainerId(complainSubmit.getComplainerId());
         this.setRegistrationDate(complainSubmit.getRegistrationDate());
-        this.setZone(complainSubmit.getZone().getValue());
+        this.setZone(complainSubmit.getZone());
         this.setBuildingName(complainSubmit.getBuildingName());
         this.setLocationDetails(complainSubmit.getLocationDetails());
         this.setAttachmentIds(complainSubmit.getAttachmentIds());
@@ -92,6 +87,7 @@ public class Complaints {
         this.setClosureAttachmentIds(complainSubmit.getClosureAttachmentIds());
         this.setLevel(complainSubmit.getLevel().getValue());
         this.setComplainerId(complainSubmit.getComplainerId());
-        this.setComplaintCriteria(complainSubmit.getComplaintCriteria().getValue());
+        this.setComplaintCriteria(complainSubmit.getComplaintCriteria());
+        this.setDescription(complainSubmit.getDescription());
     }
 }

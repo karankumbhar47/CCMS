@@ -21,6 +21,7 @@ public class UsersService implements UserDetailsService {
 
     @Autowired
     private UsersRepository usersRepository;
+    private UserDetailsService userDetailsService;
 
     public List<UserDetailsDB> getAllUserDetail(int page, int size) {
         // Fetch user details for the specified page and size
@@ -96,5 +97,17 @@ public class UsersService implements UserDetailsService {
             throw new UsernameNotFoundException("User Not Found");
         }
         return user.get();
+    }
+
+
+
+    public UserDetails getUserInfo(String userId) {
+        UserDetailsDB userDetailsDB = usersRepository.findByUserId(userId);
+        if(userDetailsDB!=null) {
+            return userDetailsDB.convertToUserDetails();
+        }
+        else{
+            return null;
+        }
     }
 }

@@ -1,15 +1,18 @@
 package com.iitbh.ccms.service;
 
-import com.iitbh.ccms.Utils;
 import com.iitbh.ccms.model_db.FileDB;
 import com.iitbh.ccms.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+
+import java.io.IOException;
 import java.util.Base64;
-import java.util.List;
 
 @Service
 public class FileService{
@@ -20,36 +23,35 @@ public class FileService{
         this.fileRepository = fileRepository;
     }
 
-    public String SaveImageFile(Resource body) {
-        byte[] fileBytes;
-        if (body instanceof ByteArrayResource) {
-            ByteArrayResource byteArrayResource = (ByteArrayResource) body;
-            fileBytes = byteArrayResource.getByteArray();
-        } else {
-            throw new IllegalArgumentException("Unsupported resource type");
+    public String saveImageFile(String userType,MultipartFile file) {
+        if (file.isEmpty()) {
+            System.out.println("Empty file");
         }
 
-        String base64EncodedImage = Base64.getEncoder().encodeToString(fileBytes);
-        String fileId = getFileUniqueId();
-        FileDB fileDB = new FileDB();
-        fileDB.setFileId(fileId);
-        fileDB.setImageData(base64EncodedImage);
-        fileRepository.save(fileDB);
-        return fileId;
+        try {
+            String base64EncodedImage = Base64.getEncoder().encodeToString(file.getBytes());
+            String fileId = getFileUniqueId(userType);
+            FileDB fileDB = new FileDB();
+            fileDB.setFileId(fileId);
+            fileDB.setImageData(base64EncodedImage);
+            fileRepository.save(fileDB);
+            return fileId;
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            return "";
+        }
     }
 
-    public String getFileUniqueId(){
-        List<FileDB> list = fileRepository.findAll();
-        List<String> fileIds = list.stream()
-                .map(FileDB::getFileId)
-                .toList();
-//        List<String> fileIds = fileRepository.findAllFileIds();
-        while (true) {
-            String fileId = Utils.generateId(40);
-            if (!fileIds.contains(fileId)) {
-                return fileId;
-            }
-        }
+
+    public String getFileUniqueId(String userType){
+        String fileId = "";
+        fileId+= userType.equals("user") ? "USER_" : "RSVR_";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String currentDate = dateFormat.format(new Date());
+        long currentTimeMillis = System.currentTimeMillis();
+        fileId += currentDate + "_" + currentTimeMillis;
+        return fileId;
+
     }
 
     public Resource getFile(String fileId){

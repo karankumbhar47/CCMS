@@ -3,12 +3,14 @@ package com.iitbh.ccms.model_db;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.List;
 
+import com.iitbh.ccms.model.Role;
+import com.iitbh.ccms.model.UserDetails;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.iitbh.ccms.model.UserDetails.StatusEnum;
 
@@ -26,13 +28,15 @@ public class UserDetailsDB implements UserDetails {
     private ObjectId objectId;
     private String userId;
     private String userName;
-    private ArrayList<String> roles;
+    private List<String> roles;
     private String email;
     private String status;
     private LocalDate dateRegistered;
 
     private String name;
     private String password;
+    private String department;
+    private String phoneNumber;
 
     public void addRole(String role) {
         if (roles == null) {
@@ -84,4 +88,43 @@ public class UserDetailsDB implements UserDetails {
         }
 
     }
+
+    public UserDetails convertToUserDetails() {
+        UserDetails details = new UserDetails();
+        details.setUserId(this.userId);
+        details.setUserName(this.userName);
+        details.setRoles(this.getRoleArray(this.roles));
+        details.setEmail(this.email);
+        details.setStatus(getUserStatus(this.status));
+        details.setDateRegistered(this.dateRegistered);
+
+        details.setName(this.name);
+        details.setPassword(this.password);
+        details.setDepartment(this.department);
+        details.setPhoneNumber(this.phoneNumber);
+        return details;
+    }
+
+    List<Role> getRoleArray(List<String> roles) {
+        List<Role> roleList = new ArrayList<>();
+        for (String role : roles) {
+            if (role.equalsIgnoreCase("admin")) {
+                roleList.add(Role.ADMIN);
+            } else {
+                roleList.add(Role.USER);
+            }
+        }
+        return roleList;
+    }
+
+    public UserDetails.StatusEnum getUserStatus(String status) {
+        if (status.equalsIgnoreCase("active")) {
+            return UserDetails.StatusEnum.ACTIVE;
+        } else {
+            return UserDetails.StatusEnum.BLOCKED;
+        }
+    }
+
 }
+
+

@@ -1,6 +1,7 @@
 package com.iitbh.ccms.config;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,9 @@ public class AuthController {
             return new ResponseEntity<>("Password not matched", HttpStatus.UNAUTHORIZED);
         }
 
-        ArrayList<String> roles = user.getRoles();
-        if(roles.size() == 0){
-            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUsername() + "; No Role found");
+        List<String> roles = user.getRoles();
+        if(roles.isEmpty()){
+            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUserName() + "; No Role found");
             return new ResponseEntity<>("No Valid role", HttpStatus.UNAUTHORIZED);
         }
         if(!roles.contains(role)){

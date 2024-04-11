@@ -40,8 +40,8 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
         for (UserDetailsDB userDetailsDB : userDetailsList) {
             UserDetails userDetails = new UserDetails();
             // usersDetail.setUserId(userDetailsDB.getUserId());
-            userDetails.setUserId(1); // TODO: Fix this
-            userDetails.setUserName(userDetailsDB.getUsername());
+            userDetails.setUserId("1"); // TODO: Fix this
+            userDetails.setUserName(userDetailsDB.getUserName());
             userDetails.setEmail(userDetailsDB.getEmail());
             // TODO: Update this
             try {
