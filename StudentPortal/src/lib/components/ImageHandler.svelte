@@ -1,4 +1,5 @@
 <script>
+    import { UploadFileUserTypeEnum } from "$lib/generated";
     import { getDefaultApi } from "$lib/utils/auth";
     import { createEventDispatcher } from "svelte";
 
@@ -25,13 +26,14 @@
         if (selectedFile) {
             try {
                 const response = await getDefaultApi().uploadFile({
-                    body: selectedFile,
+                    userType: UploadFileUserTypeEnum.User,
+                    imageFile: selectedFile,
                 });
                 const id = response;
                 boxes[index].fileId = id;
                 fileIds[index] = id;
                 dispatch("list", fileIds);
-                console.log("File uploaded successfully. File ID:", fileId);
+                console.log("File uploaded successfully. File ID:", fileIds);
             } catch (error) {
                 console.error("Error uploading image:", error);
             }
@@ -93,7 +95,6 @@
             />
             {#if box.imageUrl}
                 <div class="image-container">
-                    <!-- svelte-ignore a11y-img-redundant-alt -->
                     <img src={box.imageUrl} alt="Selected Image" />
                     <button on:click={() => removeImage(index)}>Remove</button>
                 </div>

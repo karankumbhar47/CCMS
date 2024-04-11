@@ -1,0 +1,113 @@
+{
+    "zone": [
+        {
+            "zoneName": "Academic Zone",
+            "buildings": [
+                "ED1(Engineering Department)",
+                "ED2(Engineering Department)",
+                "Science Departments (2 blocks)",
+                "Lecture Hall Complex",
+                "Central Instrumentation Facility (CIF)",
+                "Central Prototyping Facility (CPF)",
+                "Library and DATA Center"
+            ],
+            "categories": [
+                {
+                    "name": "Electrical",
+                    "emails": [
+                        "electrician1@example.com",
+                        "electrician2@example.com"
+                    ]
+                },
+                {
+                    "name": "AC",
+                    "emails": ["ac1@example.com", "ac2@example.com"]
+                },
+                {
+                    "name": "Civil",
+                    "emails": ["civil1@example.com", "civil2@example.com"]
+                },
+                {
+                    "name": "Plumbing",
+                    "emails": ["plumber1@example.com", "plumber2@example.com"]
+                },
+                {
+                    "name": "Mess",
+                    "emails": ["chef1@example.com", "chef2@example.com"]
+                }
+            ]
+        },
+        {
+            "zoneName": "Student Hostel Zone",
+            "buildings": [
+                "Kanhar Hostel(BH1)",
+                "Gopad Hostel(BH2)",
+                "Indravati Hostel(Girls Hostel)",
+                "Mess Block",
+                "Shivanath Hostel(Married Student Housing)"
+            ],
+            "categories": [
+                {
+                    "name": "Electrical",
+                    "emails": [
+                        "electrician1@example.com",
+                        "electrician2@example.com"
+                    ]
+                },
+                {
+                    "name": "AC",
+                    "emails": ["ac1@example.com", "ac2@example.com"]
+                },
+                {
+                    "name": "Civil",
+                    "emails": ["civil1@example.com", "civil2@example.com"]
+                },
+                {
+                    "name": "Plumbing",
+                    "emails": ["plumber1@example.com", "plumber2@example.com"]
+                },
+                {
+                    "name": "Mess",
+                    "emails": ["chef1@example.com", "chef2@example.com"]
+                }
+            ]
+        },
+        {
+            "zoneName": "Staff Residential Zone",
+            "buildings": [
+                "Beta Residential Towers",
+                "Gamma Residential Towers",
+                "Delta Residential Towers",
+                "Director’s Residence",
+                "Health Center",
+                "Shopping Center",
+                "Institute Club"
+            ],
+            "categories": [
+                {
+                    "name": "Electrical",
+                    "emails": [
+                        "electrician1@example.com",
+                        "electrician2@example.com"
+                    ]
+                },
+                {
+                    "name": "AC",
+                    "emails": ["ac1@example.com", "ac2@example.com"]
+                },
+                {
+                    "name": "Civil",
+                    "emails": ["civil1@example.com", "civil2@example.com"]
+                },
+                {
+                    "name": "Plumbing",
+                    "emails": ["plumber1@example.com", "plumber2@example.com"]
+                },
+                {
+                    "name": "Mess",
+                    "emails": ["chef1@example.com", "chef2@example.com"]
+                }
+            ]
+        }
+    ]
+}

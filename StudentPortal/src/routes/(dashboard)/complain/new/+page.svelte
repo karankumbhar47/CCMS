@@ -1,14 +1,15 @@
 <script>
     import ImageHandler from "$lib/components/ImageHandler.svelte";
-    import TagsHandler from "$lib/components/TagsHandler.svelte";
-    import {
-        ComplainOverviewPriorityEnum,
-        ComplainSubmitStatusEnum,
-    } from "$lib/generated/models";
     import { jwtDecode } from "jwt-decode";
     import Cookies from "js-cookie";
     import { getDefaultApi } from "$lib/utils/auth";
-    import resetAllImages from "$lib/components/ImageHandler.svelte";
+    import { onMount } from "svelte";
+    import zonesData from "$lib/data/location.json";
+    import {
+        ComplainOverviewPriorityEnum,
+        ComplainSubmitStatusEnum,
+        ComplainSubmitLevelEnum,
+    } from "$lib/generated/models";
 
     /**@type {ImageHandler}*/
     let uploadImage;
@@ -18,31 +19,54 @@
 
     /** @type {string | undefined} token */
     const token = Cookies.get("StudentPortalAuthToken");
-    let selectedTags = ["Complain"];
-    const severityOptions = ["Low", "Medium", "High", "Critical"];
-    const locationOptions = [
-        "None",
-        "Boys Hostel",
-        "Girls Hostel",
-        "Academic Area",
-        "Mess",
-        "Other",
-    ];
-    const availableTagsDefault = [
-        "AC",
-        "Wifi",
-        "Mess",
-        "Room Cleaning",
-        "Electic Issues",
-    ];
+
+    let priorityOptions = ["Normal", "Urgent", "Medium"];
+
+    /**@type {string[]}*/
+    let zones = [];
+
+    /**@type {string[]}*/
+    let buildingNames = [];
+
+    /**@type {string[]}*/
+    let complaintCriteria = [];
 
     let isLoading = false;
-    let availableTags = availableTagsDefault;
     let complaintDescription = "";
-    let selectedSeverity = "Low";
-    let selectedLocation = "None";
+    let selectedPriority = "Normal";
+    let selectedZone = "";
+    let selectedBuilding = "";
+    let selectedCriteria = "";
     let locationDetails = "";
     let currentDate = "";
+
+    onMount(async () => {
+        zones = zonesData.zone.map((zone) => zone.zoneName);
+        selectedZone = zones[0];
+        updateBuildingNamesAndCriteria();
+    });
+
+    function updateBuildingNamesAndCriteria() {
+        const selectedZoneObject = zonesData.zone.find(
+            (zone) => zone.zoneName === selectedZone,
+        );
+        if (selectedZoneObject) {
+            buildingNames = selectedZoneObject.buildings;
+            complaintCriteria = selectedZoneObject.categories.map(
+                (category) => category.name,
+            );
+        } else {
+            buildingNames = [];
+            complaintCriteria = [];
+        }
+        selectedBuilding = buildingNames[0];
+        selectedCriteria = complaintCriteria[0];
+    }
+
+    /** @param {string} selectedZone */
+    function handleZoneChange(selectedZone) {
+        updateBuildingNamesAndCriteria();
+    }
 
     if (token !== undefined) {
         console.log(jwtDecode(token).name);
@@ -70,49 +94,74 @@
     }
 
     /**
-     * convert severity string value to
+     * convert priority string value to
      * respective Enum value
-     * @param {string} severity
+     * @param {string} priority
      */
-    function severityEnum(severity) {
-        if (severity === "Urgent") {
+    function priorityEnum(priority) {
+        if (priority === "Urgent") {
             return ComplainOverviewPriorityEnum.Urgent;
-        } else if (severity == "Normal") {
-            return ComplainOverviewPriorityEnum.Normal;
-        } else if (severity == "Medium") {
+        } else if (priority == "Medium") {
             return ComplainOverviewPriorityEnum.Medium;
         } else {
             return ComplainOverviewPriorityEnum.Normal;
         }
     }
 
-    async function handleSubmit() {
+    async function submitForm() {
+        isLoading = true;
         try {
-            currentDate = formatDateTime(new Date());
+            let flag = true;
+            if (complaintDescription === "") {
+                flag = false;
+            }
 
-            /**
-             * @todo get complainer id from local storage
-             * @todo get complainer name from local storage
-             * @todo also save complain id locally if want to
-             *       show the complain
-             */
-            const myComplaint = {
-                complainerId: 12140860,
-                complain: complaintDescription,
-                dateTime: currentDate,
-                location: locationDetails,
-                complainerName: jwtDecode(token).name,
-                tags: selectedTags,
-                status: ComplainSubmitStatusEnum.Open,
-                severity: severityEnum(selectedSeverity),
-                fileIds: FileIds,
-            };
+            if (!flag) {
+                alert("Please fill all Information");
+            } else {
+                console.log("try");
+                await uploadImage.handleSubmit();
+                handleSubmit();
+            }
+        } catch (error) {
+            console.error("Error handling file upload:", error);
+        } finally {
+            isLoading = false;
+        }
+    }
 
-            console.log(selectedTags);
+    async function handleSubmit() {
+        currentDate = formatDateTime(new Date());
+        const apiClient = getDefaultApi();
 
-            const requestParameters = { complainSubmit: myComplaint };
-            const apiClient = getDefaultApi();
-            const response = await apiClient.submitComplaint(requestParameters);
+        /**
+         * @todo get complainer id from local storage
+         * @todo get complainer name from local storage
+         * @todo also save complain id locally if want to
+         *       show the complain
+         */
+        const complaintDetails = {
+            complainerId: "12140690",
+            description: complaintDescription,
+            registrationDate: currentDate,
+            resolutionDate: "",
+            remarkByUser: "",
+            remarkByMaintainer: "",
+            buildingName: selectedBuilding,
+            locationDetails: locationDetails,
+            attachmentIds: FileIds,
+            closureAttachmentIds: [],
+            zone: selectedZone,
+            priority: priorityEnum(selectedPriority),
+            status: ComplainSubmitStatusEnum.Open,
+            level: ComplainSubmitLevelEnum.L1,
+            complaintCriteria: selectedCriteria,
+        };
+
+        try {
+            const response = await apiClient.submitComplaint({
+                complainSubmit: complaintDetails,
+            });
             alert("Complaint submitted successfully");
             resetAllVars();
             console.log(response);
@@ -122,49 +171,11 @@
     }
 
     function resetAllVars() {
-        selectedTags = ["Complain"];
-        availableTags = availableTagsDefault;
         complaintDescription = "";
-        selectedSeverity = "Low";
-        selectedLocation = "None";
         locationDetails = "";
         currentDate = "";
-        resetAllImages();
-    }
-
-    async function submitForm() {
-        console.log("start");
-        isLoading = true;
-        console.log(selectedTags);
-        resetAllVars();
-        try {
-            let flag = true;
-            if (selectedLocation === "None" || locationDetails.trim() === "") {
-                flag = false;
-            }
-            if (complaintDescription === "") {
-                flag = false;
-            }
-            if (selectedTags.length === 0) {
-                flag = false;
-            }
-
-            console.log("dialog");
-            if (!flag) {
-                alert("Please fill all Information");
-            } else {
-                console.log("try");
-                await uploadImage.handleSubmit();
-                console.log("completed try");
-                handleSubmit();
-            }
-        } catch (error) {
-            console.log("error");
-            console.error("Error handling file upload:", error);
-        } finally {
-            console.log("finally");
-            isLoading = false;
-        }
+        selectedPriority = "Normal";
+        uploadImage.resetAllImages();
     }
 </script>
 
@@ -184,19 +195,41 @@
         </div>
     </div>
 
-    <div class="severity-dropdown">
-        <label for="severity">Severity:</label>
-        <select id="severity" bind:value={selectedSeverity}>
-            {#each severityOptions as option}
+    <div class="priority-dropdown">
+        <label for="priority">Priority :</label>
+        <select id="priority" bind:value={selectedPriority}>
+            {#each priorityOptions as option}
                 <option value={option}>{option}</option>
             {/each}
         </select>
     </div>
 
-    <div class="location-dropdown">
-        <label for="location">Major Location:</label>
-        <select id="location" bind:value={selectedLocation}>
-            {#each locationOptions as option}
+    <div class="zone-dropdown">
+        <label for="zone">Zone :</label>
+        <select
+            id="zone"
+            bind:value={selectedZone}
+            on:change={(e) => handleZoneChange(e.target.value)}
+        >
+            {#each zones as option}
+                <option value={option}>{option}</option>
+            {/each}
+        </select>
+    </div>
+
+    <div class="building-dropdown">
+        <label for="building">Area Name:</label>
+        <select id="building" bind:value={selectedBuilding}>
+            {#each buildingNames as option}
+                <option value={option}>{option}</option>
+            {/each}
+        </select>
+    </div>
+
+    <div class="category-dropdown">
+        <label for="category">Category :</label>
+        <select id="category" bind:value={selectedCriteria}>
+            {#each complaintCriteria as option}
                 <option value={option}>{option}</option>
             {/each}
         </select>
@@ -210,7 +243,7 @@
         </div>
     </div>
 
-    <TagsHandler bind:selectedTags bind:availableTags />
+    <!-- <TagsHandler bind:selectedTags bind:availableTags /> -->
     <div class="image-container">
         <ImageHandler bind:this={uploadImage} on:list={handleFileIds} />
     </div>
@@ -223,7 +256,7 @@
         width: 100%;
     }
 
-    .location-dropdown {
+    .zone-dropdown {
         margin-bottom: 20px;
     }
 
@@ -264,7 +297,7 @@
         margin: 20px 0;
     }
 
-    .severity-dropdown {
+    .priority-dropdown {
         margin-bottom: 20px;
     }
 
