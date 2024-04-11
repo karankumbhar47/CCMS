@@ -40,13 +40,8 @@ properties:
         description: "IDs of attachments related to the closure of the complaint"
         items:
             type: string
-
     zone:
         type: string
-        enum:
-            - AcademicArea
-            - HostelArea
-            - ResidentArea
         description: "The zone where the complaint was registered"
     priority:
         type: string
@@ -71,10 +66,4 @@ properties:
         description: "Level of the complaint"
     complaintCriteria:
         type: string
-        enum:
-            - AC
-            - Wifi
-            - Civil
-            - Others
-            - Electrical
         description: "Criteria of the complaint"

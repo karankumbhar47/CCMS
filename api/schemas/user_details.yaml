@@ -1,33 +1,37 @@
 type: object
 required:
-  - userId
-  - userName
-  - name
-  - email
-  - role
-  - status
-  - dateRegistered
+    - userId
+    - userName
+    - name
+    - email
+    - role
+    - status
+    - dateRegistered
 properties:
-  userId:
-    type: integer
-  userName:
-    type: string
-  name:
-    type: string
-  roles:
-    type: array
-    items:
-      $ref: role.yaml
-  email:
-    type: string
-  status:
-    type: string
-    enum:
-      - Blocked
-      - Active
-  password:
-    type: string
-  dateRegistered:
-    type: string
-    format: date
+    userId:
+        type: string
+    userName:
+        type: string
+    name:
+        type: string
+    roles:
+        type: array
+        items:
+            $ref: role.yaml
+    email:
+        type: string
+    status:
+        type: string
+        enum:
+            - Blocked
+            - Active
+    password:
+        type: string
+    dateRegistered:
+        type: string
+        format: date
+    department:
+        type: string
+    phoneNumber:
+        type: string
 

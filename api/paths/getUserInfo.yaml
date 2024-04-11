@@ -1,0 +1,24 @@
+get:
+    operationId: getUserInfo
+    summary: Get user information by ID
+    description: Retrieves user information based on the provided user ID
+    parameters:
+        - name: userId
+          in: path
+          description: ID of the user to retrieve
+          required: true
+          schema:
+              type: string
+    responses:
+        '200':
+            description: User information retrieved successfully
+            content:
+                application/json:
+                    schema:
+                        $ref: '../schemas/user_details.yaml'
+        '404':
+            description: User not found
+            content:
+                application/json:
+                    schema:
+                        type: string

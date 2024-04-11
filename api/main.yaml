@@ -53,6 +53,9 @@ paths:
     /deleteUser:
         $ref: "./paths/delete_user.yaml"
 
+    /getUserInfo/{userId}:
+        $ref: "./paths/getUserInfo.yaml"
+
     /upload/image:
         $ref: "./paths/upload_image.yaml"
        
@@ -61,6 +64,7 @@ paths:
 
     /filterComplaintNew:
         $ref: "./paths/filter_complaint.yaml"
+
 
 
 servers:
