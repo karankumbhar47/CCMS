@@ -1,6 +1,5 @@
 package com.iitbh.ccms.delegate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,9 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.iitbh.ccms.api.UserDetailsApiDelegate;
 import com.iitbh.ccms.model.Pagination;
-import com.iitbh.ccms.model.Role;
 import com.iitbh.ccms.model.UserInfo;
-import com.iitbh.ccms.model.UserInfo.StatusEnum;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.service.UsersService;
 
@@ -36,32 +33,10 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
         pagination.setPage(page);
         pagination.setSize(size);
 
-        List<UserInfo> usersDetails = new ArrayList<>();
-        for (UserDetailsDB userDetailsDB : userDetailsList) {
-            UserInfo userInfo = new UserInfo();
-            // usersDetail.setUserId(userDetailsDB.getUserId());
-            userInfo.setUserId("1"); // TODO: Fix this
-            userInfo.setUserName(userDetailsDB.getUsername());
-            userInfo.setEmail(userDetailsDB.getEmail());
-            // TODO: Update this
-            try {
-                userInfo.setRoles(
-                        userDetailsDB.getRoles()
-                                .stream()
-                                .map(role -> Role.fromValue(role))
-                                .collect(Collectors.toCollection(ArrayList::new)));
+        List<UserInfo> usersDetails = userDetailsList.stream()
+                .map(UserDetailsDB::convertToUserInfo)
+                .collect(Collectors.toList());
 
-            } catch(IllegalArgumentException e) {
-                System.err.println("Corrupted user data for user + " + userDetailsDB.getUsername() + "; Invalid value for role");
-            }
-            try {
-                userInfo.setStatus(StatusEnum.fromValue(userDetailsDB.getStatus()));
-            } catch (IllegalArgumentException e) {
-                userInfo.setStatus(StatusEnum.ACTIVE);
-            }
-            userInfo.setDateRegistered(userDetailsDB.getDateRegistered());
-            usersDetails.add(userInfo);
-        }
         pagination.setUsers(usersDetails);
 
         return ResponseEntity.ok(pagination);

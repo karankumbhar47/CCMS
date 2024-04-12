@@ -1,8 +1,5 @@
 package com.iitbh.ccms.delegate;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,21 +19,8 @@ public class CreateUserDelegateImpl implements CreateUserApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> createUser(UserInfo userDetailsUpdate) {
-        UserDetailsDB newUserDetails = new UserDetailsDB();
-
-        newUserDetails.setUserId(userDetailsUpdate.getUserId().toString());
-        newUserDetails.setUserName(userDetailsUpdate.getUserName());
-        newUserDetails.setEmail(userDetailsUpdate.getEmail());
-        newUserDetails.setRoles(
-                userDetailsUpdate.getRoles()
-                .stream()
-                .map(role -> role.toString())
-                .collect(Collectors.toCollection(ArrayList::new))
-                );
-        newUserDetails.setStatus(userDetailsUpdate.getStatus().toString());
-        newUserDetails.setDateRegistered(userDetailsUpdate.getDateRegistered());
-
+    public ResponseEntity<Void> createUser(UserInfo userInfoUpdate) {
+        UserDetailsDB newUserDetails = new UserDetailsDB(userInfoUpdate);
         usersService.createUser(newUserDetails);
         return ResponseEntity.ok().build();
     }

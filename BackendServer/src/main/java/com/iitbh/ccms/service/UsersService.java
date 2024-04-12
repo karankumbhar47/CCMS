@@ -90,20 +90,17 @@ public class UsersService implements UserDetailsService {
     public UserDetailsDB loadUserByUsername(String username)
             throws UsernameNotFoundException {
         Optional<UserDetailsDB> user = usersRepository.findUsersByUserName(username);
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User Not Found");
         }
         return user.get();
     }
 
-
-
     public UserInfo getUserInfo(String userId) {
         UserDetailsDB userDetailsDB = usersRepository.findByUserId(userId);
-        if(userDetailsDB!=null) {
-            return userDetailsDB.convertToUserDetails();
-        }
-        else{
+        if (userDetailsDB != null) {
+            return userDetailsDB.convertToUserInfo();
+        } else {
             return null;
         }
     }

@@ -2,17 +2,17 @@ package com.iitbh.ccms.model_db;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.iitbh.ccms.model.Role;
-import com.iitbh.ccms.model.UserInfo;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.iitbh.ccms.model.Role;
+import com.iitbh.ccms.model.UserInfo;
 import com.iitbh.ccms.model.UserInfo.StatusEnum;
 
 import lombok.AllArgsConstructor;
@@ -90,7 +90,7 @@ public class UserDetailsDB implements UserDetails {
 
     }
 
-    public UserInfo convertToUserDetails() {
+    public UserInfo convertToUserInfo() {
         UserInfo details = new UserInfo();
         details.setUserId(this.userId);
         details.setUserName(this.userName);
@@ -104,6 +104,25 @@ public class UserDetailsDB implements UserDetails {
         details.setDepartment(this.department);
         details.setPhoneNumber(this.phoneNumber);
         return details;
+    }
+
+    public UserDetailsDB(UserInfo userInfo) {
+        userId = userInfo.getUserId();
+        userName = userInfo.getUserName();
+        roles = convertRolesToString(userInfo.getRoles());
+        email = userInfo.getEmail();
+        status = userInfo.getStatus().toString();
+        dateRegistered = userInfo.getDateRegistered();
+        name = userInfo.getName();
+        password = userInfo.getPassword();
+        department = userInfo.getDepartment();
+        phoneNumber = userInfo.getPhoneNumber();
+    }
+
+    public static List<String> convertRolesToString(List<Role> roles) {
+        return roles.stream()
+                .map(Role::toString)
+                .collect(Collectors.toList());
     }
 
     List<Role> getRoleArray(List<String> roles) {
@@ -127,5 +146,3 @@ public class UserDetailsDB implements UserDetails {
     }
 
 }
-
-
