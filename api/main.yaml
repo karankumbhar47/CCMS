@@ -37,6 +37,9 @@ paths:
     /userDetails:
         $ref: "./paths/user_details.yaml"
 
+    /userDetails/{id}:
+        $ref: "./paths/single_user_details.yaml"
+
     /userDetailsUpdate:
         $ref: "./paths/user_details_update.yaml"
 
