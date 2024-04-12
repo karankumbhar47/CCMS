@@ -15,6 +15,22 @@ get:
               type: integer
           description: Number of records per page default is 10
           required: true
+    # requestBody:
+    #   required: true
+    #   content:
+    #     application/json:
+    #       schema:
+    #         type: object
+    #         required:
+    #           - page
+    #           - size
+    #         properties:
+    #           page:
+    #             type: integer
+    #             description: Page number for pagination default is0
+    #           size:
+    #             type: integer
+    #             description: Number of records per page default is15
     responses:
         '200':
             description: OK
