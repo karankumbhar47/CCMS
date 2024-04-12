@@ -54,7 +54,7 @@ paths:
         $ref: "./paths/delete_user.yaml"
 
     /getUserInfo/{userId}:
-        $ref: "./paths/getUserInfo.yaml"
+        $ref: "./paths/get_user_info.yaml"
 
     /upload/image:
         $ref: "./paths/upload_image.yaml"

@@ -15,7 +15,7 @@ get:
             content:
                 application/json:
                     schema:
-                        $ref: '../schemas/user_details.yaml'
+                        $ref: '../schemas/user_info.yaml'
         '404':
             description: User not found
             content:

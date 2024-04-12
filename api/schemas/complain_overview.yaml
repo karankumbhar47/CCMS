@@ -67,3 +67,5 @@ properties:
     complaintCriteria:
         type: string
         description: "Criteria of the complaint"
+    userInfo:
+        $ref: "../schemas/user_info.yaml"
