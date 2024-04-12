@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/upload/image").hasAuthority("User")
                         .requestMatchers("/download/image/*").hasAnyAuthority("Admin", "User")
                         .requestMatchers("/getUserInfo").hasAnyAuthority("Admin", "User")
+                        .requestMatchers("/getLocation").hasAnyAuthority("Admin")
+                        .requestMatchers("/updateLocation").hasAnyAuthority("Admin")
                         .anyRequest().authenticated()
                         )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
