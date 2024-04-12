@@ -16,7 +16,7 @@ get:
             content:
                 application/json:
                     schema:
-                        $ref: "../schemas/complain_overview.yaml"
+                        $ref: "../schemas/complaint_details.yaml"
         '404':
             description: Object not found
         '500':

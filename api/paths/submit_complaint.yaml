@@ -6,7 +6,7 @@ post:
         content:
             application/json:
                 schema:
-                    $ref: "../schemas/complain_submit.yaml"
+                    $ref: "../schemas/complaint_info.yaml"
         required: true
     responses:
         "200":

@@ -1,11 +1,5 @@
 type: object
-name: "complaintInfo"
 properties:
-    complaintId:
-        type: string
-        maxLength: 12
-        minLength: 12
-        description: "The ID of the complaint"
     complainerId:
         type: string
         description: "User ID of complainer"
@@ -67,5 +61,3 @@ properties:
     complaintCriteria:
         type: string
         description: "Criteria of the complaint"
-    userInfo:
-        $ref: "../schemas/user_info.yaml"

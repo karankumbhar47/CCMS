@@ -1,0 +1,20 @@
+type: object
+properties:
+    totalPages:
+        type: integer
+        description: Total number of pages
+    pageSize:
+        type: integer
+        description: Number of entity per page
+    pageNumber:
+        type: integer
+        description: Current Page Number
+    complaintId:
+        type: string
+        maxLength: 12
+        minLength: 12
+        description: "The ID of the complaint"
+    complaintInfo:
+        $ref: "./complaint_info.yaml"
+    userInfo:
+        $ref: "../schemas/user_info.yaml"

@@ -1,5 +1,18 @@
 get:
     operationId: getComplaintsOverview
+    parameters:
+        -   in: query
+            name: pageNumber
+            schema:
+                type: integer
+            description: Page number for pagination default is 0
+            required: true
+        -   in: query
+            name: pageSize
+            schema:
+                type: integer
+            description: Number of records per page default is 10
+            required: true
     responses:
         "200":
             description: "Get all complaints"
@@ -8,4 +21,4 @@ get:
                     schema:
                         type: array
                         items:
-                            $ref: "../schemas/complain_overview.yaml"
+                            $ref: "../schemas/complaint_details.yaml"
