@@ -1,6 +1,7 @@
 import { goto } from "$app/navigation";
 import { Configuration, DefaultApi } from "$lib/generated";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 /** @returns DefaultApi */
 export function getDefaultApi() {
@@ -8,6 +9,26 @@ export function getDefaultApi() {
 
     /** @type {import("$lib/generated").HTTPHeaders} headers */
     let headers = {};
+
+    if (token !== undefined) {
+        let exp = jwtDecode(token).exp;
+        if (exp === undefined) {
+            console.log("Token expiary not set, redirecting to login page");
+            goto("/login");
+        } else {
+            exp *= 1000;
+            let expiaryTime = new Date(exp);
+            if (expiaryTime < new Date()) {
+                console.log("Token expiared, redirecting to login page");
+                goto("/login");
+            }
+
+            headers = { Authorization: "Bearer " + token };
+        }
+    } else {
+        console.log("No token found, redirecting to login page");
+        goto("/login");
+    }
 
     if (token !== undefined) {
         headers = { Authorization: "Bearer " + token };
