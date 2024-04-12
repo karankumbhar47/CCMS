@@ -8,4 +8,6 @@ get:
             content:
                 application/json:
                     schema:
+                      type: array
+                      items:
                         $ref: '../schemas/location.yaml'

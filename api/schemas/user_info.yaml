@@ -17,7 +17,7 @@ properties:
     roles:
         type: array
         items:
-            $ref: role.yaml
+          $ref: "./role.yaml"
     email:
         type: string
     status:

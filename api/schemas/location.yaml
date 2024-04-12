@@ -2,15 +2,15 @@ type: object
 required:
     - zoneName
     - buildings
-    - catergories
+    - categories
 properties:
     zoneName:
         type: string
     buildings:
         type: array
         items:
-          type: string
-    catergories:
+            type: string
+    categories:
         type: array
-        items: 
-          $ref: catergory.yaml
+        items:
+            $ref: "./category.yaml"
