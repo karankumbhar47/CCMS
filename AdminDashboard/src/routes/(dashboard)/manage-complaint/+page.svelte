@@ -5,40 +5,67 @@
 
     /**
      * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
-     */
-
-    /** @type {Array<ComplainOverview>} */
+     * @type {Array<ComplainOverview>}
+     **/
     let complaintsList = [];
 
     async function fetchComplaints() {
         try {
-            const fetchedComplaints =
-                await getDefaultApi().getComplaintsOverview();
-            complaintsList = fetchedComplaints;
+            complaintsList = await getDefaultApi().getComplaintsOverview();
+            // fetchAllUsers();
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
     }
 
+    // async function fetchAllUsers() {
+    //     try {
+    //         for (let index = 0; index < complaintsList.length; index++) {
+    //             const complaint = complaintsList[index];
+    //             if (complaint.complainerId != undefined) {
+    //                 const userInfo = await getDefaultApi().getUserInfo({
+    //                     userId: complaint.complainerId,
+    //                 });
+    //                 userDetailsList = [...userDetailsList, userInfo];
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log("Error while fetching user details ",error)
+    //     }
+    // }
+
     /**
-     *  @param {string | undefined} dateTimeString
+     *  @param {string | undefined} inputDate
      */
-    function formatDateTime(dateTimeString) {
-        if (!dateTimeString) {
-            return "Not specified";
+    function formatDateTime(inputDate) {
+        let formattedDate = "Invalid Date";
+        if (inputDate) {
+            try {
+                const [datePart, timePart] = inputDate.split(" ");
+                const [month, day, year] = datePart.split("-");
+                const [hour, minute] = timePart.split(":");
+                const months = [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                ];
+                const monthName = months[parseInt(month, 10) - 1];
+                const time = `${hour}:${minute}`;
+                formattedDate = `${day} ${monthName} ${time}`;
+            } catch (error) {
+                formattedDate = "Not Valid format";
+            }
         }
-        const options /** @type {DateTimeFormatOptions} */ = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-        };
-        const date = new Date(dateTimeString);
-        // @ts-ignore
-        return date.toLocaleString(undefined, options);
+        return formattedDate;
     }
 
     onMount(() => {
@@ -53,13 +80,26 @@
     <thead>
         <tr>
             <th>Serial Number</th>
-            <th>Complain</th>
-            <th>Tags</th>
-            <th>Severity</th>
-            <th>Location</th>
-            <th>Complainer</th>
+            <th>Complaint Registration Number</th>
+            <th>Date Of Registration</th>
+            <th>User Id</th>
+            <th>User Name</th>
+            <th>Department</th>
+            <th>Phone Number</th>
+            <th>Category Issue</th>
+            <th>Brief Description of Issue</th>
+            <th>Building Name</th>
+            <th>Location Details</th>
+            <th>Attach Photograph (if any)</th>
+            <th>Priority</th>
             <th>Status</th>
-            <th>Date</th>
+            <th>Closeure Date</th>
+            <th>Remark by Maintainence team (if any)</th>
+            <th>Closeure Photograph (if any)</th>
+            <th>Consent for Closure</th>
+            <th>Reopen</th>
+            <th>Level</th>
+            <th>Remark by User</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -68,17 +108,30 @@
             <tr>
                 {#if complaint}
                     <td>{index + 1}</td>
-                    <td>{complaint.complain}</td>
-                    <td>{complaint.tags?.join(", ")}</td>
-                    <td>{complaint.severity}</td>
-                    <td>{complaint.location}</td>
-                    <td>{complaint.complainerName}</td>
+                    <td>{complaint.complaintId}</td>
+                    <td>{formatDateTime(complaint.registrationDate)}</td>
+                    <td>{complaint.userInfo?.userId || "Not Found"}</td>
+                    <td>{complaint.userInfo?.name || "Not Found"}</td>
+                    <td>{complaint.userInfo?.department || "Not Found"}</td>
+                    <td>{complaint.userInfo?.phoneNumber || "Not Found"}</td>
+                    <td>{complaint.complaintCriteria}</td>
+                    <td>{complaint.description}</td>
+                    <td>{complaint.buildingName}/{complaint.zone}</td>
+                    <td>{complaint.locationDetails}</td>
+                    <td>  -  </td>
+                    <td>{complaint.priority}</td>
                     <td>{complaint.status}</td>
-                    <td>{formatDateTime(complaint.dateTime)}</td>
+                    <td>{formatDateTime(complaint.resolutionDate)}</td>
+                    <td>{complaint.remarkByMaintainer}</td>
+                    <td>  -  </td>
+                    <td>Closed</td>
+                    <td>Reopened</td>
+                    <td>{complaint.level}</td>
+                    <td>{complaint.remarkByUser}</td>
                     <td
                         ><button
                             ><a
-                                href={`/manage-complaint/${complaint.complainId}`}
+                                href={`/manage-complaint/${complaint.complaintId}`}
                                 >View</a
                             ></button
                         ></td

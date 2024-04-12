@@ -25,7 +25,6 @@
         background: none;
         border: none;
         padding: 30px 20px;
-        margin: 0;
         font-size: large;
         cursor: pointer;
         text-align: left;

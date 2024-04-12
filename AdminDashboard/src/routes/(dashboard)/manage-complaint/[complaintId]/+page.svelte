@@ -17,8 +17,8 @@
             const api = getDefaultApi();
             complaint = await api.getComplaintInfo({ id });
 
-            if (complaint.fileIds) {
-                for (const fileId of complaint.fileIds) {
+            if (complaint.attachmentIds) {
+                for (const fileId of complaint.attachmentIds) {
                     try {
                         const fileBlob = await api.downloadFile({ fileId });
                         const imageUrl = URL.createObjectURL(fileBlob);
@@ -46,19 +46,19 @@
     <ul>
         <li>
             <strong>Complain:</strong>
-            {complaint?.complain || "Not specified"}
+            {complaint?.description|| "Not specified"}
         </li>
         <li>
-            <strong>Tags:</strong>
-            {complaint?.tags?.join(", ") || "Not specified"}
+            <strong>Category :</strong>
+            {complaint?.complaintCriteria || "Not specified"}
         </li>
         <li>
-            <strong>Severity:</strong>
-            {complaint?.severity || "Not specified"}
+            <strong>Priority:</strong>
+            {complaint?.priority|| "Not specified"}
         </li>
         <li>
             <strong>Location:</strong>
-            {complaint?.location || "Not specified"}
+            {complaint?.buildingName|| "Not specified"}/{complaint?.zone}
         </li>
         <li><strong>Status:</strong> {complaint?.status || "Not specified"}</li>
         <li>
@@ -67,9 +67,9 @@
         </li>
         <li>
             <strong>Complainer Name:</strong>
-            {complaint?.complainerName || "Not specified"}
+            {complaint?.complaintId|| "Not specified"}
         </li>
-        <li><strong>Date:</strong> {complaint?.dateTime || "Not specified"}</li>
+        <li><strong>Date:</strong> {complaint?.registrationDate|| "Not specified"}</li>
     </ul>
 </div>
 <ImageHandler bind:imageUrls />

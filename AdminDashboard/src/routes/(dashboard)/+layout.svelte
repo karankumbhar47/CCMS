@@ -5,7 +5,9 @@
 </script>
 
 <div class="container">
-    <Sidebar />
+    <div class="sider">
+        <Sidebar />
+    </div>
     <div class="header">
         <Header {adminName} />
     </div>
@@ -16,6 +18,10 @@
 
 <style>
     /* Add your main container styling here */
+    .sider{
+        position: sticky;
+        z-index: 10;
+    }
 
     .content {
         flex: 1;
@@ -30,6 +36,8 @@
         z-index: 5;
         display: block;
         height: 100vh;
+        overflow: auto; /* Allow scrolling */
+        position: relative; /* Ensure correct stacking context */
     }
     .header {
         top: 0;
@@ -37,6 +45,7 @@
         right: 0;
         display: block;
         width: 100vw;
-        position: absolute;
+        position:fixed;
+        z-index: 1000;
     }
 </style>
