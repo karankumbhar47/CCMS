@@ -52,7 +52,7 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
                                 .collect(Collectors.toCollection(ArrayList::new)));
 
             } catch(IllegalArgumentException e) {
-                System.err.println("Curropted user data for user + " + userDetailsDB.getUsername() + "; Invalid value for role");
+                System.err.println("Corrupted user data for user + " + userDetailsDB.getUsername() + "; Invalid value for role");
             }
             try {
                 userInfo.setStatus(StatusEnum.fromValue(userDetailsDB.getStatus()));

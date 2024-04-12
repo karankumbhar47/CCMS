@@ -1,7 +1,7 @@
 package com.iitbh.ccms.model_db;
 
-import com.iitbh.ccms.model.ComplainOverview;
-import com.iitbh.ccms.model.ComplainSubmit;
+import com.iitbh.ccms.model.ComplaintDetails;
+import com.iitbh.ccms.model.ComplaintInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,62 +37,60 @@ public class Complaints {
     private String description;
     private List<String> mailIds;
 
-    public ComplainOverview convertToComplainOverview() {
-        ComplainOverview overview = new ComplainOverview();
+    public ComplaintDetails convertToComplainOverview() {
+        ComplaintDetails overview = new ComplaintDetails();
         overview.setComplaintId(this.getComplaintId());
-        overview.setComplainerId(this.getComplainerId());
-        overview.setDescription(this.getDescription());
-        overview.setRegistrationDate(this.getRegistrationDate());
-        overview.setResolutionDate(this.getResolutionDate());
-        overview.setBuildingName(this.getBuildingName());
-        overview.setLocationDetails(this.getLocationDetails());
-        overview.setRemarkByUser(this.getRemarkByUser());
-        overview.setRemarkByMaintainer(this.getRemarkByMaintainer());
-        overview.setAttachmentIds(this.getAttachmentIds());
-        overview.setClosureAttachmentIds(this.getClosureAttachmentIds());
-        overview.setZone(this.getZone());
-        overview.setPriority(getPriorityEnum(this.getPriority()));
-        overview.setStatus(getStatusEnum(this.getStatus()));
-        overview.setLevel(getLevelEnum(this.getLevel()));
-        overview.setComplaintCriteria(this.getComplaintCriteria());
+        ComplaintInfo complaintInfo = new ComplaintInfo();
+        complaintInfo.setComplainerId(this.getComplainerId());
+        complaintInfo.setDescription(this.getDescription());
+        complaintInfo.setRegistrationDate(this.getRegistrationDate());
+        complaintInfo.setResolutionDate(this.getResolutionDate());
+        complaintInfo.setBuildingName(this.getBuildingName());
+        complaintInfo.setLocationDetails(this.getLocationDetails());
+        complaintInfo.setRemarkByUser(this.getRemarkByUser());
+        complaintInfo.setRemarkByMaintainer(this.getRemarkByMaintainer());
+        complaintInfo.setAttachmentIds(this.getAttachmentIds());
+        complaintInfo.setClosureAttachmentIds(this.getClosureAttachmentIds());
+        complaintInfo.setZone(this.getZone());
+        complaintInfo.setPriority(getPriorityEnum(this.getPriority()));
+        complaintInfo.setStatus(getStatusEnum(this.getStatus()));
+        complaintInfo.setLevel(getLevelEnum(this.getLevel()));
+        complaintInfo.setComplaintCriteria(this.getComplaintCriteria());
+        overview.setComplaintInfo(complaintInfo);
         return overview;
     }
 
 
-    private static ComplainOverview.PriorityEnum getPriorityEnum(String priority) {
-        return ComplainOverview.PriorityEnum.fromValue(priority);
+    private static ComplaintInfo.PriorityEnum getPriorityEnum(String priority) {
+        return ComplaintInfo.PriorityEnum.fromValue(priority);
     }
 
-    private static ComplainOverview.StatusEnum getStatusEnum(String status) {
-        return ComplainOverview.StatusEnum.fromValue(status);
+    private static ComplaintInfo.StatusEnum getStatusEnum(String status) {
+        return ComplaintInfo.StatusEnum.fromValue(status);
     }
 
-    private static ComplainOverview.LevelEnum getLevelEnum(String level) {
-        return ComplainOverview.LevelEnum.fromValue(level);
+    private static ComplaintInfo.LevelEnum getLevelEnum(String level) {
+        return ComplaintInfo.LevelEnum.fromValue(level);
     }
 
 
-    public void convertToComplaints(ComplainSubmit complainSubmit, String ComplaintId) {
+    public void convertToComplaints(ComplaintInfo complaintInfo, String ComplaintId) {
         this.setComplaintId(ComplaintId);
-        this.setComplainerId(complainSubmit.getComplainerId());
-        this.setRegistrationDate(complainSubmit.getRegistrationDate());
-
-        System.out.println(complainSubmit.getZone());
-        System.out.println(complainSubmit.getComplaintCriteria());
-
-        this.setZone(complainSubmit.getZone());
-        this.setBuildingName(complainSubmit.getBuildingName());
-        this.setLocationDetails(complainSubmit.getLocationDetails());
-        this.setAttachmentIds(complainSubmit.getAttachmentIds());
-        this.setPriority(complainSubmit.getPriority().getValue());
-        this.setResolutionDate(complainSubmit.getResolutionDate());
-        this.setStatus(complainSubmit.getStatus().getValue());
-        this.setRemarkByUser(complainSubmit.getRemarkByUser());
-        this.setRemarkByMaintainer(complainSubmit.getRemarkByMaintainer());
-        this.setClosureAttachmentIds(complainSubmit.getClosureAttachmentIds());
-        this.setLevel(complainSubmit.getLevel().getValue());
-        this.setComplainerId(complainSubmit.getComplainerId());
-        this.setComplaintCriteria(complainSubmit.getComplaintCriteria());
-        this.setDescription(complainSubmit.getDescription());
+        this.setComplainerId(complaintInfo.getComplainerId());
+        this.setRegistrationDate(complaintInfo.getRegistrationDate());
+        this.setZone(complaintInfo.getZone());
+        this.setBuildingName(complaintInfo.getBuildingName());
+        this.setLocationDetails(complaintInfo.getLocationDetails());
+        this.setAttachmentIds(complaintInfo.getAttachmentIds());
+        this.setPriority(complaintInfo.getPriority().getValue());
+        this.setResolutionDate(complaintInfo.getResolutionDate());
+        this.setStatus(complaintInfo.getStatus().getValue());
+        this.setRemarkByUser(complaintInfo.getRemarkByUser());
+        this.setRemarkByMaintainer(complaintInfo.getRemarkByMaintainer());
+        this.setClosureAttachmentIds(complaintInfo.getClosureAttachmentIds());
+        this.setLevel(complaintInfo.getLevel().getValue());
+        this.setComplainerId(complaintInfo.getComplainerId());
+        this.setComplaintCriteria(complaintInfo.getComplaintCriteria());
+        this.setDescription(complaintInfo.getDescription());
     }
 }

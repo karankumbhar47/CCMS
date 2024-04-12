@@ -1,7 +1,7 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.SubmitComplainApiDelegate;
-import com.iitbh.ccms.model.ComplainSubmit;
+import com.iitbh.ccms.model.ComplaintInfo;
 import com.iitbh.ccms.service.ComplainService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class SubmitComplainDelegateImpl implements SubmitComplainApiDelegate {
     }
 
     @Override
-    public ResponseEntity<String> submitComplaint(ComplainSubmit complainSubmit) {
-        return ResponseEntity.ok(complainService.SubmitComplain(complainSubmit));
+    public ResponseEntity<String> submitComplaint(ComplaintInfo complaintInfo) {
+        return ResponseEntity.ok(complainService.SubmitComplain(complaintInfo));
     }
 }

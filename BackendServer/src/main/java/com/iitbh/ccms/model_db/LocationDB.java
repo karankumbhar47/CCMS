@@ -27,5 +27,4 @@ public class LocationDB {
         private String name;
         private List<String> emails;
     }
-
 }

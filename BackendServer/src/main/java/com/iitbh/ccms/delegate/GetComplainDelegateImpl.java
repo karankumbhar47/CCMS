@@ -1,7 +1,7 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.GetComplaintInfoApiDelegate;
-import com.iitbh.ccms.model.ComplainOverview;
+import com.iitbh.ccms.model.ComplaintDetails;
 import com.iitbh.ccms.service.ComplainService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class GetComplainDelegateImpl implements GetComplaintInfoApiDelegate {
 
 
     @Override
-    public ResponseEntity<ComplainOverview> getComplaintInfo(String id) {
+    public ResponseEntity<ComplaintDetails> getComplaintInfo(String id) {
         return ResponseEntity.ok(complainService.getSingleComplaint(id));
     }
 }

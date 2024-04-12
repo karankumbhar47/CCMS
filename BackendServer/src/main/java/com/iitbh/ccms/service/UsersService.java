@@ -30,13 +30,10 @@ public class UsersService implements UserDetailsService {
     }
 
     public int getTotalElements() {
-        // Get total number of user details
-
         return (int) usersRepository.count();
     }
 
     public int getTotalPages(int size) {
-        // Calculate total number of pages based on page size and total elements
         long totalElements = getTotalElements();
         return (int) Math.ceil((double) totalElements / size);
     }

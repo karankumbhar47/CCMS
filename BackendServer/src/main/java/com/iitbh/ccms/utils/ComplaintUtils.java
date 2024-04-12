@@ -2,16 +2,15 @@ package com.iitbh.ccms.utils;
 
 import com.iitbh.ccms.model_db.Complaints;
 import com.iitbh.ccms.model_db.LocationDB;
+import com.iitbh.ccms.repository.ComplainRepository;
 import com.iitbh.ccms.repository.LocationRepository;
 import com.iitbh.ccms.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,12 +23,14 @@ public class ComplaintUtils {
     private final MongoTemplate mongoTemplate;
     private final LocationRepository locationRepository;
     private final EmailService emailService;
+    private final ComplainRepository complainRepository;
 
     @Autowired
-    public ComplaintUtils(MongoTemplate mongoTemplate, LocationRepository locationRepository, EmailService emailService) {
+    public ComplaintUtils(MongoTemplate mongoTemplate, LocationRepository locationRepository, EmailService emailService, ComplainRepository complainRepository) {
         this.mongoTemplate = mongoTemplate;
         this.locationRepository = locationRepository;
         this.emailService = emailService;
+        this.complainRepository = complainRepository;
     }
 
     public String getUniqueComplaintId() {
@@ -77,5 +78,10 @@ public class ComplaintUtils {
             System.out.println("sending email to "+mailId);
             emailService.sendSimpleMessage(mailId, subject, body);
         }
+    }
+
+    public int getTotalPages(int size) {
+        long totalElements = (int) complainRepository.count();
+        return (int) Math.ceil((double) totalElements / size);
     }
 }

@@ -1,12 +1,14 @@
 package com.iitbh.ccms.service;
 
+import com.iitbh.ccms.model.ComplaintDetails;
+import com.iitbh.ccms.model.ComplaintInfo;
 import com.iitbh.ccms.utils.ComplaintUtils;
-import com.iitbh.ccms.model.ComplainOverview;
-import com.iitbh.ccms.model.ComplainSubmit;
 import com.iitbh.ccms.model_db.Complaints;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.LocationRepository;
 import com.iitbh.ccms.repository.UsersRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import com.iitbh.ccms.repository.ComplainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,47 +25,41 @@ import java.util.List;
 public class ComplainService {
     private final ComplainRepository complaintRepository;
     private final UsersRepository usersRepository;
-    private final MongoTemplate mongoTemplate;
-    private final LocationRepository locationRepository;
     private final ComplaintUtils complaintUtils;
 
     @Autowired
-    public ComplainService(MongoTemplate mongoTemplate, ComplainRepository complaintRepository, UsersRepository usersRepository, LocationRepository locationRepository, ComplaintUtils complaintUtils) {
+    public ComplainService(ComplainRepository complaintRepository, UsersRepository usersRepository, ComplaintUtils complaintUtils) {
         this.complaintRepository = complaintRepository;
-        this.mongoTemplate = mongoTemplate;
         this.usersRepository = usersRepository;
-        this.locationRepository = locationRepository;
         this.complaintUtils = complaintUtils;
     }
 
 
-    public List<ComplainOverview> getAllComplains(){
-        List<ComplainOverview> returnList = new ArrayList<>();
-        List<Complaints> list = complaintRepository.findAll();
+    public List<ComplaintDetails> getAllComplains(int page,int size){
+        Page<Complaints> complaintsPage = complaintRepository.findAll(PageRequest.of(page - 1, size));
+        List<Complaints> list = complaintsPage.getContent();
+        List<ComplaintDetails> returnList = new ArrayList<>();
         for(Complaints complains: list){
-            ComplainOverview complainOverview = complains.convertToComplainOverview();
+            ComplaintDetails complainOverview = complains.convertToComplainOverview();
+            complainOverview.setTotalPages(complaintUtils.getTotalPages(size));
+            complainOverview.setPageNumber(page);
+            complainOverview.setPageSize(size);
             UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
-            if(userDetailsDB != null){
-                complainOverview.setUserInfo(userDetailsDB.convertToUserDetails());
-                System.out.println(complains.getComplainerId()+"got");
-            }
-            else{
-                System.out.println(complains.getComplainerId()+"not got");
-            }
+            if(userDetailsDB != null){ complainOverview.setUserInfo(userDetailsDB.convertToUserDetails()); }
             returnList.add(complainOverview);
         }
         Collections.reverse(returnList);
         return returnList;
     }
 
-    public String SubmitComplain(ComplainSubmit complainSubmit){
+    public String SubmitComplain(ComplaintInfo complaintInfo){
         List<Complaints> list =  complaintRepository.findAll();
         while(true) {
             String complainId = complaintUtils.getUniqueComplaintId();
             for (Complaints complains : list) {
                 if(!complainId.equals(complains.getComplaintId())){
                     Complaints complainsWithId = new Complaints();
-                    complainsWithId.convertToComplaints(complainSubmit, complainId);
+                    complainsWithId.convertToComplaints(complaintInfo, complainId);
                     complainsWithId.setMailIds(complaintUtils.getEmailsByZoneAndCategory(complainsWithId.getZone(),complainsWithId.getComplaintCriteria()));
                     complaintRepository.save(complainsWithId);
                     if(!complainsWithId.getMailIds().isEmpty()) {
@@ -75,40 +71,36 @@ public class ComplainService {
         }
     }
 
-    public ComplainOverview getSingleComplaint(String ComplaintId){
+    public ComplaintDetails getSingleComplaint(String ComplaintId){
         Complaints complains = complaintRepository.findByComplaintId(ComplaintId);
         UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
-        ComplainOverview complainOverview = complains.convertToComplainOverview();
+        ComplaintDetails complainOverview = complains.convertToComplainOverview();
         if(userDetailsDB != null){
             complainOverview.setUserInfo(userDetailsDB.convertToUserDetails());
-            System.out.println(complains.getComplainerId()+"got");
-        }
-        else{
-            System.out.println(complains.getComplainerId()+"not got");
         }
         return complainOverview;
     }
 
-    public List<ComplainOverview> getFilteredComplain(List<String> tags, String totime, String fromtime) {
-        List<ComplainOverview> allComplaints = getAllComplains();
-        List<ComplainOverview> tagFilteredComplaints = filterComplaintByTag(allComplaints, tags);
-        List<ComplainOverview> filteredComplaints = new ArrayList<>();
+    public List<ComplaintDetails> getFilteredComplain(List<String> tags, String totime, String fromtime) {
+        List<ComplaintDetails> allComplaints = getAllComplains(0,10);
+        List<ComplaintDetails> tagFilteredComplaints = filterComplaintByTag(allComplaints, tags);
+        List<ComplaintDetails> filteredComplaints = new ArrayList<>();
 
-        for (ComplainOverview complaint: tagFilteredComplaints){
-            if (dateIsInBetween(complaint.getRegistrationDate(), totime, fromtime)){
+        for (ComplaintDetails complaint: tagFilteredComplaints){
+            if (dateIsInBetween(complaint.getComplaintInfo().getRegistrationDate(), totime, fromtime)){
                 filteredComplaints.add(complaint);
             }
         }
         return filteredComplaints;
     }
 
-    public List<ComplainOverview> filterComplaintByTag(List<ComplainOverview> complaints, List<String> tags){
-        List<ComplainOverview> filtered = new ArrayList<>();
+    public List<ComplaintDetails> filterComplaintByTag(List<ComplaintDetails> complaints, List<String> tags){
+        List<ComplaintDetails> filtered = new ArrayList<>();
         if (tags.isEmpty()){
             return complaints;
         }
-        for (ComplainOverview complaint: complaints){
-            if (tags.stream().anyMatch(tag->tag.equals(complaint.getBuildingName()))){
+        for (ComplaintDetails complaint: complaints){
+            if (tags.stream().anyMatch(tag->tag.equals(complaint.getComplaintInfo().getBuildingName()))){
                 filtered.add(complaint);
             }
         }
