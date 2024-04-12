@@ -6,13 +6,14 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 import com.iitbh.ccms.model.Role;
-import com.iitbh.ccms.model.UserDetails;
+import com.iitbh.ccms.model.UserInfo;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import com.iitbh.ccms.model.UserDetails.StatusEnum;
+import com.iitbh.ccms.model.UserInfo.StatusEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -89,8 +90,8 @@ public class UserDetailsDB implements UserDetails {
 
     }
 
-    public UserDetails convertToUserDetails() {
-        UserDetails details = new UserDetails();
+    public UserInfo convertToUserDetails() {
+        UserInfo details = new UserInfo();
         details.setUserId(this.userId);
         details.setUserName(this.userName);
         details.setRoles(this.getRoleArray(this.roles));
@@ -117,11 +118,11 @@ public class UserDetailsDB implements UserDetails {
         return roleList;
     }
 
-    public UserDetails.StatusEnum getUserStatus(String status) {
+    public UserInfo.StatusEnum getUserStatus(String status) {
         if (status.equalsIgnoreCase("active")) {
-            return UserDetails.StatusEnum.ACTIVE;
+            return UserInfo.StatusEnum.ACTIVE;
         } else {
-            return UserDetails.StatusEnum.BLOCKED;
+            return UserInfo.StatusEnum.BLOCKED;
         }
     }
 

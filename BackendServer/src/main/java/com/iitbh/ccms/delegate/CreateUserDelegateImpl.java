@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.iitbh.ccms.api.CreateUserApiDelegate;
-import com.iitbh.ccms.model.UserDetails;
+import com.iitbh.ccms.model.UserInfo;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.service.UsersService;
 
@@ -22,7 +22,7 @@ public class CreateUserDelegateImpl implements CreateUserApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> createUser(UserDetails userDetailsUpdate) {
+    public ResponseEntity<Void> createUser(UserInfo userDetailsUpdate) {
         UserDetailsDB newUserDetails = new UserDetailsDB();
 
         newUserDetails.setUserId(userDetailsUpdate.getUserId().toString());

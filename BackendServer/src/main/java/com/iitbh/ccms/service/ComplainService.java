@@ -3,9 +3,15 @@ package com.iitbh.ccms.service;
 import com.iitbh.ccms.model.ComplainOverview;
 import com.iitbh.ccms.model.ComplainSubmit;
 import com.iitbh.ccms.model_db.Complaints;
+import com.iitbh.ccms.model_db.LocationDB;
+import com.iitbh.ccms.model_db.UserDetailsDB;
+import com.iitbh.ccms.repository.LocationRepository;
+import com.iitbh.ccms.repository.UsersRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import com.iitbh.ccms.repository.ComplainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +21,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
 public class ComplainService {
     private final ComplainRepository complaintRepository;
+    private final UsersRepository usersRepository;
     private final MongoTemplate mongoTemplate;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    public ComplainService(MongoTemplate mongoTemplate, ComplainRepository complaintRepository) {
+    public ComplainService(MongoTemplate mongoTemplate, ComplainRepository complaintRepository, UsersRepository usersRepository, LocationRepository locationRepository) {
         this.complaintRepository = complaintRepository;
         this.mongoTemplate = mongoTemplate;
+        this.usersRepository = usersRepository;
+        this.locationRepository = locationRepository;
     }
 
 
@@ -33,9 +44,15 @@ public class ComplainService {
         List<ComplainOverview> returnList = new ArrayList<>();
         List<Complaints> list = complaintRepository.findAll();
         for(Complaints complains: list){
-            System.out.println(complains.getComplaintId());
-            System.out.println(complains.getComplaintCriteria());
             ComplainOverview complainOverview = complains.convertToComplainOverview();
+            UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
+            if(userDetailsDB != null){
+                complainOverview.setUserInfo(userDetailsDB.convertToUserDetails());
+                System.out.println(complains.getComplainerId()+"got");
+            }
+            else{
+                System.out.println(complains.getComplainerId()+"not got");
+            }
             returnList.add(complainOverview);
         }
         Collections.reverse(returnList);
@@ -50,6 +67,8 @@ public class ComplainService {
                 if(!complainId.equals(complains.getComplaintId())){
                     Complaints complainsWithId = new Complaints();
                     complainsWithId.convertToComplaints(complainSubmit, complainId);
+                    complainsWithId.setMailIds(getEmailsByZoneAndCategory(complainsWithId.getZone(),complainsWithId.getComplaintCriteria()));
+                    System.out.println(complainsWithId.getMailIds());
                     complaintRepository.save(complainsWithId);
                     return complainId;
                 }
@@ -59,7 +78,16 @@ public class ComplainService {
 
     public ComplainOverview getSingleComplaint(String ComplaintId){
         Complaints complains = complaintRepository.findByComplaintId(ComplaintId);
-        return complains.convertToComplainOverview();
+        UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
+        ComplainOverview complainOverview = complains.convertToComplainOverview();
+        if(userDetailsDB != null){
+            complainOverview.setUserInfo(userDetailsDB.convertToUserDetails());
+            System.out.println(complains.getComplainerId()+"got");
+        }
+        else{
+            System.out.println(complains.getComplainerId()+"not got");
+        }
+        return complainOverview;
     }
 
     public String getUniqueComplaintId() {
@@ -115,5 +143,42 @@ public class ComplainService {
 
     }
 
+    public List<String> getEmailsByZoneAndCategory(String zoneName, String categoryName) {
+        Optional<LocationDB> response = locationRepository.findByZoneName(zoneName);
+        if(response.isPresent()){
+            System.out.println(response.get().toString());
+            for(LocationDB.Category category: response.get().getCategories()){
+                if(category.getName().equals(categoryName)){
+                    return category.getEmails();
+                }
+            }
+        }
+        return new ArrayList<>();
+//        System.out.println(zoneName+" "+categoryName);
+//        Query query = new Query(Criteria.where("zoneName").is(zoneName)
+//                .and("categories.name").is(categoryName));
+//        query.fields().include("categories.emails");
+//        List<LocationDB> locations = mongoTemplate.find(query, LocationDB.class);
+//        if(locations.isEmpty() || locations.get(0)==null){
+//            return  new ArrayList<>();
+//        }
+//        System.out.println(locations.size());
+//        System.out.println(locations.get(0).toString());
+//        return  new ArrayList<>();
+//        return extractEmailsFromLocations(locations,categoryName);
+    }
+
+//    private List<String> extractEmailsFromLocations(List<LocationDB> locations,String categoryName) {
+//        List<String> emails = new ArrayList<>();
+//        for (LocationDB location : locations) {
+//            for (LocationDB.Category category : location.getCategories()) {
+//                if (category.getName().equals(categoryName)) {
+//                    emails.addAll(category.getEmails());
+//                }
+//            }
+//        }
+//        return emails;
+//    }
+//
 }
 

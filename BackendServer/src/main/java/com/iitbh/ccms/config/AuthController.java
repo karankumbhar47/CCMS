@@ -45,7 +45,7 @@ public class AuthController {
 
         List<String> roles = user.getRoles();
         if(roles.isEmpty()){
-            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUserName() + "; No Role found");
+            System.err.println("[ERROR::Authentication] Curropted user record for user " + user.getUsername() + "; No Role found");
             return new ResponseEntity<>("No Valid role", HttpStatus.UNAUTHORIZED);
         }
         if(!roles.contains(role)){

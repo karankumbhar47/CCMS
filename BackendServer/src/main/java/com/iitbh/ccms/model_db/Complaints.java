@@ -35,6 +35,7 @@ public class Complaints {
     private String complainerId;
     private String complaintCriteria;
     private String description;
+    private List<String> mailIds;
 
     public ComplainOverview convertToComplainOverview() {
         ComplainOverview overview = new ComplainOverview();
@@ -75,6 +76,10 @@ public class Complaints {
         this.setComplaintId(ComplaintId);
         this.setComplainerId(complainSubmit.getComplainerId());
         this.setRegistrationDate(complainSubmit.getRegistrationDate());
+
+        System.out.println(complainSubmit.getZone());
+        System.out.println(complainSubmit.getComplaintCriteria());
+
         this.setZone(complainSubmit.getZone());
         this.setBuildingName(complainSubmit.getBuildingName());
         this.setLocationDetails(complainSubmit.getLocationDetails());

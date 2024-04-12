@@ -29,7 +29,7 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // .requestMatchers("/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/announcements").hasAnyAuthority("User", "Admin")
                         .requestMatchers("/announcements/*").hasAnyAuthority("Admin")
@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/deleteUser").hasAuthority("Admin")
                         .requestMatchers("/upload/image").hasAuthority("User")
                         .requestMatchers("/download/image/*").hasAnyAuthority("Admin", "User")
+                        .requestMatchers("/getUserInfo").hasAnyAuthority("Admin", "User")
                         .anyRequest().authenticated()
                         )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))

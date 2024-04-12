@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import com.iitbh.ccms.api.UserDetailsApiDelegate;
 import com.iitbh.ccms.model.Pagination;
 import com.iitbh.ccms.model.Role;
-import com.iitbh.ccms.model.UserDetails;
-import com.iitbh.ccms.model.UserDetails.StatusEnum;
+import com.iitbh.ccms.model.UserInfo;
+import com.iitbh.ccms.model.UserInfo.StatusEnum;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.service.UsersService;
 
@@ -36,16 +36,16 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
         pagination.setPage(page);
         pagination.setSize(size);
 
-        List<UserDetails> usersDetails = new ArrayList<>();
+        List<UserInfo> usersDetails = new ArrayList<>();
         for (UserDetailsDB userDetailsDB : userDetailsList) {
-            UserDetails userDetails = new UserDetails();
+            UserInfo userInfo = new UserInfo();
             // usersDetail.setUserId(userDetailsDB.getUserId());
-            userDetails.setUserId("1"); // TODO: Fix this
-            userDetails.setUserName(userDetailsDB.getUserName());
-            userDetails.setEmail(userDetailsDB.getEmail());
+            userInfo.setUserId("1"); // TODO: Fix this
+            userInfo.setUserName(userDetailsDB.getUsername());
+            userInfo.setEmail(userDetailsDB.getEmail());
             // TODO: Update this
             try {
-                userDetails.setRoles(
+                userInfo.setRoles(
                         userDetailsDB.getRoles()
                                 .stream()
                                 .map(role -> Role.fromValue(role))
@@ -55,12 +55,12 @@ public class UserDetailsDelegateImpl implements UserDetailsApiDelegate {
                 System.err.println("Curropted user data for user + " + userDetailsDB.getUsername() + "; Invalid value for role");
             }
             try {
-                userDetails.setStatus(StatusEnum.fromValue(userDetailsDB.getStatus()));
+                userInfo.setStatus(StatusEnum.fromValue(userDetailsDB.getStatus()));
             } catch (IllegalArgumentException e) {
-                userDetails.setStatus(StatusEnum.ACTIVE);
+                userInfo.setStatus(StatusEnum.ACTIVE);
             }
-            userDetails.setDateRegistered(userDetailsDB.getDateRegistered());
-            usersDetails.add(userDetails);
+            userInfo.setDateRegistered(userDetailsDB.getDateRegistered());
+            usersDetails.add(userInfo);
         }
         pagination.setUsers(usersDetails);
 

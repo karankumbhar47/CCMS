@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.iitbh.ccms.model.UserDetails;
+import com.iitbh.ccms.model.UserInfo;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.UsersRepository;
 
@@ -41,7 +41,7 @@ public class UsersService implements UserDetailsService {
         return (int) Math.ceil((double) totalElements / size);
     }
 
-    public void updateUserDetails(String userId, UserDetails userDetailsUpdateRequest) {
+    public void updateUserDetails(String userId, UserInfo userDetailsUpdateRequest) {
         // Find the user by userId
         Optional<UserDetailsDB> optionalUser = usersRepository.findUsersByUserName(userId);
 
@@ -101,7 +101,7 @@ public class UsersService implements UserDetailsService {
 
 
 
-    public UserDetails getUserInfo(String userId) {
+    public UserInfo getUserInfo(String userId) {
         UserDetailsDB userDetailsDB = usersRepository.findByUserId(userId);
         if(userDetailsDB!=null) {
             return userDetailsDB.convertToUserDetails();

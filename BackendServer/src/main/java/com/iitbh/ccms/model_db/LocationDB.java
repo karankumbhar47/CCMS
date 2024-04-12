@@ -15,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class LocationDB {
     @Id
-    ObjectId objectId;
-    String zoneName;
-    List<String> buildings;
-    List<Category> categories;
+    private ObjectId objectId;
+    private String zoneName;
+    private List<String> buildings;
+    private List<Category> categories;
 
     @Data
     @AllArgsConstructor
@@ -27,4 +27,5 @@ public class LocationDB {
         private String name;
         private List<String> emails;
     }
+
 }

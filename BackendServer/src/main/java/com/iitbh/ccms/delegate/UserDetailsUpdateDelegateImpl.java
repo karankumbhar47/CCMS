@@ -1,7 +1,7 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.UserDetailsUpdateApiDelegate;
-import com.iitbh.ccms.model.UserDetails;
+import com.iitbh.ccms.model.UserInfo;
 import com.iitbh.ccms.service.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class UserDetailsUpdateDelegateImpl implements UserDetailsUpdateApiDelega
     }
 
     @Override
-    public ResponseEntity<Void> userDetailUpdate(UserDetails userDetails) {
-        userDetailsService.updateUserDetails(userDetails.getUserId().toString(), userDetails);
+    public ResponseEntity<Void> userDetailUpdate(UserInfo userInfo) {
+        userDetailsService.updateUserDetails(userInfo.getUserId().toString(), userInfo);
         return ResponseEntity.ok().build();
     }
 }

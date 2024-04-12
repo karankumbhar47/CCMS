@@ -1,7 +1,7 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.GetUserInfoApiDelegate;
-import com.iitbh.ccms.model.UserDetails;
+import com.iitbh.ccms.model.UserInfo;
 import com.iitbh.ccms.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class GetUserInfoDelegateImpl implements GetUserInfoApiDelegate {
     }
 
     @Override
-    public ResponseEntity<UserDetails> getUserInfo(String userId) {
+    public ResponseEntity<UserInfo> getUserInfo(String userId) {
         System.out.println(userId);
         if(usersService.getUserInfo(userId)!=null) {
             return ResponseEntity.ok(usersService.getUserInfo(userId));

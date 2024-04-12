@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.iitbh.ccms.model_db.UserDetailsDB;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +71,7 @@ public class JWTHelper {
     }
 
     // generate token for user
-    public String generateToken(UserDetails userDetails, String name) {
+    public String generateToken(UserDetailsDB userDetails, String name) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", name);
         return doGenerateToken(claims, userDetails.getUsername());
