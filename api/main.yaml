@@ -68,6 +68,9 @@ paths:
     /filterComplaintNew:
         $ref: "./paths/filter_complaint.yaml"
 
+    /getLocation:
+        $ref: "./paths/get_location.yaml.yaml"
+
 
 
 servers:

@@ -1,0 +1,16 @@
+type: object
+required:
+    - zoneName
+    - buildings
+    - catergories
+properties:
+    zoneName:
+        type: string
+    buildings:
+        type: array
+        items:
+          type: string
+    catergories:
+        type: array
+        items: 
+          $ref: catergory.yaml

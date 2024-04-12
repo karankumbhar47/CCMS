@@ -1,0 +1,11 @@
+type: object
+required:
+  - name
+  - emails
+properties:
+  name:
+    type: string 
+  emails:
+    type: array
+    items:
+      type: string 
