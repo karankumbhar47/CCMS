@@ -1,6 +1,7 @@
 package com.iitbh.ccms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.MailException;
@@ -16,6 +17,7 @@ public class EmailService {
         this.emailSender = emailSender;
     }
 
+    @Async
     public void sendSimpleMessage(String to, String subject, String text) throws MailException {
         try {
             SimpleMailMessage message = new SimpleMailMessage();

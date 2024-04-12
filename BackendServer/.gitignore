@@ -34,3 +34,8 @@ build/
 
 ### Env Files ###
 .env
+
+### symlink
+**/src/main/java/com/iitbh/ccms/api
+**/src/main/java/com/iitbh/ccms/model
+

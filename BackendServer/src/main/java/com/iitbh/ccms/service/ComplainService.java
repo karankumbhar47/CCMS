@@ -1,27 +1,22 @@
 package com.iitbh.ccms.service;
 
+import com.iitbh.ccms.utils.ComplaintUtils;
 import com.iitbh.ccms.model.ComplainOverview;
 import com.iitbh.ccms.model.ComplainSubmit;
 import com.iitbh.ccms.model_db.Complaints;
-import com.iitbh.ccms.model_db.LocationDB;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.LocationRepository;
 import com.iitbh.ccms.repository.UsersRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import com.iitbh.ccms.repository.ComplainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.LookupOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import org.springframework.data.mongodb.core.query.Query;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -30,13 +25,15 @@ public class ComplainService {
     private final UsersRepository usersRepository;
     private final MongoTemplate mongoTemplate;
     private final LocationRepository locationRepository;
+    private final ComplaintUtils complaintUtils;
 
     @Autowired
-    public ComplainService(MongoTemplate mongoTemplate, ComplainRepository complaintRepository, UsersRepository usersRepository, LocationRepository locationRepository) {
+    public ComplainService(MongoTemplate mongoTemplate, ComplainRepository complaintRepository, UsersRepository usersRepository, LocationRepository locationRepository, ComplaintUtils complaintUtils) {
         this.complaintRepository = complaintRepository;
         this.mongoTemplate = mongoTemplate;
         this.usersRepository = usersRepository;
         this.locationRepository = locationRepository;
+        this.complaintUtils = complaintUtils;
     }
 
 
@@ -62,14 +59,16 @@ public class ComplainService {
     public String SubmitComplain(ComplainSubmit complainSubmit){
         List<Complaints> list =  complaintRepository.findAll();
         while(true) {
-            String complainId = getUniqueComplaintId();
+            String complainId = complaintUtils.getUniqueComplaintId();
             for (Complaints complains : list) {
                 if(!complainId.equals(complains.getComplaintId())){
                     Complaints complainsWithId = new Complaints();
                     complainsWithId.convertToComplaints(complainSubmit, complainId);
-                    complainsWithId.setMailIds(getEmailsByZoneAndCategory(complainsWithId.getZone(),complainsWithId.getComplaintCriteria()));
-                    System.out.println(complainsWithId.getMailIds());
+                    complainsWithId.setMailIds(complaintUtils.getEmailsByZoneAndCategory(complainsWithId.getZone(),complainsWithId.getComplaintCriteria()));
                     complaintRepository.save(complainsWithId);
+                    if(!complainsWithId.getMailIds().isEmpty()) {
+                        complaintUtils.sendComplaintMail(complainsWithId.getMailIds(), complainsWithId);
+                    }
                     return complainId;
                 }
             }
@@ -88,22 +87,6 @@ public class ComplainService {
             System.out.println(complains.getComplainerId()+"not got");
         }
         return complainOverview;
-    }
-
-    public String getUniqueComplaintId() {
-        LocalDate currentDate = LocalDate.now();
-        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        List<Complaints> complaintsForToday = findByDate(currentDate);
-        int complaintNumber = complaintsForToday.size() + 1;
-        String formattedComplaintNumber = String.format("%03d", complaintNumber);
-        return formattedDate + "_" + formattedComplaintNumber;
-    }
-
-    public List<Complaints> findByDate(LocalDate date) {
-        String formattedDate = date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
-        String regexPattern = "^" + formattedDate.replace("-", "\\-") + ".*"; // Adjust the regex pattern
-        Query query = Query.query(Criteria.where("registrationDate").regex(regexPattern));
-        return mongoTemplate.find(query, Complaints.class);
     }
 
     public List<ComplainOverview> getFilteredComplain(List<String> tags, String totime, String fromtime) {
@@ -143,42 +126,5 @@ public class ComplainService {
 
     }
 
-    public List<String> getEmailsByZoneAndCategory(String zoneName, String categoryName) {
-        Optional<LocationDB> response = locationRepository.findByZoneName(zoneName);
-        if(response.isPresent()){
-            System.out.println(response.get().toString());
-            for(LocationDB.Category category: response.get().getCategories()){
-                if(category.getName().equals(categoryName)){
-                    return category.getEmails();
-                }
-            }
-        }
-        return new ArrayList<>();
-//        System.out.println(zoneName+" "+categoryName);
-//        Query query = new Query(Criteria.where("zoneName").is(zoneName)
-//                .and("categories.name").is(categoryName));
-//        query.fields().include("categories.emails");
-//        List<LocationDB> locations = mongoTemplate.find(query, LocationDB.class);
-//        if(locations.isEmpty() || locations.get(0)==null){
-//            return  new ArrayList<>();
-//        }
-//        System.out.println(locations.size());
-//        System.out.println(locations.get(0).toString());
-//        return  new ArrayList<>();
-//        return extractEmailsFromLocations(locations,categoryName);
-    }
-
-//    private List<String> extractEmailsFromLocations(List<LocationDB> locations,String categoryName) {
-//        List<String> emails = new ArrayList<>();
-//        for (LocationDB location : locations) {
-//            for (LocationDB.Category category : location.getCategories()) {
-//                if (category.getName().equals(categoryName)) {
-//                    emails.addAll(category.getEmails());
-//                }
-//            }
-//        }
-//        return emails;
-//    }
-//
 }
 
