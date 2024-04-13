@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/getUserInfo").hasAnyAuthority("Admin", "User")
                         .requestMatchers("/getLocation").hasAnyAuthority("Admin")
                         .requestMatchers("/updateLocation").hasAnyAuthority("Admin")
+                        .requestMatchers("/updateComplaintInfo").hasAnyAuthority("Admin")
                         .anyRequest().authenticated()
                         )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))

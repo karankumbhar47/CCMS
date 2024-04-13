@@ -4,11 +4,12 @@ import com.iitbh.ccms.model.ComplaintDetails;
 import com.iitbh.ccms.model.ComplaintInfo;
 import com.iitbh.ccms.model.ComplaintPage;
 import com.iitbh.ccms.utils.ComplaintUtils;
-import com.iitbh.ccms.model_db.Complaints;
+import com.iitbh.ccms.model_db.Complaint;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.UsersRepository;
 import com.iitbh.ccms.repository.ComplaintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.info.OsInfoContributor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,13 +19,13 @@ import java.util.List;
 
 
 @Service
-public class ComplainService {
+public class ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final UsersRepository usersRepository;
     private final ComplaintUtils complaintUtils;
 
     @Autowired
-    public ComplainService(ComplaintRepository complaintRepository, UsersRepository usersRepository, ComplaintUtils complaintUtils) {
+    public ComplaintService(ComplaintRepository complaintRepository, UsersRepository usersRepository, ComplaintUtils complaintUtils) {
         this.complaintRepository = complaintRepository;
         this.usersRepository = usersRepository;
         this.complaintUtils = complaintUtils;
@@ -40,7 +41,7 @@ public class ComplainService {
 
     public String SubmitComplain(ComplaintInfo complaintInfo) {
         String complainId = complaintUtils.getUniqueComplaintId();
-        Complaints complainsWithId = new Complaints();
+        Complaint complainsWithId = new Complaint();
         complainsWithId.convertToComplaints(complaintInfo, complainId);
         complainsWithId.setMailIds(complaintUtils.getEmailsByZoneAndCategory(complainsWithId.getZone(), complainsWithId.getComplaintCriteria()));
         complaintRepository.save(complainsWithId);
@@ -51,7 +52,7 @@ public class ComplainService {
     }
 
     public ComplaintDetails getSingleComplaint(String ComplaintId){
-        Complaints complains = complaintRepository.findByComplaintId(ComplaintId);
+        Complaint complains = complaintRepository.findByComplaintId(ComplaintId);
         UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
         ComplaintDetails complainOverview = complains.convertToComplainOverview();
         if(userDetailsDB != null){
@@ -94,7 +95,12 @@ public class ComplainService {
         LocalDate toDate = LocalDate.parse(todate, formatter);
         LocalDate fromDate = LocalDate.parse(fromdate, formatter);
         return (regDate.isEqual(fromDate) || regDate.isAfter(fromDate)) && (regDate.isEqual(toDate) || regDate.isBefore(toDate));
+    }
 
+    public void updateComplaintInfo(String complainId,ComplaintInfo complaintInfo){
+        Complaint previousComplaint = complaintRepository.findByComplaintId(complainId);
+        previousComplaint.convertToComplaints(complaintInfo,complainId);
+        complaintRepository.save(previousComplaint);
     }
 
 }

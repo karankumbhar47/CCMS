@@ -1,7 +1,7 @@
 package com.iitbh.ccms.utils;
 
 import com.iitbh.ccms.model.ComplaintDetails;
-import com.iitbh.ccms.model_db.Complaints;
+import com.iitbh.ccms.model_db.Complaint;
 import com.iitbh.ccms.model_db.LocationDB;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.ComplaintRepository;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,17 +45,17 @@ public class ComplaintUtils {
     public String getUniqueComplaintId() {
         LocalDate currentDate = LocalDate.now();
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        List<Complaints> complaintsForToday = findByDate(currentDate);
-        int complaintNumber = complaintsForToday.size() + 1;
+        List<Complaint> complaintForToday = findByDate(currentDate);
+        int complaintNumber = complaintForToday.size() + 1;
         String formattedComplaintNumber = String.format("%03d", complaintNumber);
         return formattedDate + "_" + formattedComplaintNumber;
     }
 
-    public List<Complaints> findByDate(LocalDate date) {
+    public List<Complaint> findByDate(LocalDate date) {
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
         String regexPattern = "^" + formattedDate.replace("-", "\\-") + ".*"; // Adjust the regex pattern
         Query query = Query.query(Criteria.where("registrationDate").regex(regexPattern));
-        return mongoTemplate.find(query, Complaints.class);
+        return mongoTemplate.find(query, Complaint.class);
     }
 
     public List<String> getEmailsByZoneAndCategory(String zoneName, String categoryName) {
@@ -72,15 +71,15 @@ public class ComplaintUtils {
         return new ArrayList<>();
     }
 
-    public void sendComplaintMail(List<String> mailIds,Complaints complaints) {
+    public void sendComplaintMail(List<String> mailIds, Complaint complaint) {
         for(String mailId: mailIds){
-            String subject = "Complaint " + complaints.getComplainerId() + ": " + complaints.getComplaintCriteria();
-            String body = "Registration Date: " + complaints.getRegistrationDate() + "\n" +
-                    "Zone: " + complaints.getZone() + "\n" +
-                    "Building Name: " + complaints.getBuildingName() + "\n" +
-                    "Location Details: " + complaints.getLocationDetails() + "\n" +
-                    "Complaint Criteria: " + complaints.getComplaintCriteria() + "\n" +
-                    "Description: " + complaints.getDescription() + "\n";
+            String subject = "Complaint " + complaint.getComplainerId() + ": " + complaint.getComplaintCriteria();
+            String body = "Registration Date: " + complaint.getRegistrationDate() + "\n" +
+                    "Zone: " + complaint.getZone() + "\n" +
+                    "Building Name: " + complaint.getBuildingName() + "\n" +
+                    "Location Details: " + complaint.getLocationDetails() + "\n" +
+                    "Complaint Criteria: " + complaint.getComplaintCriteria() + "\n" +
+                    "Description: " + complaint.getDescription() + "\n";
             System.out.println("sending email to "+mailId);
             emailService.sendSimpleMessage(mailId, subject, body);
         }
@@ -92,10 +91,10 @@ public class ComplaintUtils {
     }
 
     public List<ComplaintDetails> getComplaintPage(int pageNumber, int pageSize){
-        Page<Complaints> complaintsPage = complaintRepository.findAll(PageRequest.of(pageNumber- 1, pageSize,Sort.by(Sort.Direction.DESC,"_id")));
-        List<Complaints> list = complaintsPage.getContent();
+        Page<Complaint> complaintsPage = complaintRepository.findAll(PageRequest.of(pageNumber- 1, pageSize,Sort.by(Sort.Direction.DESC,"_id")));
+        List<Complaint> list = complaintsPage.getContent();
         List<ComplaintDetails> returnList = new ArrayList<>();
-        for(Complaints complains: list){
+        for(Complaint complains: list){
             ComplaintDetails complainOverview = complains.convertToComplainOverview();
             UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
             if(userDetailsDB != null){ complainOverview.setUserInfo(userDetailsDB.convertToUserDetails()); }
