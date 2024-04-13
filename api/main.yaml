@@ -46,6 +46,9 @@ paths:
     /getComplaintInfo/{id}:
         $ref: "./paths/get_complaint_info.yaml"
 
+    /updateComplaintInfo/{id}:
+        $ref: "./paths/update_complaint.yaml"
+
     # /resolution_submit:
     #     $ref: "./paths/resolution_submit.yaml"
     #
