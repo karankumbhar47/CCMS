@@ -1,23 +1,23 @@
 delete:
-  summary: Delete User.
-  description: Delete an existing user.
-  operationId: deleteUser
-  security:
-    - Bearer: [ ]
-  requestBody:
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - userId
-          properties:
-            userId: 
-              type: integer
-  responses:
-    '200':
-      description: 'User deleted successfully.'
-    '403':
-      description: 'Forbidden'
-    '404':
-      description: 'User not found'
+    summary: Delete User.
+    description: Delete an existing user.
+    operationId: deleteUser
+    security:
+        - Bearer: [ ]
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    type: object
+                    required:
+                        - userId
+                    properties:
+                        userId:
+                            type: integer
+    responses:
+        '200':
+            description: 'User deleted successfully.'
+        '403':
+            description: 'Forbidden'
+        '404':
+            description: 'User not found'
