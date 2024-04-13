@@ -4,8 +4,8 @@
     import { onMount } from "svelte";
     import ImageHandler from "$lib/components/ImageHandler.svelte";
 
-    /** @typedef {import("$lib/generated").ComplainOverview} ComplainOverview */
-    /** @type {ComplainOverview | undefined} */
+    /** @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails
+     * @type {ComplaintDetails | undefined} */
     let complaint;
 
     /** @type {string[]} */
@@ -17,8 +17,8 @@
             const api = getDefaultApi();
             complaint = await api.getComplaintInfo({ id });
 
-            if (complaint.attachmentIds) {
-                for (const fileId of complaint.attachmentIds) {
+            if (complaint.complaintInfo?.attachmentIds) {
+                for (const fileId of complaint.complaintInfo?.attachmentIds) {
                     try {
                         const fileBlob = await api.downloadFile({ fileId });
                         const imageUrl = URL.createObjectURL(fileBlob);
@@ -46,30 +46,37 @@
     <ul>
         <li>
             <strong>Complain:</strong>
-            {complaint?.description|| "Not specified"}
+            {complaint?.complaintInfo?.description || "Not specified"}
         </li>
         <li>
             <strong>Category :</strong>
-            {complaint?.complaintCriteria || "Not specified"}
+            {complaint?.complaintInfo?.complaintCriteria || "Not specified"}
         </li>
         <li>
             <strong>Priority:</strong>
-            {complaint?.priority|| "Not specified"}
+            {complaint?.complaintInfo?.priority || "Not specified"}
         </li>
         <li>
             <strong>Location:</strong>
-            {complaint?.buildingName|| "Not specified"}/{complaint?.zone}
+            {complaint?.complaintInfo?.buildingName ||
+                "Not specified"}/{complaint?.complaintInfo?.zone}
         </li>
-        <li><strong>Status:</strong> {complaint?.status || "Not specified"}</li>
+        <li>
+            <strong>Status:</strong>
+            {complaint?.complaintInfo?.status || "Not specified"}
+        </li>
         <li>
             <strong>Complainer ID:</strong>
-            {complaint?.complainerId || "Not specified"}
+            {complaint?.complaintInfo?.complainerId || "Not specified"}
         </li>
         <li>
             <strong>Complainer Name:</strong>
-            {complaint?.complaintId|| "Not specified"}
+            {complaint?.complaintId || "Not specified"}
         </li>
-        <li><strong>Date:</strong> {complaint?.registrationDate|| "Not specified"}</li>
+        <li>
+            <strong>Date:</strong>
+            {complaint?.complaintInfo?.registrationDate || "Not specified"}
+        </li>
     </ul>
 </div>
 <ImageHandler bind:imageUrls />

@@ -2,37 +2,33 @@
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
     import { getDefaultApi } from "$lib/utils/auth";
-
     /**
-     * @typedef {import("$lib/generated").ComplainOverview} ComplainOverview
-     * @type {Array<ComplainOverview>}
+     * @typedef {import("$lib/generated").ComplaintDetails } ComplaintDetails
+     * @type {Array<ComplaintDetails>}
      **/
     let complaintsList = [];
 
+    /** @type {number} */
+    let page = 1;
+    /** @type {number} */
+    let totalPages = 0;
+    /** @type {number} */
+    let pageSize = 2;
+
     async function fetchComplaints() {
         try {
-            complaintsList = await getDefaultApi().getComplaintsOverview();
-            // fetchAllUsers();
+            const complaintsPage = await getDefaultApi().getComplaintsOverview({
+                pageNumber: page,
+                pageSize: pageSize,
+            });
+
+            complaintsList = complaintsPage.complaintList ?? [];
+            totalPages = complaintsPage.totalPages ?? 0;
         } catch (error) {
             console.error("Error fetching complain details:", error);
         }
     }
 
-    // async function fetchAllUsers() {
-    //     try {
-    //         for (let index = 0; index < complaintsList.length; index++) {
-    //             const complaint = complaintsList[index];
-    //             if (complaint.complainerId != undefined) {
-    //                 const userInfo = await getDefaultApi().getUserInfo({
-    //                     userId: complaint.complainerId,
-    //                 });
-    //                 userDetailsList = [...userDetailsList, userInfo];
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log("Error while fetching user details ",error)
-    //     }
-    // }
 
     /**
      *  @param {string | undefined} inputDate
@@ -71,6 +67,20 @@
     onMount(() => {
         fetchComplaints();
     });
+
+    async function nextPage() {
+        if (page < totalPages) {
+            page++;
+            await fetchComplaints();
+        }
+    }
+
+    async function previousPage() {
+        if (page > 1) {
+            page--;
+            await fetchComplaints();
+        }
+    }
 </script>
 
 <div>
@@ -109,25 +119,36 @@
                 {#if complaint}
                     <td>{index + 1}</td>
                     <td>{complaint.complaintId}</td>
-                    <td>{formatDateTime(complaint.registrationDate)}</td>
+                    <td
+                        >{formatDateTime(
+                            complaint.complaintInfo?.registrationDate,
+                        )}</td
+                    >
                     <td>{complaint.userInfo?.userId || "Not Found"}</td>
                     <td>{complaint.userInfo?.name || "Not Found"}</td>
                     <td>{complaint.userInfo?.department || "Not Found"}</td>
                     <td>{complaint.userInfo?.phoneNumber || "Not Found"}</td>
-                    <td>{complaint.complaintCriteria}</td>
-                    <td>{complaint.description}</td>
-                    <td>{complaint.buildingName}/{complaint.zone}</td>
-                    <td>{complaint.locationDetails}</td>
-                    <td>  -  </td>
-                    <td>{complaint.priority}</td>
-                    <td>{complaint.status}</td>
-                    <td>{formatDateTime(complaint.resolutionDate)}</td>
-                    <td>{complaint.remarkByMaintainer}</td>
-                    <td>  -  </td>
+                    <td>{complaint.complaintInfo?.complaintCriteria}</td>
+                    <td>{complaint.complaintInfo?.description}</td>
+                    <td
+                        >{complaint.complaintInfo
+                            ?.buildingName}/{complaint.complaintInfo?.zone}</td
+                    >
+                    <td>{complaint.complaintInfo?.locationDetails}</td>
+                    <td> - </td>
+                    <td>{complaint.complaintInfo?.priority}</td>
+                    <td>{complaint.complaintInfo?.status}</td>
+                    <td
+                        >{formatDateTime(
+                            complaint.complaintInfo?.resolutionDate,
+                        )}</td
+                    >
+                    <td>{complaint.complaintInfo?.remarkByMaintainer}</td>
+                    <td> - </td>
                     <td>Closed</td>
                     <td>Reopened</td>
-                    <td>{complaint.level}</td>
-                    <td>{complaint.remarkByUser}</td>
+                    <td>{complaint.complaintInfo?.level}</td>
+                    <td>{complaint.complaintInfo?.remarkByUser}</td>
                     <td
                         ><button
                             ><a
@@ -144,6 +165,11 @@
     </tbody>
 </table>
 
+<div class="buttons">
+    <button on:click={previousPage} class="btn btn-secondary">Previous</button>
+    <button on:click={nextPage} class="btn btn-secondary">Next</button>
+</div>
+
 <style>
     table {
         width: 100%;
@@ -156,5 +182,28 @@
     }
     th {
         background-color: #f2f2f2;
+    }
+
+    .btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
     }
 </style>
