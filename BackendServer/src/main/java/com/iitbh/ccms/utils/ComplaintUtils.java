@@ -1,14 +1,21 @@
 package com.iitbh.ccms.utils;
 
+import com.iitbh.ccms.model.ComplaintDetails;
 import com.iitbh.ccms.model_db.Complaints;
 import com.iitbh.ccms.model_db.LocationDB;
-import com.iitbh.ccms.repository.ComplainRepository;
+import com.iitbh.ccms.model_db.UserDetailsDB;
+import com.iitbh.ccms.repository.ComplaintRepository;
 import com.iitbh.ccms.repository.LocationRepository;
+import com.iitbh.ccms.repository.UsersRepository;
 import com.iitbh.ccms.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,33 +30,32 @@ public class ComplaintUtils {
     private final MongoTemplate mongoTemplate;
     private final LocationRepository locationRepository;
     private final EmailService emailService;
-    private final ComplainRepository complainRepository;
+    private final ComplaintRepository complaintRepository;
+    private final UsersRepository usersRepository;
+
 
     @Autowired
-    public ComplaintUtils(MongoTemplate mongoTemplate, LocationRepository locationRepository, EmailService emailService, ComplainRepository complainRepository) {
+    public ComplaintUtils(MongoTemplate mongoTemplate, LocationRepository locationRepository, EmailService emailService, ComplaintRepository complaintRepository, UsersRepository usersRepository) {
         this.mongoTemplate = mongoTemplate;
         this.locationRepository = locationRepository;
         this.emailService = emailService;
-        this.complainRepository = complainRepository;
+        this.complaintRepository = complaintRepository;
+        this.usersRepository = usersRepository;
     }
 
     public String getUniqueComplaintId() {
-        System.out.println("id start");
         LocalDate currentDate = LocalDate.now();
         String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         List<Complaints> complaintsForToday = findByDate(currentDate);
         int complaintNumber = complaintsForToday.size() + 1;
         String formattedComplaintNumber = String.format("%03d", complaintNumber);
-        System.out.println("id return");
         return formattedDate + "_" + formattedComplaintNumber;
     }
 
     public List<Complaints> findByDate(LocalDate date) {
-        System.out.println("date start");
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
         String regexPattern = "^" + formattedDate.replace("-", "\\-") + ".*"; // Adjust the regex pattern
         Query query = Query.query(Criteria.where("registrationDate").regex(regexPattern));
-        System.out.println("date end");
         return mongoTemplate.find(query, Complaints.class);
     }
 
@@ -81,7 +87,20 @@ public class ComplaintUtils {
     }
 
     public int getTotalPages(int size) {
-        long totalElements = (int) complainRepository.count();
+        long totalElements = (int) complaintRepository.count();
         return (int) Math.ceil((double) totalElements / size);
+    }
+
+    public List<ComplaintDetails> getComplaintPage(int pageNumber, int pageSize){
+        Page<Complaints> complaintsPage = complaintRepository.findAll(PageRequest.of(pageNumber- 1, pageSize,Sort.by(Sort.Direction.DESC,"_id")));
+        List<Complaints> list = complaintsPage.getContent();
+        List<ComplaintDetails> returnList = new ArrayList<>();
+        for(Complaints complains: list){
+            ComplaintDetails complainOverview = complains.convertToComplainOverview();
+            UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
+            if(userDetailsDB != null){ complainOverview.setUserInfo(userDetailsDB.convertToUserDetails()); }
+            returnList.add(complainOverview);
+        }
+        return returnList;
     }
 }

@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ComplainRepository extends MongoRepository<Complaints, ObjectId> {
+public interface ComplaintRepository extends MongoRepository<Complaints, ObjectId> {
     Complaints findByComplaintId(String id);
 }

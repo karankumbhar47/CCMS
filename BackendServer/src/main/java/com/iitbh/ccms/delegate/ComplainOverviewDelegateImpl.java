@@ -1,13 +1,11 @@
 package com.iitbh.ccms.delegate;
 
 import com.iitbh.ccms.api.ComplainOverviewApiDelegate;
-import com.iitbh.ccms.model.ComplaintDetails;
+import com.iitbh.ccms.model.ComplaintPage;
 import com.iitbh.ccms.service.ComplainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ComplainOverviewDelegateImpl implements ComplainOverviewApiDelegate {
@@ -19,7 +17,7 @@ public class ComplainOverviewDelegateImpl implements ComplainOverviewApiDelegate
     }
 
     @Override
-    public ResponseEntity<List<ComplaintDetails>> getComplaintsOverview(Integer pageNumber, Integer pageSize) {
+    public ResponseEntity<ComplaintPage> getComplaintsOverview(Integer pageNumber, Integer pageSize) {
         return ResponseEntity.ok(complainService.getAllComplains(pageNumber,pageSize));
     }
 }
