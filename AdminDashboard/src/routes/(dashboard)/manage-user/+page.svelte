@@ -64,7 +64,7 @@
     async function updateUser(updatedUser) {
         try {
             await getDefaultApi().userDetailUpdate({
-                userInfo : updatedUser,
+                userInfo: updatedUser,
             });
             console.log("User details updated successfully.");
         } catch (error) {
@@ -93,7 +93,8 @@
             const role = document.getElementById("role").value;
             const email = document.getElementById("email").value;
             const status = document.getElementById("status").value;
-            const dateRegistered = document.getElementById("dateRegistered").value;
+            const dateRegistered =
+                document.getElementById("dateRegistered").value;
 
             const newUser = {
                 userId: userId,
@@ -104,11 +105,11 @@
                 status: status,
                 dateRegistered: dateRegistered,
                 department: "",
-                phoneNumber:""
+                phoneNumber: "",
             };
 
             await getDefaultApi().createUser({
-                userInfo : newUser,
+                userInfo: newUser,
             });
             console.log("User created successfully.");
             closeAddUserModal();
@@ -122,7 +123,9 @@
      */
     async function deleteUser(user) {
         try {
-            await getDefaultApi().deleteUser({ deleteUserRequest : user.userId });
+            await getDefaultApi().deleteUser({
+                deleteUserRequest: user.userId,
+            });
             console.log("User deleted successfully.");
         } catch (error) {
             console.error("Failed to delete user:", error);

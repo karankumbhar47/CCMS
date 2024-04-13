@@ -3,28 +3,72 @@
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
     import ImageHandler from "$lib/components/ImageHandler.svelte";
+    import ComplaintDetailsComponent from "$lib/components/ComplaintDetails.svelte";
 
     /** @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails
      * @type {ComplaintDetails | undefined} */
     let complaint;
 
-    /** @type {string[]} */
-    let imageUrls = [];
+    /** @type {ComplaintDetailsComponent}*/
+    let complainComponent;
 
-    /** @param {string} id */
+    /**
+     * @typedef {Object} ImageData
+     * @property {string} imageUrl - The URL of the image.
+     * @property {string} fileId - The ID of the file.
+     */
+
+    /** @type {ImageData[]} */
+    let fileList = [];
+
+    /** @type {string[]}*/
+    let attachmentIds = [];
+    /** @type {string[]}*/
+    let closureAttachmentIds = [];
+
+    /**
+     * @param {string} id
+     **/
     async function fetchComplaint(id) {
         try {
             const api = getDefaultApi();
             complaint = await api.getComplaintInfo({ id });
-
             if (complaint.complaintInfo?.attachmentIds) {
+                let counter = 0;
                 for (const fileId of complaint.complaintInfo?.attachmentIds) {
                     try {
                         const fileBlob = await api.downloadFile({ fileId });
                         const imageUrl = URL.createObjectURL(fileBlob);
-                        imageUrls = [...imageUrls, imageUrl];
+                        let fileName = "UserFile_" + counter++;
+                        attachmentIds = [...attachmentIds, fileName];
+                        fileList = [
+                            ...fileList,
+                            { imageUrl: imageUrl, fileId: fileName },
+                        ];
                     } catch (error) {
                         console.error("Error downloading file:", error);
+                    }
+                }
+                if (
+                    complaint.complaintInfo?.closureAttachmentIds != undefined
+                ) {
+                    for (const fileId of complaint.complaintInfo
+                        ?.closureAttachmentIds) {
+                        try {
+                            const fileBlob = await api.downloadFile({ fileId });
+                            const imageUrl = URL.createObjectURL(fileBlob);
+                            let fileName = "MaintainerFile_" + counter++;
+                            closureAttachmentIds = [
+                                ...closureAttachmentIds,
+                                fileName,
+                            ];
+                            fileList = [
+                                ...fileList,
+                                { imageUrl: imageUrl, fileId: fileName },
+                            ];
+                        } catch (error) {
+                            console.error("Error downloading file:", error);
+                        }
                     }
                 }
             } else {
@@ -37,73 +81,19 @@
 
     onMount(() => {
         const complainId = $page.params.complaintId;
-        fetchComplaint(complainId);
+        fetchComplaint(complainId, false);
     });
 </script>
 
 <h2 class="main-title">Complaint Details</h2>
-<div class="complaint-details">
-    <ul>
-        <li>
-            <strong>Complain:</strong>
-            {complaint?.complaintInfo?.description || "Not specified"}
-        </li>
-        <li>
-            <strong>Category :</strong>
-            {complaint?.complaintInfo?.complaintCriteria || "Not specified"}
-        </li>
-        <li>
-            <strong>Priority:</strong>
-            {complaint?.complaintInfo?.priority || "Not specified"}
-        </li>
-        <li>
-            <strong>Location:</strong>
-            {complaint?.complaintInfo?.buildingName ||
-                "Not specified"}/{complaint?.complaintInfo?.zone}
-        </li>
-        <li>
-            <strong>Status:</strong>
-            {complaint?.complaintInfo?.status || "Not specified"}
-        </li>
-        <li>
-            <strong>Complainer ID:</strong>
-            {complaint?.complaintInfo?.complainerId || "Not specified"}
-        </li>
-        <li>
-            <strong>Complainer Name:</strong>
-            {complaint?.complaintId || "Not specified"}
-        </li>
-        <li>
-            <strong>Date:</strong>
-            {complaint?.complaintInfo?.registrationDate || "Not specified"}
-        </li>
-    </ul>
-</div>
-<ImageHandler bind:imageUrls />
+
+<ComplaintDetailsComponent
+    bind:complaint
+    bind:this={complainComponent}
+    bind:attachmentIds
+    bind:closureAttachmentIds
+/>
+<ImageHandler bind:fileList />
 
 <style>
-    .complaint-details {
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-
-    .main-title {
-        align-self: center;
-    }
-
-    h2 {
-        margin-bottom: 10px;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        margin-bottom: 5px;
-    }
 </style>

@@ -29,7 +29,6 @@
         }
     }
 
-
     /**
      *  @param {string | undefined} inputDate
      */
@@ -38,7 +37,7 @@
         if (inputDate) {
             try {
                 const [datePart, timePart] = inputDate.split(" ");
-                const [month, day, year] = datePart.split("-");
+                const [month, day, _] = datePart.split("-");
                 const [hour, minute] = timePart.split(":");
                 const months = [
                     "January",
@@ -131,8 +130,8 @@
                     <td>{complaint.complaintInfo?.complaintCriteria}</td>
                     <td>{complaint.complaintInfo?.description}</td>
                     <td
-                        >{complaint.complaintInfo
-                            ?.buildingName}/{complaint.complaintInfo?.zone}</td
+                        >{complaint.complaintInfo?.buildingName}/{complaint
+                            .complaintInfo?.zone}</td
                     >
                     <td>{complaint.complaintInfo?.locationDetails}</td>
                     <td> - </td>

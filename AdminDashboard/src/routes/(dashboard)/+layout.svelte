@@ -18,9 +18,10 @@
 
 <style>
     /* Add your main container styling here */
-    .sider{
-        position: sticky;
+    .sider {
+        position: fixed;
         z-index: 10;
+        display: block;
     }
 
     .content {
@@ -45,7 +46,7 @@
         right: 0;
         display: block;
         width: 100vw;
-        position:fixed;
+        position: fixed;
         z-index: 1000;
     }
 </style>

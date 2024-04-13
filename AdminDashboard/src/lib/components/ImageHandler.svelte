@@ -1,18 +1,31 @@
 <script>
+    // /** @type {string[]} */
+    // export let imageUrls;
+
+    // /** @type {string[]} */
+    // export let fileIds;
+
     /**
-     * @type {string[]}
+     * @typedef {Object} ImageData
+     * @property {string} imageUrl - The URL of the image.
+     * @property {string} fileId - The ID of the file.
      */
-    export let imageUrls;
+
+    /** @type {ImageData[]} */
+    export let fileList = [];
 </script>
 
 <h2 class="main-title">Images</h2>
 <div class="image-container">
-    {#each imageUrls as imageUrl}
-        <div class="image-display">
-            <!-- svelte-ignore a11y-img-redundant-alt -->
-            <img src={imageUrl} alt="Downloaded Image" />
-        </div>
-    {/each}
+    <div class="user-files">
+        {#each fileList as file}
+            <div class="image-display">
+                <p>{file.fileId}</p>
+                <!-- svelte-ignore a11y-img-redundant-alt -->
+                <img src={file.imageUrl} alt="Downloaded Image" />
+            </div>
+        {/each}
+    </div>
 </div>
 
 <style>
