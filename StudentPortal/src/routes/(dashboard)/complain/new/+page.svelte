@@ -142,7 +142,7 @@
          *       show the complain
          */
         const complaintInfo = {
-            complainerId: "12140690",
+            complainerId: "12140860",
             description: complaintDescription,
             registrationDate: currentDate,
             resolutionDate: "",
