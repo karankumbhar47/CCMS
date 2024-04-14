@@ -22,10 +22,8 @@ public class FileUploadDelegateImpl implements UploadApiDelegate {
     public ResponseEntity<String> uploadFile(String userType, MultipartFile imageFile) {
         String fileId = "";
         try{
-            System.out.println("called try");
             fileId = fileService.saveImageFile(userType,imageFile);
         }catch (Exception e){
-            System.out.println("called catch "+e);
             fileId  = "null";
         }
         System.out.println("fileId "+fileId);

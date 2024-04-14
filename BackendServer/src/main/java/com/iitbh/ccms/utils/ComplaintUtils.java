@@ -8,6 +8,8 @@ import com.iitbh.ccms.repository.ComplaintRepository;
 import com.iitbh.ccms.repository.LocationRepository;
 import com.iitbh.ccms.repository.UsersRepository;
 import com.iitbh.ccms.service.EmailService;
+import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForOffsetDateTime;
+import org.springdoc.core.converters.PageableOpenAPIConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,7 +63,6 @@ public class ComplaintUtils {
     public List<String> getEmailsByZoneAndCategory(String zoneName, String categoryName) {
         Optional<LocationDB> response = locationRepository.findByZoneName(zoneName);
         if(response.isPresent()){
-            System.out.println(response.get().toString());
             for(LocationDB.Category category: response.get().getCategories()){
                 if(category.getName().equals(categoryName)){
                     return category.getEmails();
@@ -80,18 +81,30 @@ public class ComplaintUtils {
                     "Location Details: " + complaint.getLocationDetails() + "\n" +
                     "Complaint Criteria: " + complaint.getComplaintCriteria() + "\n" +
                     "Description: " + complaint.getDescription() + "\n";
-            System.out.println("sending email to "+mailId);
             emailService.sendSimpleMessage(mailId, subject, body);
         }
     }
 
-    public int getTotalPages(int size) {
-        long totalElements = (int) complaintRepository.count();
+    public int getTotalPages(int size, String userId) {
+        int totalElements;
+        if(userId!=null){
+            totalElements = (int) complaintRepository.countByComplainerId(userId);
+        }
+        else{
+            totalElements = (int) complaintRepository.count();
+        }
+        int pages = (int) Math.ceil(totalElements / (double) size);
         return (int) Math.ceil((double) totalElements / size);
     }
 
-    public List<ComplaintDetails> getComplaintPage(int pageNumber, int pageSize){
-        Page<Complaint> complaintsPage = complaintRepository.findAll(PageRequest.of(pageNumber- 1, pageSize,Sort.by(Sort.Direction.DESC,"_id")));
+    public List<ComplaintDetails> getComplaintPage(int pageNumber, int pageSize, String userId){
+        Page<Complaint> complaintsPage;
+        if(userId!=null){
+            complaintsPage = complaintRepository.findComplaintByComplainerId(PageRequest.of(pageNumber-1,pageSize,Sort.by(Sort.Direction.DESC,"_id")),userId);
+        }
+        else{
+            complaintsPage = complaintRepository.findAll(PageRequest.of(pageNumber- 1, pageSize,Sort.by(Sort.Direction.DESC,"_id")));
+        }
         List<Complaint> list = complaintsPage.getContent();
         List<ComplaintDetails> returnList = new ArrayList<>();
         for(Complaint complains: list){

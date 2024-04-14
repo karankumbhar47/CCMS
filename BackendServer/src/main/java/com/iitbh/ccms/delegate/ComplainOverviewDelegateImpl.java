@@ -17,7 +17,7 @@ public class ComplainOverviewDelegateImpl implements ComplainOverviewApiDelegate
     }
 
     @Override
-    public ResponseEntity<ComplaintPage> getComplaintsOverview(Integer pageNumber, Integer pageSize) {
-        return ResponseEntity.ok(complaintService.getAllComplains(pageNumber,pageSize));
+    public ResponseEntity<ComplaintPage> getComplaintsOverview(Integer pageNumber, Integer pageSize, String userId) {
+        return ResponseEntity.ok(complaintService.getAllComplains(pageNumber,pageSize,userId));
     }
 }

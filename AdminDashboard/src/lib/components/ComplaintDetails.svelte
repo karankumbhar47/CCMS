@@ -6,32 +6,38 @@
     } from "$lib/generated";
     import { getDefaultApi } from "$lib/utils/auth";
     import ImageHandler from "./ImageHandler.svelte";
-    import { onMount } from "svelte";
 
     /** @type {boolean}*/
     let isEdited = false;
     let hideThirdColumn = true;
     let isClosed = false;
-
-    /**
-     * @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails
-     * @type {ComplaintDetails | undefined}
-     */
-    export let complaint;
+    let remarkEdit = false;
+    const MAX_IMAGES = 5;
+    const MAX_FILE_SIZE_MB = 5;
 
     /** @type {string} */
-    let selectedPriority;
+    let selectedPriority = "none";
+
+    /** @type {string[]}*/
+    export let attachmentIds;
+
+    /** @type {string[]}*/
+    export let closureAttachmentIds;
 
     /** @type {string | undefined}}*/
     let closeDate;
+
     /** @type {string | undefined}}*/
     let remark;
-    let remarkEdit = false;
+
+    /** @typedef {import("$lib/generated/models").ComplaintDetails} ComplaintDetails
+     * @type {ComplaintDetails | undefined} */
+    export let complaint;
 
     /**
      * @typedef {Object} ImageData
-     * @property {string} imageUrl - The URL of the image.
-     * @property {string} fileId - The ID of the file.
+     * @property {string} imageUrl
+     * @property {string} fileId
      */
 
     /** @type {ImageData[]} */
@@ -40,15 +46,11 @@
     /** @type {ImageData[]} */
     let selectedFiles = [];
 
-    /** @type {string[]}*/
-    export let attachmentIds;
-
-    /** @type {string[]}*/
-    export let closureAttachmentIds;
-
-    let updatedComplaint = complaint?.complaintInfo;
-    const MAX_IMAGES = 5;
-    const MAX_FILE_SIZE_MB = 5;
+    /** @type {import("$lib/generated").ComplaintInfo | undefined} */
+    let updatedComplaint;
+    $: updatedComplaint = complaint?.complaintInfo;
+    $: hideThirdColumn =
+        complaint?.complaintInfo?.status != ComplaintInfoStatusEnum.Open;
 
     /** @param {string} fileName */
     function getFileUrl(fileName) {
@@ -56,61 +58,51 @@
         return file ? file.imageUrl : "";
     }
 
-    function closeComplaint() {
-        isEdited = true;
-        isClosed = true;
-        closeDate = formatDateTime(new Date());
-        if (updatedComplaint) {
-            updatedComplaint.resolutionDate = closeDate;
-            updatedComplaint.status = ComplaintInfoStatusEnum.PartiallyClose;
-            console.log("close complete");
+    /** @param {boolean} value */
+    function changeStatus(value) {
+        if (value) {
+            isEdited = true;
+            isClosed = true;
+            closeDate = formatDateTime(new Date());
         } else {
-            console.log("not complete");
+            isEdited = true;
+            isClosed = false;
+            closeDate = undefined;
+            if (updatedComplaint) {
+                updatedComplaint.resolutionDate =
+                    complaint?.complaintInfo?.resolutionDate;
+                updatedComplaint.status = complaint?.complaintInfo?.status;
+                console.log("open complete");
+            } else {
+                console.log("not complete");
+            }
         }
     }
 
-    function openComplaint() {
-        isEdited = true;
-        isClosed = false;
-        closeDate = undefined;
-        if (updatedComplaint) {
-            updatedComplaint.resolutionDate =
-                complaint?.complaintInfo?.resolutionDate;
-            updatedComplaint.status = complaint?.complaintInfo?.status;
-            console.log("open complete");
+    /** @param {boolean} isEdit */
+    function giveRemark(isEdit) {
+        if (isEdit) {
+            isEdited = true;
+            remarkEdit = true;
         } else {
-            console.log("not complete");
+            isEdited = true;
+            remarkEdit = false;
+            let updatedRemark;
+            if (remark && updatedComplaint) {
+                updatedRemark = remark;
+                updatedComplaint.remarkByMaintainer = updatedRemark;
+            }
         }
     }
 
-    function giveRemark() {
-        isEdited = true;
-        remarkEdit = true;
-    }
-
-    function doneRemark() {
-        isEdited = true;
-        remarkEdit = false;
-        let updatedRemark;
-        if (remark && updatedComplaint) {
-            updatedRemark = remark;
-            updatedComplaint.remarkByMaintainer = updatedRemark;
+    function priorityChange() {
+        if (selectedPriority != "none") {
+            isEdited = true;
+        }
+        else{
+            isEdited = false;
         }
     }
-
-    $: updatedComplaint = complaint?.complaintInfo;
-    $: hideThirdColumn =
-        complaint?.complaintInfo?.status != ComplaintInfoStatusEnum.Open;
-    // $: isClosed = complaint?.complaintInfo?.status!=ComplaintInfoStatusEnum.Open ;
-
-    onMount(() => {
-        if (complaint) {
-            updatedComplaint = complaint.complaintInfo;
-            console.log("got");
-        } else {
-            console.log("not got");
-        }
-    });
 
     function changePriority() {
         if (updatedComplaint) {
@@ -133,7 +125,8 @@
     }
 
     function addImage() {
-        document.getElementById("fileInput").click();
+        let element = document.getElementById("fileInput");
+        if (element) element.click();
     }
 
     /** @type {Array.<{selectedFile: null | File; fileId: string | null; imageUrl: string | null}>} boxes*/
@@ -143,24 +136,21 @@
         imageUrl: null,
     }));
 
-    /** @param {{ target: { files: any; }; }} event */
+    /** @param {{ target: { files: Array<File>; }; }} event */
     function handleFileSelect(event) {
         isEdited = true;
-        const files = event.target.files; // Get the selected files
+        const files = event.target.files;
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-
             if (!file.type.startsWith("image/")) {
                 alert("Please select only images.");
                 continue;
             }
-
             if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
                 alert(`File size exceeds ${MAX_FILE_SIZE_MB}MB.`);
                 continue;
             }
-
             if (selectedFiles.length >= MAX_IMAGES) {
                 alert(`Maximum ${MAX_IMAGES} images allowed.`);
                 break;
@@ -178,49 +168,65 @@
         }
     }
 
-    function cancelUpdate() {
+    /** @param {boolean} isUpdate */
+    async function updateDetails(isUpdate) {
+        if (isUpdate) {
+            if (updatedComplaint && complaint?.complaintId) {
+                changePriority();
+                updatedComplaint.resolutionDate = closeDate;
+                updatedComplaint.status =
+                    ComplaintInfoStatusEnum.PartiallyClose;
+                for (let index = 0; index < boxes.length; index++) {
+                    const { selectedFile } = boxes[index];
+                    if (selectedFile) {
+                        try {
+                            const response = await getDefaultApi().uploadFile({
+                                userType: UploadFileUserTypeEnum.User,
+                                imageFile: selectedFile,
+                            });
+
+                            if (updatedComplaint.closureAttachmentIds) {
+                                updatedComplaint.closureAttachmentIds.push(
+                                    response,
+                                );
+                            } else {
+                                updatedComplaint.closureAttachmentIds = [
+                                    response,
+                                ];
+                            }
+                            console.log(
+                                "File uploaded successfully. File ID:",
+                                updatedComplaint?.closureAttachmentIds,
+                            );
+                        } catch (error) {
+                            console.error("Error uploading image:", error);
+                        }
+                    }
+                }
+                getDefaultApi().updateComplaintInfo({
+                    id: complaint.complaintId,
+                    complaintInfo: updatedComplaint,
+                });
+                clearAll();
+            }
+        } else {
+            clearAll();
+        }
+    }
+
+    function clearAll() {
         isEdited = false;
         remarkEdit = false;
         remark = undefined;
         closeDate = undefined;
+        selectedPriority = "none";
         updatedComplaint = complaint?.complaintInfo;
-    }
-
-    async function updateDetails() {
-        if (updatedComplaint && complaint?.complaintId) {
-            changePriority();
-            for (let index = 0; index < boxes.length; index++) {
-                const { selectedFile } = boxes[index];
-                if (selectedFile) {
-                    try {
-                        const response = await getDefaultApi().uploadFile({
-                            userType: UploadFileUserTypeEnum.User,
-                            imageFile: selectedFile,
-                        });
-
-                        if (updatedComplaint.closureAttachmentIds) {
-                            updatedComplaint.closureAttachmentIds.push(
-                                response,
-                            );
-                        } else {
-                            updatedComplaint.closureAttachmentIds = [response];
-                        }
-                        console.log(
-                            "File uploaded successfully. File ID:",
-                            updatedComplaint?.closureAttachmentIds,
-                        );
-                    } catch (error) {
-                        console.error("Error uploading image:", error);
-                    }
-                }
-            }
-            getDefaultApi().updateComplaintInfo({
-                id: complaint.complaintId,
-                complaintInfo: updatedComplaint,
-            });
-        } else {
-            console.log("complaint info is empty");
-        }
+        boxes = Array.from({ length: MAX_IMAGES }, () => ({
+            selectedFile: null,
+            fileId: null,
+            imageUrl: null,
+        }));
+        selectedFiles = [];
     }
 
     /** @param {string | number | Date} date */
@@ -243,13 +249,15 @@
     <tbody>
         {#if isEdited}
             <tr class="top-row">
-                <td colspan="2" style="text-align: center;"
-                    >Update Details to Server</td
-                >
+                <td colspan="2" style="text-align: center;">Update Details</td>
                 <td>
                     <div class="updatePanel">
-                        <button on:click={cancelUpdate}>Cancel</button>
-                        <button on:click={updateDetails}>Update</button>
+                        <button on:click={() => updateDetails(false)}
+                            >Cancel</button
+                        >
+                        <button on:click={() => updateDetails(true)}
+                            >Update</button
+                        >
                     </div>
                 </td>
             </tr>
@@ -332,7 +340,11 @@
             <td>Priority</td>
             <td>{complaint?.complaintInfo?.priority}</td>
             <td style={hideThirdColumn ? "display: none" : ""}>
-                <select id="priority" bind:value={selectedPriority}>
+                <select
+                    id="priority"
+                    bind:value={selectedPriority}
+                    on:change={priorityChange}
+                >
                     <option value="none"></option>
                     <option value="medium">Medium</option>
                     <option value="urgent">Urgent</option>
@@ -345,20 +357,23 @@
             <td>{complaint?.complaintInfo?.status}</td>
             <td style={hideThirdColumn ? "display: none" : ""}>
                 {#if isClosed}
-                    <button on:click={openComplaint}>Not Close</button>
+                    <button on:click={() => changeStatus(false)}
+                        >Not Close</button
+                    >
                 {:else}
-                    <button on:click={closeComplaint}>Close</button>
+                    <button on:click={() => changeStatus(true)}>Close</button>
                 {/if}
             </td>
         </tr>
         <tr>
             <td>Closure Date</td>
-            {#if closeDate}
+            {#if closeDate != undefined}
                 <td>{closeDate}</td>
+                <td style={hideThirdColumn ? "display: none" : ""}></td>
             {:else}
                 <td>{complaint?.complaintInfo?.resolutionDate}</td>
+                <td style={hideThirdColumn ? "display: none" : ""}></td>
             {/if}
-            <td style={hideThirdColumn ? "display: none" : ""}></td>
         </tr>
         <tr>
             <td>Remarks by maintenance team if any</td>
@@ -377,9 +392,9 @@
             {/if}
             <td style={hideThirdColumn ? "display: none" : ""}>
                 {#if remarkEdit}
-                    <button on:click={doneRemark}>Done</button>
+                    <button on:click={() => giveRemark(false)}>Done</button>
                 {:else}
-                    <button on:click={giveRemark}>Edit</button>
+                    <button on:click={() => giveRemark(true)}>Edit</button>
                 {/if}
             </td>
         </tr>

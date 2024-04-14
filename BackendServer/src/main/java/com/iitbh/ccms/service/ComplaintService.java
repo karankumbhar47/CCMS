@@ -9,7 +9,6 @@ import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.UsersRepository;
 import com.iitbh.ccms.repository.ComplaintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.info.OsInfoContributor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,10 +31,10 @@ public class ComplaintService {
     }
 
 
-    public ComplaintPage getAllComplains(int page, int size){
+    public ComplaintPage getAllComplains(int page, int size, String userId){
         ComplaintPage complaintPage = new ComplaintPage();
-        complaintPage.setTotalPages(complaintUtils.getTotalPages(size));
-        complaintPage.setComplaintList(complaintUtils.getComplaintPage(page,size));
+        complaintPage.setTotalPages(complaintUtils.getTotalPages(size,userId));
+        complaintPage.setComplaintList(complaintUtils.getComplaintPage(page,size, userId));
         return complaintPage;
     }
 
@@ -62,7 +61,7 @@ public class ComplaintService {
     }
 
     public List<ComplaintDetails> getFilteredComplain(List<String> tags, String totime, String fromtime) {
-        List<ComplaintDetails> allComplaints = complaintUtils.getComplaintPage(0,10);
+        List<ComplaintDetails> allComplaints = complaintUtils.getComplaintPage(0,10,null);
         List<ComplaintDetails> tagFilteredComplaints = filterComplaintByTag(allComplaints, tags);
         List<ComplaintDetails> filteredComplaints = new ArrayList<>();
 
