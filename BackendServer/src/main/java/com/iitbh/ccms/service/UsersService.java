@@ -64,7 +64,7 @@ public class UsersService implements UserDetailsService {
         }
     }
 
-    public void deleteUserById(int userId) {
+    public void deleteUserById(String userId) {
         usersRepository.delete(usersRepository.findByUserId(userId));
     }
 
@@ -96,10 +96,10 @@ public class UsersService implements UserDetailsService {
         return user.get();
     }
 
-    public UserInfo getUserInfo(String userId) {
-        UserDetailsDB userDetailsDB = usersRepository.findByUserId(userId);
-        if (userDetailsDB != null) {
-            return userDetailsDB.convertToUserInfo();
+    public UserInfo getUserInfo(String username) {
+        Optional<UserDetailsDB> userDetailsDB = usersRepository.findUsersByUserName(username);
+        if (!userDetailsDB.isEmpty()) {
+            return userDetailsDB.get().convertToUserInfo();
         } else {
             return null;
         }

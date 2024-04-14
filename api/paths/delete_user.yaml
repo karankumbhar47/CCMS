@@ -13,7 +13,7 @@ delete:
                         - userId
                     properties:
                         userId:
-                            type: integer
+                            type: string
     responses:
         '200':
             description: 'User deleted successfully.'

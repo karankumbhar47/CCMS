@@ -21,7 +21,7 @@ public class DeleteUserDelegateImpl implements DeleteUserApiDelegate {
     @Override
     public ResponseEntity<Void> deleteUser(DeleteUserRequest deleteUserRequest) {
         // Extract userId from the request if necessary
-        int userId = deleteUserRequest.getUserId();
+        String userId = deleteUserRequest.getUserId();
 
         // Call the UserService to delete the user
         deleteUserService.deleteUserById(userId);

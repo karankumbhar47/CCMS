@@ -12,17 +12,16 @@ public class GetUserInfoDelegateImpl implements GetUserInfoApiDelegate {
     private final UsersService usersService;
 
     @Autowired
-    public GetUserInfoDelegateImpl( UsersService usersService) {
+    public GetUserInfoDelegateImpl(UsersService usersService) {
         this.usersService = usersService;
     }
 
     @Override
-    public ResponseEntity<UserInfo> getUserInfo(String userId) {
-        System.out.println(userId);
-        if(usersService.getUserInfo(userId)!=null) {
-            return ResponseEntity.ok(usersService.getUserInfo(userId));
-        }
-        else{
+    public ResponseEntity<UserInfo> getUserInfo(String username) {
+        System.out.println(username);
+        if (usersService.getUserInfo(username) != null) {
+            return ResponseEntity.ok(usersService.getUserInfo(username));
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
