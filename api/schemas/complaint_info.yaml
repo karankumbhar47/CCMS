@@ -48,6 +48,7 @@ properties:
         type: string
         enum:
             - Open
+            - ReOpen
             - PartiallyClose
             - InProgress
             - Close
