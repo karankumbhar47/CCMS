@@ -15,15 +15,14 @@
     /** @type {number} */
     let pageSize = 5;
     /** @type {string} */
-    let userId = "12140690"
-
+    let userId = "12140690";
 
     async function fetchComplaints() {
         try {
             const complaintsPage = await getDefaultApi().getComplaintsOverview({
                 pageNumber: page,
                 pageSize: pageSize,
-                userId: userId
+                userId: userId,
             });
 
             complaintsList = complaintsPage.complaintList ?? [];
@@ -146,8 +145,7 @@
                     <td>{complaint.complaintInfo?.remarkByUser}</td>
                     <td
                         ><button
-                            ><a
-                                href={`/complain/view/${complaint.complaintId}`}
+                            ><a href={`/complain/view/${complaint.complaintId}`}
                                 >View</a
                             ></button
                         ></td
