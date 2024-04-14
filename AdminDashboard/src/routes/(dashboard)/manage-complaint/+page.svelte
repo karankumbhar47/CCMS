@@ -83,10 +83,10 @@
     }
 </script>
 
-<div>
+<div class="search-container">
     <SearchBar />
 </div>
-<table>
+<table class="table-container">
     <thead>
         <tr>
             <th>Serial Number</th>
@@ -175,6 +175,25 @@
         width: 100%;
         border-collapse: collapse;
     }
+
+    .search-container {
+        position: fixed;
+        top: 10vh;
+        left: 250px;
+        width: calc(100vw - 250px);
+        z-index: 99;
+        background-color: #fff;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        overflow-x: hidden;
+    }
+
+    .table-container {
+        margin-top: 100px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
     th,
     td {
         padding: 8px;
@@ -201,9 +220,14 @@
     }
 
     .buttons {
+        position: fixed;
+        z-index: 100;
+        bottom: 20px;
+        left: 250px;
+        width: 75%;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-top: 20px;
+        padding: 0 20px;
+        box-sizing: border-box;
     }
 </style>

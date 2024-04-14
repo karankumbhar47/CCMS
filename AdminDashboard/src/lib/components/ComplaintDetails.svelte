@@ -10,6 +10,7 @@
     /** @type {boolean}*/
     let isEdited = false;
     let hideThirdColumn = true;
+    let closeConsent = false;
     let isClosed = false;
     let remarkEdit = false;
     const MAX_IMAGES = 5;
@@ -50,7 +51,13 @@
     let updatedComplaint;
     $: updatedComplaint = complaint?.complaintInfo;
     $: hideThirdColumn =
-        complaint?.complaintInfo?.status != ComplaintInfoStatusEnum.Open;
+        complaint?.complaintInfo?.status ==
+        (ComplaintInfoStatusEnum.PartiallyClose ||
+            ComplaintInfoStatusEnum.Close);
+    $: closeConsent =
+        complaint?.complaintInfo?.status == ComplaintInfoStatusEnum.Close;
+    $: isReopened =
+        complaint?.complaintInfo?.status == ComplaintInfoStatusEnum.ReOpen;
 
     /** @param {string} fileName */
     function getFileUrl(fileName) {
@@ -425,13 +432,20 @@
         </tr>
         <tr>
             <td>Consent for closure (if closed)</td>
-            <td>{complaint?.complaintInfo?.status}</td>
+            {#if closeConsent}
+                <td>Closed from User Side</td>
+            {:else}
+                <td>Not Closed from User Side</td>
+            {/if}
             <td style={hideThirdColumn ? "display: none" : ""}></td>
         </tr>
         <tr>
             <td>Reopen (if closed but not satisfied)</td>
-            <td></td>
-            <td style={hideThirdColumn ? "display: none" : ""}></td>
+            {#if isReopened}
+                <td>Reopened By user</td>
+            {:else}
+                <td>Not Reopened By user</td>
+            {/if}
         </tr>
         <tr>
             <td>Escalate to next level</td>

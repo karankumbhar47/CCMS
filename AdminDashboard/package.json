@@ -45,6 +45,7 @@
     "type": "module",
     "dependencies": {
         "js-cookie": "^3.0.5",
-        "jwt-decode": "^4.0.0"
+        "jwt-decode": "^4.0.0",
+        "svelte-material-ui": "7.0.0-beta.18"
     }
 }
