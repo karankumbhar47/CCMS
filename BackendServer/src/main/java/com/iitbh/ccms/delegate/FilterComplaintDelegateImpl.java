@@ -18,4 +18,5 @@ public class FilterComplaintDelegateImpl implements FilterComplaintNewApi {
     public ResponseEntity<List<ComplaintDetails>> filterComplaintNew(List<String> tags, String totime, String fromtime) {
         return ResponseEntity.ok(complaintService.getFilteredComplain(tags, totime, fromtime));
     }
+
 }

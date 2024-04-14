@@ -15,4 +15,6 @@ public interface ComplaintRepository extends MongoRepository<Complaint, ObjectId
     Complaint findByComplaintId(String id);
     Page<Complaint> findComplaintByComplainerId(PageRequest pageRequest, String complainerId);
     long countByComplainerId(String complainerId);
+    long countByComplaintCriteriaAndComplaintId(String tag, String dateRegex);
+
 }

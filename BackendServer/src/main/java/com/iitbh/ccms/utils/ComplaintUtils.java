@@ -7,6 +7,7 @@ import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.ComplaintRepository;
 import com.iitbh.ccms.repository.LocationRepository;
 import com.iitbh.ccms.repository.UsersRepository;
+import com.iitbh.ccms.service.ComplaintService;
 import com.iitbh.ccms.service.EmailService;
 import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForOffsetDateTime;
 import org.springdoc.core.converters.PageableOpenAPIConverter;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +35,6 @@ public class ComplaintUtils {
     private final EmailService emailService;
     private final ComplaintRepository complaintRepository;
     private final UsersRepository usersRepository;
-
 
     @Autowired
     public ComplaintUtils(MongoTemplate mongoTemplate, LocationRepository locationRepository, EmailService emailService, ComplaintRepository complaintRepository, UsersRepository usersRepository) {
@@ -114,5 +115,20 @@ public class ComplaintUtils {
             returnList.add(complainOverview);
         }
         return returnList;
+    }
+    public long getCountOfTagsOnDate(String tag, LocalDate date) {
+        // Adjust the regex pattern
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String regexPattern = "^" + formattedDate + "_*";
+        System.out.println(regexPattern);
+        System.out.println(tag);
+        Query query = new Query();
+        query.addCriteria(
+                new Criteria().andOperator(
+                        Criteria.where("ComplaintId").regex(regexPattern),
+                        Criteria.where("ComplaintCriteria").regex(tag)
+                )
+        );
+        return mongoTemplate.find(query, Complaint.class).size();
     }
 }
