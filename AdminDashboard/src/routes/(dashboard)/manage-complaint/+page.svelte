@@ -13,13 +13,14 @@
     /** @type {number} */
     let totalPages = 0;
     /** @type {number} */
-    let pageSize = 2;
+    let pageSize = 5;
 
     async function fetchComplaints() {
         try {
             const complaintsPage = await getDefaultApi().getComplaintsOverview({
                 pageNumber: page,
                 pageSize: pageSize,
+                userId: undefined,
             });
 
             complaintsList = complaintsPage.complaintList ?? [];

@@ -71,7 +71,7 @@
      * @param {string | undefined} newEmail
      */
     function updateEmail(index, newEmail) {
-        if (selectedCategory?.emails && newEmail != undefined ) {
+        if (selectedCategory?.emails && newEmail != undefined) {
             selectedCategory.emails[index] = newEmail;
             isEditing = false;
             editedIndex = undefined;
@@ -101,7 +101,7 @@
      * @param {number | undefined} index
      */
     async function deleteEmail(index) {
-        if (index != undefined  && selectedCategory?.emails != undefined) {
+        if (index != undefined && selectedCategory?.emails != undefined) {
             selectedCategory.emails.splice(index, 1);
             enableEditing(index);
             await saveChanges();
@@ -138,13 +138,13 @@
             <i class="arrow down"></i>
         </button>
         <div class="dropdown-content">
-            {#if locationData !=  undefined}
-            {#each locationData as zone}
-                <button on:click={() => selectZone(zone)}
-                    >{zone.zoneName}</button
-                >
-            {/each}
-            {/if}   
+            {#if locationData != undefined}
+                {#each locationData as zone}
+                    <button on:click={() => selectZone(zone)}
+                        >{zone.zoneName}</button
+                    >
+                {/each}
+            {/if}
         </div>
     </div>
 

@@ -98,8 +98,7 @@
     function priorityChange() {
         if (selectedPriority != "none") {
             isEdited = true;
-        }
-        else{
+        } else {
             isEdited = false;
         }
     }
