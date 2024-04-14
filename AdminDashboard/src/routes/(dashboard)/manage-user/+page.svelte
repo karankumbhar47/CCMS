@@ -3,29 +3,32 @@
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
 
+    /**
+     * @typedef {import("$lib/generated").UserInfo} UserInfo
+     * @type {UserInfo[]}
+     */
     let users = [];
-    let page = 1; // Initial page number
+
+    /** @type {number} */
+    let page = 1;
+    /** @type {number} */
     let totalPages = 0;
+    /** @type {boolean} */
     let isLoading = false;
 
     onMount(async () => {
-        console.log("Loading data");
         await loadUsers();
     });
 
     async function loadUsers() {
         try {
-            console.log("loading 1");
             isLoading = true;
             console.log(page);
-            console.log("loading 2");
             const response = await getDefaultApi().getUsers({
                 page: page,
                 size: 10,
             });
-            console.log("loading 3");
             totalPages = response.totalPages ? response.totalPages : 1;
-            console.log("totalPages:", totalPages);
             users = response.users ? response.users : [];
         } catch (error) {
             console.error("Failed to fetch user details:", error);
@@ -35,9 +38,14 @@
         console.log(users);
     }
 
+    /** @type {UserInfo | null} */
     let editingUser = null;
+    /** @type {boolean} */
     let isAddingUser = false;
 
+    /**
+     * @param {UserInfo | null} user
+     */
     function toggleEditMode(user) {
         editingUser = editingUser === user ? null : user;
     }
@@ -50,22 +58,13 @@
         isAddingUser = false;
     }
 
-    // /**
-    //  * @description Update user details on the server.
-    //  * @param {import('$lib/generated').UserDetailUpdate} newUser - The updated user details.
-    //  */
-    // function handleSaveUser(newUser) {
-    //     console.log("New user:", newUser);
-    //     // Send a request to the server to save the new user
-    //     // You can use the generated OpenAPI client to call the API endpoint here
-    //     // After saving the user, close the modal
-    //     closeAddUserModal();
-    // }
-
+    /**
+     * @param {UserInfo} updatedUser
+     */
     async function updateUser(updatedUser) {
         try {
             await getDefaultApi().userDetailUpdate({
-                userDetailUpdate: updatedUser,
+                userInfo: updatedUser,
             });
             console.log("User details updated successfully.");
         } catch (error) {
@@ -73,6 +72,9 @@
         }
     }
 
+    /**
+     * @param {UserInfo} user
+     */
     async function saveUserChanges(user) {
         try {
             console.log(user);
@@ -97,14 +99,17 @@
             const newUser = {
                 userId: userId,
                 userName: userName,
-                role: role,
+                name: "",
+                roles: role,
                 email: email,
                 status: status,
                 dateRegistered: dateRegistered,
+                department: "",
+                phoneNumber: "",
             };
 
             await getDefaultApi().createUser({
-                userDetailUpdate: newUser,
+                userInfo: newUser,
             });
             console.log("User created successfully.");
             closeAddUserModal();
@@ -113,9 +118,14 @@
         }
     }
 
+    /**
+     * @param {UserInfo} user
+     */
     async function deleteUser(user) {
         try {
-            await getDefaultApi().deleteUser({ deleteUserRequest: user });
+            await getDefaultApi().deleteUser({
+                deleteUserRequest: user.userId,
+            });
             console.log("User deleted successfully.");
         } catch (error) {
             console.error("Failed to delete user:", error);
@@ -123,7 +133,7 @@
     }
 
     async function nextPage() {
-        if (page < totalPages ) {
+        if (page < totalPages) {
             page++;
             console.log("nextpage:", page);
             await loadUsers();
@@ -171,7 +181,9 @@
                 <label for="dateRegistered">Date Registered:</label>
                 <input type="text" id="dateRegistered" class="form-control" />
             </div>
-            <button on:click={createUser} class="btn btn-primary">Add user</button>
+            <button on:click={createUser} class="btn btn-primary"
+                >Add user</button
+            >
         </div>
     </div>
 {/if}
@@ -195,25 +207,33 @@
                 <td>{user.userId}</td>
                 <td>
                     {#if editingUser === user}
-                        <input type="text" bind:value={user.userName} class="form-control" />
+                        <input
+                            type="text"
+                            bind:value={user.userName}
+                            class="form-control"
+                        />
                     {:else}
                         {user.userName}
                     {/if}
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <select bind:value={user.role} class="form-control">
+                        <select bind:value={user.roles} class="form-control">
                             <option value="admin">Admin</option>
                             <option value="resolver">Resolver</option>
                             <option value="student">Student</option>
                         </select>
                     {:else}
-                        {user.role}
+                        {user.roles?.at(0)}
                     {/if}
                 </td>
                 <td>
                     {#if editingUser === user}
-                        <input type="text" bind:value={user.email} class="form-control" />
+                        <input
+                            type="text"
+                            bind:value={user.email}
+                            class="form-control"
+                        />
                     {:else}
                         {user.email}
                     {/if}
@@ -231,13 +251,22 @@
                 <td>{user.dateRegistered}</td>
                 <td>
                     {#if editingUser === user}
-                        <button on:click={() => saveUserChanges(user)} class="btn btn-success">Update</button>
+                        <button
+                            on:click={() => saveUserChanges(user)}
+                            class="btn btn-success">Update</button
+                        >
                     {:else}
-                        <button on:click={() => toggleEditMode(user)} class="btn btn-primary">Edit</button>
+                        <button
+                            on:click={() => toggleEditMode(user)}
+                            class="btn btn-primary">Edit</button
+                        >
                     {/if}
                 </td>
                 <td>
-                    <button on:click={() => deleteUser(user)} class="btn btn-danger">Delete</button>
+                    <button
+                        on:click={() => deleteUser(user)}
+                        class="btn btn-danger">Delete</button
+                    >
                 </td>
             </tr>
         {/each}
@@ -246,7 +275,8 @@
 
 <div class="buttons">
     <button on:click={previousPage} class="btn btn-secondary">Previous</button>
-    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button>
+    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button
+    >
     <button on:click={nextPage} class="btn btn-secondary">Next</button>
 </div>
 

@@ -4,7 +4,7 @@
         { name: "Manage User", url: "/manage-user" },
         { name: "Manage Complaint", url: "/manage-complaint" },
         { name: "Manage Announcement", url: "/announcements" },
-        { name: "System Configuration", url: "/logout" },
+        { name: "System Configuration", url: "/system-configuration" },
         { name: "Logout", url: "/logout" },
     ];
 </script>

@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Complaints {
+public class Complaint {
     @Id
     ObjectId objectId;
 

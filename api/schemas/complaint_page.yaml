@@ -1,0 +1,9 @@
+type: object
+properties:
+    complaintList:
+        type: array
+        items:
+            $ref: "./complaint_details.yaml"
+    totalPages:
+        type: integer
+        description: Total number of pages

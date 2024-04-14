@@ -1,0 +1,15 @@
+post:
+  summary: updated details of location.
+  description: updated details of the location.
+  operationId: updateLocation 
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/location.yaml"
+    required: true
+  responses:
+    '200':
+      description: 'OK'
+    '403':
+      description: 'Forbidden'

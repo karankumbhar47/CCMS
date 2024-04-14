@@ -43,6 +43,9 @@ paths:
     /getComplaintInfo/{id}:
         $ref: "./paths/get_complaint_info.yaml"
 
+    /updateComplaintInfo/{id}:
+        $ref: "./paths/update_complaint.yaml"
+
     # /resolution_submit:
     #     $ref: "./paths/resolution_submit.yaml"
     #
@@ -65,6 +68,11 @@ paths:
     /filterComplaintNew:
         $ref: "./paths/filter_complaint.yaml"
 
+    /getLocation:
+        $ref: "./paths/get_location.yaml"
+    
+    /updateLocation:
+        $ref: "./paths/update_location.yaml"
 
 
 servers:

@@ -36,7 +36,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 20px;
+        padding: 20px 0px;
         background-color: #3498db;
         color: #ffffff;
         margin: 0;
@@ -47,11 +47,13 @@
 
     .header h1 {
         margin: 0;
+        padding: 0px 20px;
     }
 
     .user-profile {
         display: flex;
         align-items: center;
+        padding: 0px 20px;
     }
 
     .user-profile img {
@@ -64,6 +66,7 @@
     .user-info {
         display: flex;
         flex-direction: row;
+        align-items: center;
     }
 
     .profile-dropdown {

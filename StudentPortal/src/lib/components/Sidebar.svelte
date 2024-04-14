@@ -1,40 +1,40 @@
-<!-- Sidebar.svelte -->
-
 <script>
-    /** @type Array.<{name: string; url:string;}> */
+    /** @type {Array.<{name: string; url:string;}>} */
     let links = [
         { name: "Announcements", url: "/announcements" },
         { name: "New Complain", url: "/complain/new" },
-        { name: "View Complains", url: "/complain" },
+        { name: "View Complains", url: "/complain/view" },
         { name: "Logout", url: "/logout" },
     ];
 </script>
 
 <div class="sidebar" role="navigation">
     {#each links as link}
-        <a class="sidebar-heading" href={link.url}>
-            {link.name}
+        <a href={link.url}>
+            <div class="sidebar-heading">
+                {link.name}
+            </div>
         </a>
     {/each}
 </div>
 
 <style lang="scss">
-    .sidebar {
+    .sidebar div {
         display: block;
         background: none;
         border: none;
-        padding: 0;
-        margin: 0;
+        padding: 30px 20px;
+        font-size: large;
         cursor: pointer;
         text-align: left;
     }
 
     .sidebar {
-        background-color: #2c3e50; /* Sidebar background color */
+        background-color: #2c3e50;
         padding-top: 120px;
-        height: 100%;
+        height: 100vh;
         position: absolute;
-        width: 250px; /* Adjust the width of the sidebar */
+        width: 250px;
         position: fixed;
         top: 0;
         left: 0;
@@ -44,15 +44,12 @@
     }
 
     .sidebar-heading {
-        color: #ffffff; /* Sidebar heading text color */
-        padding-left: 20px;
-        padding-top: 20px;
-        padding-bottom: 20px;
-        margin: 0px;
+        color: #ffffff;
+        padding: 20px;
         cursor: pointer;
     }
 
     .sidebar-heading:hover {
-        background-color: #34495e; /* Highlight color on hover/active */
+        background-color: #34495e;
     }
 </style>

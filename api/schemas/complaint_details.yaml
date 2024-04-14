@@ -1,14 +1,5 @@
 type: object
 properties:
-    totalPages:
-        type: integer
-        description: Total number of pages
-    pageSize:
-        type: integer
-        description: Number of entity per page
-    pageNumber:
-        type: integer
-        description: Current Page Number
     complaintId:
         type: string
         maxLength: 12

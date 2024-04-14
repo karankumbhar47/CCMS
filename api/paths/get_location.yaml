@@ -1,0 +1,13 @@
+get:
+    summary: Get details of all Location.
+    description: Get details of all Location.
+    operationId: getLocation
+    responses:
+        '200':
+            description: OK
+            content:
+                application/json:
+                    schema:
+                      type: array
+                      items:
+                        $ref: '../schemas/location.yaml'

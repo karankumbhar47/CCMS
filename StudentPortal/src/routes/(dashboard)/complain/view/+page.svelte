@@ -14,13 +14,16 @@
     let totalPages = 0;
     /** @type {number} */
     let pageSize = 5;
+    /** @type {string} */
+    let userId = "12140690"
+
 
     async function fetchComplaints() {
         try {
             const complaintsPage = await getDefaultApi().getComplaintsOverview({
                 pageNumber: page,
                 pageSize: pageSize,
-                userId: undefined,
+                userId: userId
             });
 
             complaintsList = complaintsPage.complaintList ?? [];
@@ -92,10 +95,6 @@
             <th>Serial Number</th>
             <th>Complaint Registration Number</th>
             <th>Date Of Registration</th>
-            <th>User Id</th>
-            <th>User Name</th>
-            <th>Department</th>
-            <th>Phone Number</th>
             <th>Category Issue</th>
             <th>Brief Description of Issue</th>
             <th>Building Name</th>
@@ -124,10 +123,6 @@
                             complaint.complaintInfo?.registrationDate,
                         )}</td
                     >
-                    <td>{complaint.userInfo?.userId || "Not Found"}</td>
-                    <td>{complaint.userInfo?.name || "Not Found"}</td>
-                    <td>{complaint.userInfo?.department || "Not Found"}</td>
-                    <td>{complaint.userInfo?.phoneNumber || "Not Found"}</td>
                     <td>{complaint.complaintInfo?.complaintCriteria}</td>
                     <td>{complaint.complaintInfo?.description}</td>
                     <td
@@ -152,7 +147,7 @@
                     <td
                         ><button
                             ><a
-                                href={`/manage-complaint/${complaint.complaintId}`}
+                                href={`/complain/view/${complaint.complaintId}`}
                                 >View</a
                             ></button
                         ></td

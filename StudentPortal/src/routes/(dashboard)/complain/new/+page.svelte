@@ -6,9 +6,9 @@
     import { onMount } from "svelte";
     import zonesData from "$lib/data/location.json";
     import {
-        ComplainOverviewPriorityEnum,
-        ComplainSubmitStatusEnum,
-        ComplainSubmitLevelEnum,
+        ComplaintInfoPriorityEnum,
+        ComplaintInfoStatusEnum,
+        ComplaintInfoLevelEnum,
     } from "$lib/generated/models";
 
     /**@type {ImageHandler}*/
@@ -65,6 +65,7 @@
 
     /** @param {string} selectedZone */
     function handleZoneChange(selectedZone) {
+        console.log(selectedZone);
         updateBuildingNamesAndCriteria();
     }
 
@@ -100,11 +101,11 @@
      */
     function priorityEnum(priority) {
         if (priority === "Urgent") {
-            return ComplainOverviewPriorityEnum.Urgent;
+            return ComplaintInfoPriorityEnum.Urgent;
         } else if (priority == "Medium") {
-            return ComplainOverviewPriorityEnum.Medium;
+            return ComplaintInfoPriorityEnum.Medium;
         } else {
-            return ComplainOverviewPriorityEnum.Normal;
+            return ComplaintInfoPriorityEnum.Normal;
         }
     }
 
@@ -140,8 +141,8 @@
          * @todo also save complain id locally if want to
          *       show the complain
          */
-        const complaintDetails = {
-            complainerId: "12140690",
+        const complaintInfo = {
+            complainerId: "12140860",
             description: complaintDescription,
             registrationDate: currentDate,
             resolutionDate: "",
@@ -153,14 +154,14 @@
             closureAttachmentIds: [],
             zone: selectedZone,
             priority: priorityEnum(selectedPriority),
-            status: ComplainSubmitStatusEnum.Open,
-            level: ComplainSubmitLevelEnum.L1,
+            status: ComplaintInfoStatusEnum.Open,
+            level: ComplaintInfoLevelEnum.L1,
             complaintCriteria: selectedCriteria,
         };
 
         try {
             const response = await apiClient.submitComplaint({
-                complainSubmit: complaintDetails,
+                complaintInfo: complaintInfo,
             });
             alert("Complaint submitted successfully");
             resetAllVars();

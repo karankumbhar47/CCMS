@@ -1,0 +1,26 @@
+put:
+    operationId: updateComplaintInfo
+    summary: Update Complaint Information
+    description: Updates the information of a complaint with the provided complaint ID.
+    parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the complaint to update.
+          schema:
+              type: string
+    requestBody:
+        required: true
+        content:
+            application/json:
+                schema:
+                    $ref: '../schemas/complaint_info.yaml'
+    responses:
+        '200':
+            description: Successful update
+        '400':
+            description: Bad request
+        '404':
+            description: Complaint not found
+        '500':
+            description: Internal server error

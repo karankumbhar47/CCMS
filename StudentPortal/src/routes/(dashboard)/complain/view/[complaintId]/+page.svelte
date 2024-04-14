@@ -2,7 +2,7 @@
     import { page } from "$app/stores";
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
-    import ImageHandler from "$lib/components/ImageHandler.svelte";
+    import ImageDisplyer from "$lib/components/ImageDisplayer.svelte";
     import ComplaintDetailsComponent from "$lib/components/ComplaintDetails.svelte";
 
     /** @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails
@@ -93,7 +93,7 @@
     bind:attachmentIds
     bind:closureAttachmentIds
 />
-<ImageHandler bind:fileList />
+<ImageDisplyer bind:fileList />
 
 <style>
 </style>

@@ -25,11 +25,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        System.out.println("Security config called");
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/announcements").hasAnyAuthority("User", "Admin")
                         .requestMatchers("/announcements/*").hasAnyAuthority("Admin")
@@ -43,6 +42,9 @@ public class SecurityConfig {
                         .requestMatchers("/upload/image").hasAuthority("User")
                         .requestMatchers("/download/image/*").hasAnyAuthority("Admin", "User")
                         .requestMatchers("/getUserInfo").hasAnyAuthority("Admin", "User")
+                        .requestMatchers("/getLocation").hasAnyAuthority("Admin")
+                        .requestMatchers("/updateLocation").hasAnyAuthority("Admin")
+                        .requestMatchers("/updateComplaintInfo").hasAnyAuthority("Admin","User")
                         .anyRequest().authenticated()
                         )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))

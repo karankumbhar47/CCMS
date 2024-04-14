@@ -48,6 +48,7 @@ properties:
         type: string
         enum:
             - Open
+            - PartiallyClose
             - InProgress
             - Close
         description: "Status of the complaint"
