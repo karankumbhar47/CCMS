@@ -1,8 +1,7 @@
 <script>
     import ImageHandler from "$lib/components/ImageHandler.svelte";
-    import { jwtDecode } from "jwt-decode";
     import Cookies from "js-cookie";
-    import { getDefaultApi } from "$lib/utils/auth";
+    import { getDefaultApi, userInfo } from "$lib/utils/auth";
     import { onMount } from "svelte";
     import zonesData from "$lib/data/location.json";
     import {
@@ -10,6 +9,7 @@
         ComplaintInfoStatusEnum,
         ComplaintInfoLevelEnum,
     } from "$lib/generated/models";
+    import { get } from "svelte/store";
 
     /**@type {ImageHandler}*/
     let uploadImage;
@@ -67,10 +67,6 @@
     function handleZoneChange(selectedZone) {
         console.log(selectedZone);
         updateBuildingNamesAndCriteria();
-    }
-
-    if (token !== undefined) {
-        console.log(jwtDecode(token).name);
     }
 
     /** @param {{ detail: string[]; }} event */
@@ -135,14 +131,20 @@
         currentDate = formatDateTime(new Date());
         const apiClient = getDefaultApi();
 
+        /** @type {string | undefined} */
+        let userId = get(userInfo)?.userId;
+        if(userId === undefined){
+            return;
+        }
+
         /**
          * @todo get complainer id from local storage
          * @todo get complainer name from local storage
          * @todo also save complain id locally if want to
          *       show the complain
          */
-        const complaintInfo = {
-            complainerId: "12140860",
+        const complaintDetails = {
+            complainerId: userId,
             description: complaintDescription,
             registrationDate: currentDate,
             resolutionDate: "",

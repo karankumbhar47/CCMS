@@ -1,11 +1,24 @@
 <script>
+    import { onMount } from "svelte";
+    import { getUserInfo, userInfo } from "$lib/utils/auth";
+
     /** @type {string} */
     export let userName;
+    /** @type {boolean} */
     let showProfileDropdown = false;
+    /** @type {import("$lib/generated").UserInfo | undefined} */
+    let userData;
 
     function toggleProfileDropdown() {
         showProfileDropdown = !showProfileDropdown;
     }
+
+    onMount(() => {
+        getUserInfo();
+        userInfo.subscribe((data) => {
+            userData = data;
+        });
+    });
 </script>
 
 <div class="header">
@@ -22,7 +35,7 @@
                 <span>&#9662;</span>
                 {#if showProfileDropdown}
                     <div class="dropdown-content">
-                        <p>Email: student@example.com</p>
+                        <p>Email: {userData?.email ? userData?.email : ""}</p>
                         <p>Role: Student</p>
                     </div>
                 {/if}
@@ -42,7 +55,7 @@
         margin: 0;
         position: absolute;
         top: 0;
-        width: 100%;
+        width: 100vw;
     }
 
     .header h1 {
@@ -87,8 +100,9 @@
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
         padding: 10px;
+        margin: 10px;
         top: 30px;
-        right: 0;
+        right: 100%;
         color: black;
     }
 
