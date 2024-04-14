@@ -1,6 +1,5 @@
 package com.iitbh.ccms.model_db;
 
-import com.iitbh.ccms.model.Category;
 import com.iitbh.ccms.model.Location;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Document(collection = "Location")
 @Data
