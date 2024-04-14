@@ -10,6 +10,7 @@
         ComplaintInfoLevelEnum,
     } from "$lib/generated/models";
     import { get } from "svelte/store";
+    import Button from "@smui/button"
 
     /**@type {ImageHandler}*/
     let uploadImage;
@@ -251,7 +252,8 @@
         <ImageHandler bind:this={uploadImage} on:list={handleFileIds} />
     </div>
 
-    <button class="submit-button" on:click={submitForm}>Submit</button>
+    <Button on:click={submitForm} variant="raised">Submit</Button>
+
 </div>
 
 <style>
