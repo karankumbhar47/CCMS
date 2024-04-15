@@ -2,6 +2,15 @@ import { goto } from "$app/navigation";
 import { Configuration, DefaultApi } from "$lib/generated";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { get, writable } from "svelte/store";
+
+/** @typedef {import("$lib/generated").UserInfo} UserInfo */
+
+/** @type {import("svelte/store").Writable.<UserInfo | undefined>} */
+export const userInfo = writable(undefined);
+
+/** @type {import("svelte/store").Writable.<string | undefined>} */
+const userId = writable(undefined);
 
 /** @returns DefaultApi */
 export function getDefaultApi() {
@@ -11,7 +20,10 @@ export function getDefaultApi() {
     let headers = {};
 
     if (token !== undefined) {
-        let exp = jwtDecode(token).exp;
+        let payload = jwtDecode(token);
+        let exp = payload.exp;
+        userId.set(payload.sub);
+
         if (exp === undefined) {
             console.log("Token expiary not set, redirecting to login page");
             goto("/login");
@@ -44,4 +56,19 @@ export function getDefaultApi() {
 
     let api = new DefaultApi(config);
     return api;
+}
+
+export async function getUserInfo() {
+    let api = getDefaultApi();
+    let userid = get(userId);
+    if (userid === undefined) {
+        return;
+    }
+    try {
+        let uInfo = api.getUserInfo({ userId: userid });
+        userInfo.set(await uInfo);
+    } catch (e) {
+        console.log("Failed to get userDetails: ");
+        console.log(e);
+    }
 }
