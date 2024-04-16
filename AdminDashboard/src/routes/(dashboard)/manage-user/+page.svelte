@@ -1,14 +1,27 @@
 <script>
+    import DataTable, {
+        Head,
+        Body,
+        Row,
+        Cell,
+        Pagination,
+    } from "@smui/data-table";
+    import List, { Item, Meta } from "@smui/list";
+    import Checkbox from "@smui/checkbox";
+    import Select, { Option } from "@smui/select";
+    import IconButton from "@smui/icon-button";
+    import { Label } from "@smui/common";
+
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
+    import { Role, UserInfoStatusEnum } from "$lib/generated";
 
-    /**
-     * @typedef {import("$lib/generated").UserInfo} UserInfo
-     * @type {UserInfo[]}
-     */
+    /** @typedef {import("$lib/generated").UserInfo} UserInfo */
+
+    let rowsPerPage = 10;
+    /** @type {UserInfo[]} */
     let users = [];
-
     /** @type {number} */
     let page = 1;
     /** @type {number} */
@@ -30,6 +43,7 @@
             });
             totalPages = response.totalPages ? response.totalPages : 1;
             users = response.users ? response.users : [];
+            isLoading = false;
         } catch (error) {
             console.error("Failed to fetch user details:", error);
         } finally {
@@ -59,26 +73,14 @@
     }
 
     /**
-     * @param {UserInfo} updatedUser
-     */
-    async function updateUser(updatedUser) {
-        try {
-            await getDefaultApi().userDetailUpdate({
-                userInfo: updatedUser,
-            });
-            console.log("User details updated successfully.");
-        } catch (error) {
-            console.error("Failed to update user details:", error);
-        }
-    }
-
-    /**
      * @param {UserInfo} user
      */
     async function saveUserChanges(user) {
         try {
             console.log(user);
-            await updateUser(user);
+            await getDefaultApi().userDetailUpdate({
+                userInfo: user,
+            });
             console.log("User details saved successfully.");
         } catch (error) {
             console.error("Failed to save user details:", error);
@@ -124,7 +126,7 @@
     async function deleteUser(user) {
         try {
             await getDefaultApi().deleteUser({
-                deleteUserRequest: user.userId,
+                deleteUserRequest: { userId: user.userId },
             });
             console.log("User deleted successfully.");
         } catch (error) {
@@ -188,24 +190,27 @@
     </div>
 {/if}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>User ID</th>
-            <th>User Name</th>
-            <th>Role</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Date Registered</th>
-            <th>Action</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
+<DataTable table$aria-label="Todo list" style="width: 100%;">
+    <Head>
+        <Row>
+            <Cell>User ID</Cell>
+            <Cell>Username</Cell>
+            <Cell>Name</Cell>
+            <Cell>Role</Cell>
+            <Cell>Email</Cell>
+            <Cell>Status</Cell>
+            <Cell>Date Registered</Cell>
+            <Cell>Department</Cell>
+            <Cell>Phone</Cell>
+            <Cell>Action</Cell>
+            <Cell>Delete</Cell>
+        </Row>
+    </Head>
+    <Body>
         {#each users as user}
-            <tr>
-                <td>{user.userId}</td>
-                <td>
+            <Row>
+                <Cell>{user.userId}</Cell>
+                <Cell>
                     {#if editingUser === user}
                         <input
                             type="text"
@@ -215,19 +220,42 @@
                     {:else}
                         {user.userName}
                     {/if}
-                </td>
-                <td>
+                </Cell>
+                <Cell>
                     {#if editingUser === user}
-                        <select bind:value={user.roles} class="form-control">
-                            <option value="admin">Admin</option>
-                            <option value="resolver">Resolver</option>
-                            <option value="student">Student</option>
-                        </select>
+                        <input
+                            type="text"
+                            bind:value={user.name}
+                            class="form-control"
+                        />
                     {:else}
-                        {user.roles?.at(0)}
+                        {user.name}
                     {/if}
-                </td>
-                <td>
+                </Cell>
+                <Cell>
+                    {#if editingUser === user}
+                        <List class="demo-list" checkList>
+                            {#each Object.keys(Role) as role}
+                                <Item>
+                                    <Label>{role}</Label>
+                                    <Meta>
+                                        <Checkbox
+                                            bind:group={user.roles}
+                                            value={role}
+                                        />
+                                    </Meta>
+                                </Item>
+                            {/each}
+                        </List>
+                    {:else if user.roles}
+                        {#each user.roles as role, i}
+                            {#if i != 0},
+                            {/if}
+                            {role}
+                        {/each}
+                    {/if}
+                </Cell>
+                <Cell>
                     {#if editingUser === user}
                         <input
                             type="text"
@@ -237,19 +265,42 @@
                     {:else}
                         {user.email}
                     {/if}
-                </td>
-                <td>
+                </Cell>
+                <Cell>
                     {#if editingUser === user}
-                        <select bind:value={user.status} class="form-control">
-                            <option value="active">Active</option>
-                            <option value="block">Blocked</option>
-                        </select>
+                        <Select bind:value={user.status} label="Status">
+                            {#each Object.values(UserInfoStatusEnum) as stat}
+                                <Option value={stat}>{stat}</Option>
+                            {/each}
+                        </Select>
                     {:else}
                         {user.status}
                     {/if}
-                </td>
-                <td>{user.dateRegistered}</td>
-                <td>
+                </Cell>
+                <Cell>{user.dateRegistered.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</Cell>
+                <Cell>
+                    {#if editingUser === user}
+                        <input
+                            type="text"
+                            bind:value={user.department}
+                            class="form-control"
+                        />
+                    {:else}
+                        {user.department}
+                    {/if}
+                </Cell>
+                <Cell>
+                    {#if editingUser === user}
+                        <input
+                            type="text"
+                            bind:value={user.phoneNumber}
+                            class="form-control"
+                        />
+                    {:else}
+                        {user.phoneNumber}
+                    {/if}
+                </Cell>
+                <Cell>
                     {#if editingUser === user}
                         <button
                             on:click={() => saveUserChanges(user)}
@@ -261,23 +312,62 @@
                             class="btn btn-primary">Edit</button
                         >
                     {/if}
-                </td>
-                <td>
+                </Cell>
+                <Cell>
                     <button
                         on:click={() => deleteUser(user)}
                         class="btn btn-danger">Delete</button
                     >
-                </td>
-            </tr>
+                </Cell>
+            </Row>
         {/each}
-    </tbody>
-</table>
+    </Body>
+    <Pagination slot="paginate">
+        <svelte:fragment slot="rowsPerPage">
+            <Label>Rows Per Page</Label>
+            <Select variant="outlined" bind:value={rowsPerPage} noLabel>
+                <Option value={10}>10</Option>
+                <Option value={25}>25</Option>
+                <Option value={100}>100</Option>
+            </Select>
+        </svelte:fragment>
+        <svelte:fragment slot="total">
+            <!-- {start + 1}-{end} of {users.length} -->
+        </svelte:fragment>
+
+        <IconButton
+            class="material-icons"
+            action="first-page"
+            title="First page"
+            on:click={() => (page = 1)}
+            disabled={page === 1}>first_page</IconButton
+        >
+        <IconButton
+            class="material-icons"
+            action="prev-page"
+            title="Prev page"
+            on:click={previousPage}
+            disabled={page === 1}>chevron_left</IconButton
+        >
+        <IconButton
+            class="material-icons"
+            action="next-page"
+            title="Next page"
+            on:click={nextPage}
+            disabled={page === totalPages}>chevron_right</IconButton
+        >
+        <IconButton
+            class="material-icons"
+            action="last-page"
+            title="Last page"
+            on:click={() => (page = totalPages)}
+            disabled={page === totalPages}>last_page</IconButton
+        >
+    </Pagination>
+</DataTable>
 
 <div class="buttons">
-    <button on:click={previousPage} class="btn btn-secondary">Previous</button>
-    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button
-    >
-    <button on:click={nextPage} class="btn btn-secondary">Next</button>
+    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button>
 </div>
 
 <style>
@@ -319,23 +409,6 @@
 
     .form-group {
         margin-bottom: 20px;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    th,
-    td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
     }
 
     .btn {
