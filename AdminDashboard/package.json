@@ -20,9 +20,11 @@
         "smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark -i node_modules"
     },
     "devDependencies": {
+        "@mdi/js": "^7.4.47",
         "@openapitools/openapi-generator-cli": "^2.11.0",
         "@smui/button": "7.0.0-beta.18",
         "@smui/data-table": "7.0.0-beta.18",
+        "@smui/icon-button": "7.0.0-beta.18",
         "@smui/linear-progress": "7.0.0-beta.18",
         "@sveltejs/adapter-auto": "^3.1.1",
         "@sveltejs/kit": "^2.5.2",
@@ -36,9 +38,9 @@
         "git-format-staged": "^3.1.1",
         "husky": "^9.0.11",
         "prettier": "^3.2.5",
-        "smui-theme": "7.0.0-beta.18",
         "prettier-plugin-svelte": "^3.2.2",
         "pretty-quick": "^4.0.0",
+        "smui-theme": "7.0.0-beta.18",
         "svelte": "^4.2.12",
         "svelte-check": "^3.6.6",
         "svelte-routing": "^2.12.0",
@@ -48,8 +50,13 @@
     },
     "type": "module",
     "dependencies": {
+        "@smui/card": "7.0.0-beta.18",
+        "@smui/layout-grid": "7.0.0-beta.18",
+        "@smui/paper": "7.0.0-beta.18",
         "js-cookie": "^3.0.5",
         "jwt-decode": "^4.0.0",
+        "material-icons": "^1.13.12",
+        "material-icons-font": "^2.1.0",
         "svelte-material-ui": "7.0.0-beta.18"
     }
 }

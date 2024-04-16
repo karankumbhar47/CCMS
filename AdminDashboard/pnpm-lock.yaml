@@ -5,17 +5,35 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@smui/card':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
+  '@smui/layout-grid':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
+  '@smui/paper':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
   jwt-decode:
     specifier: ^4.0.0
     version: 4.0.0
+  material-icons:
+    specifier: ^1.13.12
+    version: 1.13.12
+  material-icons-font:
+    specifier: ^2.1.0
+    version: 2.1.0
   svelte-material-ui:
     specifier: 7.0.0-beta.18
     version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
 
 devDependencies:
+  '@mdi/js':
+    specifier: ^7.4.47
+    version: 7.4.47
   '@openapitools/openapi-generator-cli':
     specifier: ^2.11.0
     version: 2.11.0
@@ -23,6 +41,9 @@ devDependencies:
     specifier: 7.0.0-beta.18
     version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
   '@smui/data-table':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
+  '@smui/icon-button':
     specifier: 7.0.0-beta.18
     version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
   '@smui/linear-progress':
@@ -1030,6 +1051,10 @@ packages:
       '@material/feature-targeting': 14.0.0
       '@material/theme': 14.0.0
       tslib: 2.6.2
+
+  /@mdi/js@7.4.47:
+    resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
+    dev: true
 
   /@nestjs/axios@3.0.1(@nestjs/common@10.3.0)(axios@1.6.5)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-VlOZhAGDmOoFdsmewn8AyClAdGpKXQQaY1+3PGB+g6ceurGIdTxZgRX3VXc1T6Zs60PedWjg3A82TDOB05mrzQ==}
@@ -3136,6 +3161,14 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /material-icons-font@2.1.0:
+    resolution: {integrity: sha512-Nv36UacYjodGc15HJDehJcfrYFioq5p6sQD7kcpBVoFLdUgTnv/kzM5BamTIi0W/i3BaeouunzfBOkUzjicT3Q==}
+    dev: false
+
+  /material-icons@1.13.12:
+    resolution: {integrity: sha512-/2YoaB79IjUK2B2JB+vIXXYGtBfHb/XG66LvoKVM5ykHW7yfrV5SP6d7KLX6iijY6/G9GqwgtPQ/sbhFnOURVA==}
+    dev: false
 
   /mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}

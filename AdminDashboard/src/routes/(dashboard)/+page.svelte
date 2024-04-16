@@ -1,10 +1,16 @@
 <!-- Overview.svelte -->
 
 <script>
+    import LayoutGrid, { Cell } from "@smui/layout-grid";
+    import Paper, { Title, Subtitle, Content } from "@smui/paper";
+    import IconButton from "@smui/icon-button";
+
     export let userCount = 50;
     export let totalComplaints = 10;
     export let pendingComplaints = 2;
     export let resolverCount = 2;
+
+    export let clicked = 0;
 
     // import Cookies from 'js-cookie';
 
@@ -14,43 +20,49 @@
     // }
 </script>
 
-<div class="overview-content">
-    <div class="overview-grid">
-        <div class="overview-box">
-            <h2>No. of Registered Users</h2>
-            <p>{userCount}</p>
-        </div>
-        <div class="overview-box">
-            <h2>Total Complaints</h2>
-            <p>{totalComplaints}</p>
-        </div>
-        <div class="overview-box">
-            <h2>Pending Complaints</h2>
-            <p>{pendingComplaints}</p>
-        </div>
-        <div class="overview-box">
-            <h2>No. of Resolvers</h2>
-            <p>{resolverCount}</p>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* Add your styling for the overview content and boxes here */
-    .overview-content {
-        flex: 1;
-        padding: 20px;
-    }
-
-    .overview-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 20px;
-    }
-
-    .overview-box {
-        border: 1px solid #ddd;
-        padding: 20px;
-        text-align: center;
-    }
-</style>
+<LayoutGrid>
+    <Cell>
+        <Paper>
+            <Title>No. of Registered Users</Title>
+            <Subtitle><h2>{userCount}</h2></Subtitle>
+            <Content>
+                <IconButton class="material-icons" on:click={() => clicked++}>
+                    show_chart
+                </IconButton>
+            </Content>
+        </Paper>
+    </Cell>
+    <Cell>
+        <Paper>
+            <Title>Total Complaints</Title>
+            <Subtitle><h2>{totalComplaints}</h2></Subtitle>
+            <Content>
+                <IconButton class="material-icons" on:click={() => clicked++}>
+                    show_chart
+                </IconButton>
+            </Content>
+        </Paper>
+    </Cell>
+    <Cell>
+        <Paper>
+            <Title>Pending Complaints</Title>
+            <Subtitle><h2>{pendingComplaints}</h2></Subtitle>
+            <Content>
+                <IconButton class="material-icons" on:click={() => clicked++}>
+                    show_chart
+                </IconButton>
+            </Content>
+        </Paper>
+    </Cell>
+    <Cell>
+        <Paper>
+            <Title>No. of Resolvers</Title>
+            <Subtitle><h2>{resolverCount}</h2></Subtitle>
+            <Content>
+                <IconButton class="material-icons" on:click={() => clicked++}>
+                    show_chart
+                </IconButton>
+            </Content>
+        </Paper>
+    </Cell>
+</LayoutGrid>
