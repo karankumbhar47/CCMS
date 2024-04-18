@@ -200,7 +200,6 @@
         </div>
     </div>
 
-
     <div class="priority-dropdown">
         <label for="priority">Priority :</label>
         <select id="priority" bind:value={selectedPriority}>
@@ -336,6 +335,4 @@
         border-radius: 5px;
         resize: vertical;
     }
-
-
 </style>
