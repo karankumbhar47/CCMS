@@ -10,7 +10,7 @@
     let complaint;
 
     /** @type {ComplaintDetailsComponent}*/
-    let complainComponent;
+    let complaintComponent;
 
     /**
      * @typedef {Object} ImageData
@@ -80,8 +80,8 @@
     }
 
     onMount(() => {
-        const complainId = $page.params.complaintId;
-        fetchComplaint(complainId, false);
+        const complaintId = $page.params.complaintId;
+        fetchComplaint(complaintId, false);
     });
 </script>
 
@@ -89,7 +89,7 @@
 
 <ComplaintDetailsComponent
     bind:complaint
-    bind:this={complainComponent}
+    bind:this={complaintComponent}
     bind:attachmentIds
     bind:closureAttachmentIds
 />

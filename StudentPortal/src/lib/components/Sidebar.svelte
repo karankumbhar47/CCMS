@@ -2,8 +2,8 @@
     /** @type {Array.<{name: string; url:string;}>} */
     let links = [
         { name: "Announcements", url: "/announcements" },
-        { name: "New Complain", url: "/complain/new" },
-        { name: "View Complains", url: "/complain/view" },
+        { name: "New Complain", url: "/complaint/new" },
+        { name: "View Complains", url: "/complaint/view" },
         { name: "Logout", url: "/logout" },
     ];
 </script>

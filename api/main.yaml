@@ -28,10 +28,10 @@ paths:
     /announcements/update:
         $ref: "./paths/update_announcement.yaml"
 
-    /complain_overview:
-        $ref: "./paths/complain_overview.yaml"
+    /complaint_overview:
+        $ref: "./paths/complaint_overview.yaml"
 
-    /submit_complain:
+    /submit_complaint:
         $ref: "./paths/submit_complaint.yaml"
 
     /userDetails:

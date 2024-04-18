@@ -142,9 +142,9 @@
          * @todo get complainer id from local storage
          * @todo get complainer name from local storage
          * @todo also save complain id locally if want to
-         *       show the complain
+         *       show the complaint
          */
-        const complaintDetails = {
+        const complaintInfo = {
             complainerId: userId,
             description: complaintDescription,
             registrationDate: currentDate,
@@ -187,6 +187,7 @@
     {#if isLoading}
         <div>Loading...</div>
     {/if}
+
     <div class="complain-description-box">
         <label for="complaint-description">Complaint Description:</label>
         <div class="complain-text">
@@ -198,6 +199,7 @@
             ></textarea>
         </div>
     </div>
+
 
     <div class="priority-dropdown">
         <label for="priority">Priority :</label>
@@ -249,13 +251,13 @@
 
     <!-- <TagsHandler bind:selectedTags bind:availableTags /> -->
     <div class="image-container">
-        <ImageHandler bind:this={uploadImage} on:list={handleFileIds} />
+        <ImageDisplayer bind:this={uploadImage} on:list={handleFileIds} />
     </div>
 
     <Button on:click={submitForm} variant="raised">Submit</Button>
 </div>
 
-<style>
+<style lang="scss">
     .image-container {
         width: 100%;
     }
@@ -334,4 +336,6 @@
         border-radius: 5px;
         resize: vertical;
     }
+
+
 </style>

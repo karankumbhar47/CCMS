@@ -16,7 +16,6 @@ import com.iitbh.ccms.model.ComplaintPage;
 import com.iitbh.ccms.model_db.Complaint;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.ComplaintRepository;
-import com.iitbh.ccms.repository.ComplaintRepository;
 import com.iitbh.ccms.repository.UsersRepository;
 import com.iitbh.ccms.utils.ComplaintUtils;
 

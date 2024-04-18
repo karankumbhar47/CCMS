@@ -55,7 +55,7 @@
         boxes[index] = { selectedFile: null, imageUrl: null, fileId: null };
         const input = document.querySelectorAll('input[type="file"]')[index];
         if (input) {
-            input.value = null; // Reset the input field value
+            input.value = null; 
         }
     }
 

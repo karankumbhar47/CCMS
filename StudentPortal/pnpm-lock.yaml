@@ -11,6 +11,9 @@ dependencies:
   '@sveltejs/adapter-vercel':
     specifier: ^5.3.0
     version: 5.3.0(@sveltejs/kit@2.5.6)
+  '@smui/textfield':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.4.2)
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -22,6 +25,9 @@ dependencies:
     version: 7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5)
 
 devDependencies:
+  '@material/typography':
+    specifier: ^14.0.0
+    version: 14.0.0
   '@openapitools/openapi-generator-cli':
     specifier: ^2.13.2
     version: 2.13.2
@@ -1017,7 +1023,6 @@ packages:
       '@material/feature-targeting': 14.0.0
       '@material/theme': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@nestjs/axios@3.0.1(@nestjs/common@10.3.0)(axios@1.6.5)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-VlOZhAGDmOoFdsmewn8AyClAdGpKXQQaY1+3PGB+g6ceurGIdTxZgRX3VXc1T6Zs60PedWjg3A82TDOB05mrzQ==}

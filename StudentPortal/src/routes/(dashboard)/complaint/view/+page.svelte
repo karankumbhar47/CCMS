@@ -145,7 +145,7 @@
                     <td>{complaint.complaintInfo?.remarkByUser}</td>
                     <td
                         ><button
-                            ><a href={`/complain/view/${complaint.complaintId}`}
+                            ><a href={`/complaint/view/${complaint.complaintId}`}
                                 >View</a
                             ></button
                         ></td

@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetComplainDelegateImpl implements GetComplaintInfoApiDelegate {
+public class GetComplaintDelegateImpl implements GetComplaintInfoApiDelegate {
     private final ComplaintService complaintService;
 
-    public GetComplainDelegateImpl(ComplaintService complaintService) {
+    public GetComplaintDelegateImpl(ComplaintService complaintService) {
         this.complaintService = complaintService;
     }
 

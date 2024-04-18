@@ -1,4 +1,6 @@
 <script>
+    import Accordion, { Panel, Header, Content } from "@smui-extra/accordion";
+    import Header from "./Header.svelte";
     // /** @type {string[]} */
     // export let imageUrls;
 
@@ -15,16 +17,41 @@
     export let fileList = [];
 </script>
 
+<div class="accordion-container">
+    <Accordion>
+        <Panel>
+            <Header>Panel 1</Header>
+            <Content>
+                The content for panel 1.
+
+                <ul>
+                    <li>Some</li>
+                    <li>List</li>
+                    <li>Items</li>
+                </ul>
+            </Content>
+        </Panel>
+        <Panel>
+            <Header>Panel 2</Header>
+            <Content>The content for panel 2.</Content>
+        </Panel>
+    </Accordion>
+</div>
+
 <h2 class="main-title">Images</h2>
 <div class="image-container">
     <div class="user-files">
-        {#each fileList as file}
-            <div class="image-display">
-                <p>{file.fileId}</p>
-                <!-- svelte-ignore a11y-img-redundant-alt -->
-                <img src={file.imageUrl} alt="Downloaded Image" />
-            </div>
-        {/each}
+        <Panel>
+            {#each fileList as file}
+                <div class="image-display">
+                    <Header>{file.fileId}</Header>
+                    <!-- svelte-ignore a11y-img-redundant-alt -->
+                    <Content>
+                        <img src={file.imageUrl} alt="Downloaded Image" />
+                    </Content>
+                </div>
+            {/each}
+        </Panel>
     </div>
 </div>
 

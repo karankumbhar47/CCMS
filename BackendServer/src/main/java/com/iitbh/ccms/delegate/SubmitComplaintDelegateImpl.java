@@ -1,16 +1,16 @@
 package com.iitbh.ccms.delegate;
 
-import com.iitbh.ccms.api.SubmitComplainApiDelegate;
+import com.iitbh.ccms.api.SubmitComplaintApiDelegate;
 import com.iitbh.ccms.model.ComplaintInfo;
 import com.iitbh.ccms.service.ComplaintService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubmitComplainDelegateImpl implements SubmitComplainApiDelegate {
+public class SubmitComplaintDelegateImpl implements SubmitComplaintApiDelegate {
     private final ComplaintService complaintService;
 
-    public SubmitComplainDelegateImpl(ComplaintService complaintService) {
+    public SubmitComplaintDelegateImpl(ComplaintService complaintService) {
         this.complaintService = complaintService;
     }
 
