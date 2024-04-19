@@ -89,35 +89,33 @@
     }
 
     async function createUser() {
-        try {
-            const userId = document.getElementById("userId").value;
-            const userName = document.getElementById("userName").value;
-            const role = document.getElementById("role").value;
-            const email = document.getElementById("email").value;
-            const status = document.getElementById("status").value;
-            const dateRegistered =
-                document.getElementById("dateRegistered").value;
-
-            const newUser = {
-                userId: userId,
-                userName: userName,
-                name: "",
-                roles: role,
-                email: email,
-                status: status,
-                dateRegistered: dateRegistered,
-                department: "",
-                phoneNumber: "",
-            };
-
-            await getDefaultApi().createUser({
-                userInfo: newUser,
-            });
-            console.log("User created successfully.");
-            closeAddUserModal();
-        } catch (error) {
-            console.error("Failed to create user:", error);
-        }
+        // try {
+        //     const userId = document.getElementById("userId").value;
+        //     const userName = document.getElementById("userName").value;
+        //     const role = document.getElementById("role").value;
+        //     const email = document.getElementById("email").value;
+        //     const status = document.getElementById("status").value;
+        //     const dateRegistered =
+        //         document.getElementById("dateRegistered").value;
+        //     const newUser = {
+        //         userId: userId,
+        //         userName: userName,
+        //         name: "",
+        //         roles: role,
+        //         email: email,
+        //         status: status,
+        //         dateRegistered: dateRegistered,
+        //         department: "",
+        //         phoneNumber: "",
+        //     };
+        //     await getDefaultApi().createUser({
+        //         userInfo: newUser,
+        //     });
+        //     console.log("User created successfully.");
+        //     closeAddUserModal();
+        // } catch (error) {
+        //     console.error("Failed to create user:", error);
+        // }
     }
 
     /**
@@ -207,6 +205,9 @@
         </Row>
     </Head>
     <Body>
+        {#if isLoading}
+            Loading...
+        {/if}
         {#each users as user}
             <Row>
                 <Cell>{user.userId}</Cell>
@@ -432,15 +433,6 @@
 
     .btn-primary:hover {
         background-color: #0056b3;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: #fff;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
     }
 
     .btn-success {
