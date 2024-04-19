@@ -1,11 +1,5 @@
 <script>
     import Accordion, { Panel, Header, Content } from "@smui-extra/accordion";
-    import Header from "./Header.svelte";
-    // /** @type {string[]} */
-    // export let imageUrls;
-
-    // /** @type {string[]} */
-    // export let fileIds;
 
     /**
      * @typedef {Object} ImageData
@@ -15,62 +9,65 @@
 
     /** @type {ImageData[]} */
     export let fileList = [];
+    /** @type {string}*/
+    export let title;
+
+    /** @type {number} */
+    let number;
+    $: number = fileList.length;
 </script>
 
-<div class="accordion-container">
+<div class="image-container">
     <Accordion>
         <Panel>
-            <Header>Panel 1</Header>
+            <Header>
+                <div class="container-title">
+                    <div class="name">{title}</div>
+                    <div class="number">{number}</div>
+                </div>
+            </Header>
             <Content>
-                The content for panel 1.
-
-                <ul>
-                    <li>Some</li>
-                    <li>List</li>
-                    <li>Items</li>
-                </ul>
+                <div class="accordion-container">
+                    <Accordion>
+                        {#each fileList as file}
+                            <Panel>
+                                <Header>{file.fileId}</Header>
+                                <Content>
+                                    <!-- svelte-ignore a11y-img-redundant-alt -->
+                                    <img src={file.imageUrl} alt="Image" />
+                                </Content>
+                            </Panel>
+                        {/each}
+                    </Accordion>
+                </div>
             </Content>
-        </Panel>
-        <Panel>
-            <Header>Panel 2</Header>
-            <Content>The content for panel 2.</Content>
         </Panel>
     </Accordion>
 </div>
 
-<h2 class="main-title">Images</h2>
-<div class="image-container">
-    <div class="user-files">
-        <Panel>
-            {#each fileList as file}
-                <div class="image-display">
-                    <Header>{file.fileId}</Header>
-                    <!-- svelte-ignore a11y-img-redundant-alt -->
-                    <Content>
-                        <img src={file.imageUrl} alt="Downloaded Image" />
-                    </Content>
-                </div>
-            {/each}
-        </Panel>
-    </div>
-</div>
-
 <style>
-    .image-container {
+    .container-title {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .name {
+        margin-right: 10px;
+    }
+
+    .number {
+        margin-left: auto;
+    }
+
+    .accordion-container {
+        width: 100%;
+    }
+
+    .image-container {
+        width: 100%;
         justify-content: center;
         align-items: center;
         margin-top: 20px;
-    }
-
-    .image-display {
-        width: 80%;
-        padding: 3rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        margin: 2rem;
     }
 
     .image-container img {
