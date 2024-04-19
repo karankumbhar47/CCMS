@@ -65,7 +65,7 @@ paths:
     /download/image/{fileId}:
         $ref: "./paths/download_image.yaml"
 
-    /filterComplaintNew:
+    /filterComplaint:
         $ref: "./paths/filter_complaint.yaml"
 
     /getLocation:

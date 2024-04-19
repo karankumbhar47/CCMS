@@ -1,10 +1,9 @@
 get:
-  operationId: filterComplaintNew
+  operationId: filterComplaint
   parameters:
     - name: tags
       in: query
       description: Tags for search
-      required: true
       schema:
         type: array
         items:
@@ -12,21 +11,39 @@ get:
     - name: totime
       in: query
       description: End date
-      required: true
       schema:
         type: string
     - name: fromtime
       in: query
       description: End date
-      required: true
       schema:
         type: string
+    - name: status
+      in: query
+      description: Status of complaint
+      schema:
+        type: string
+    - name: pageNumber
+      required: true
+      in: query
+      description: Number of page
+      schema:
+        type: integer
+    - name: pageSize
+      in: query
+      required: true
+      description: size of page
+      schema:
+        type: integer
+
   responses:
-    '200':
-      description: OK
+    "200":
+      description: "Get filtered complaints"
       content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: "../schemas/complaint_details.yaml"
+         application/json:
+           schema:
+             $ref: "../schemas/complaint_page.yaml"
+    "404":
+      description: File not found
+    "500":
+      description: Internal server error
