@@ -3,6 +3,7 @@ package com.iitbh.ccms.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import com.iitbh.ccms.model.ComplaintInfo;
 import com.iitbh.ccms.model.ComplaintPage;
 import com.iitbh.ccms.model_db.Complaint;
 import com.iitbh.ccms.model_db.UserDetailsDB;
-import com.iitbh.ccms.repository.ComplainRepository;
+import com.iitbh.ccms.repository.ComplaintRepository;
 import com.iitbh.ccms.repository.ComplaintRepository;
 import com.iitbh.ccms.repository.UsersRepository;
 import com.iitbh.ccms.utils.ComplaintUtils;
@@ -25,7 +26,7 @@ public class ComplaintService {
     private final ComplaintUtils complaintUtils;
 
     @Autowired
-    public ComplainService(ComplainRepository complaintRepository, UsersRepository usersRepository,
+    public ComplaintService(ComplaintRepository complaintRepository, UsersRepository usersRepository,
             ComplaintUtils complaintUtils) {
         this.complaintRepository = complaintRepository;
         this.usersRepository = usersRepository;
@@ -60,47 +61,6 @@ public class ComplaintService {
             complainOverview.setUserInfo(userDetailsDB.convertToUserInfo());
         }
         return complainOverview;
-    }
-
-    public List<ComplaintDetails> getFilteredComplain(List<String> tags, String totime, String fromtime) {
-        List<ComplaintDetails> allComplaints = complaintUtils.getComplaintPage(0, 10, null);
-        List<ComplaintDetails> tagFilteredComplaints = filterComplaintByTag(allComplaints, tags);
-        List<ComplaintDetails> filteredComplaints = new ArrayList<>();
-
-        for (ComplaintDetails complaint : tagFilteredComplaints) {
-            if (dateIsInBetween(complaint.getComplaintInfo().getRegistrationDate(), totime, fromtime)) {
-                filteredComplaints.add(complaint);
-            }
-        }
-        return filteredComplaints;
-    }
-
-    public List<ComplaintDetails> filterComplaintByTag(List<ComplaintDetails> complaints, List<String> tags) {
-        List<ComplaintDetails> filtered = new ArrayList<>();
-        if (tags.isEmpty()) {
-            return complaints;
-        }
-        for (ComplaintDetails complaint : complaints) {
-            if (tags.stream().anyMatch(tag -> tag.equals(complaint.getComplaintInfo().getBuildingName()))) {
-                filtered.add(complaint);
-            }
-        }
-        return filtered;
-    }
-
-    public boolean dateIsInBetween(String date, String todate, String fromdate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        if (todate.isEmpty()) {
-            todate = "9999-01-01";
-        }
-        if (fromdate.isEmpty()) {
-            fromdate = "0000-01-01";
-        }
-        LocalDate regDate = LocalDate.parse(date.substring(0, 10), formatter);
-        LocalDate toDate = LocalDate.parse(todate, formatter);
-        LocalDate fromDate = LocalDate.parse(fromdate, formatter);
-        return (regDate.isEqual(fromDate) || regDate.isAfter(fromDate))
-                && (regDate.isEqual(toDate) || regDate.isBefore(toDate));
     }
 
     public void updateComplaintInfo(String complainId, ComplaintInfo complaintInfo) {

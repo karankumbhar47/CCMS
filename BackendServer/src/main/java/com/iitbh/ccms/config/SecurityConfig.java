@@ -28,7 +28,7 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/announcements").hasAnyAuthority("User", "Admin")
                         .requestMatchers("/announcements/*").hasAnyAuthority("Admin")
@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/getLocation").hasAnyAuthority("Admin")
                         .requestMatchers("/updateLocation").hasAnyAuthority("Admin")
                         .requestMatchers("/updateComplaintInfo").hasAnyAuthority("Admin","User")
+                        .requestMatchers("/filterComplaintNew").hasAnyAuthority("Admin","User")
                         .anyRequest().authenticated()
                         )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
