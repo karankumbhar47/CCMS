@@ -20,7 +20,10 @@ public class UserDetailsUpdateDelegateImpl implements UserDetailsUpdateApiDelega
 
     @Override
     public ResponseEntity<Void> userDetailUpdate(UserInfo userInfo) {
-        userDetailsService.updateUserDetails(userInfo.getUserId().toString(), userInfo);
-        return ResponseEntity.ok().build();
+        if (userDetailsService.updateUserDetails(userInfo.getUserId(), userInfo)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

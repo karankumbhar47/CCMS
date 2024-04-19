@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,10 +56,10 @@ public class ComplaintService {
 
     public ComplaintDetails getSingleComplaint(String ComplaintId) {
         Complaint complains = complaintRepository.findByComplaintId(ComplaintId);
-        UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
+        Optional<UserDetailsDB> userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
         ComplaintDetails complainOverview = complains.convertToComplainOverview();
-        if (userDetailsDB != null) {
-            complainOverview.setUserInfo(userDetailsDB.convertToUserInfo());
+        if (!userDetailsDB.isEmpty()) {
+            complainOverview.setUserInfo(userDetailsDB.get().convertToUserInfo());
         }
         return complainOverview;
     }

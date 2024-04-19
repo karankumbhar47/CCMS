@@ -110,8 +110,8 @@ public class ComplaintUtils {
         List<ComplaintDetails> returnList = new ArrayList<>();
         for(Complaint complains: list){
             ComplaintDetails complainOverview = complains.convertToComplainOverview();
-            UserDetailsDB userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
-            if(userDetailsDB != null){ complainOverview.setUserInfo(userDetailsDB.convertToUserInfo()); }
+            Optional<UserDetailsDB> userDetailsDB = usersRepository.findByUserId(complains.getComplainerId());
+            if(!userDetailsDB.isEmpty()){ complainOverview.setUserInfo(userDetailsDB.get().convertToUserInfo()); }
             returnList.add(complainOverview);
         }
         return returnList;

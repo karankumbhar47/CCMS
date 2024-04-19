@@ -2,6 +2,7 @@ package com.iitbh.ccms.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,34 +39,44 @@ public class UsersService implements UserDetailsService {
         return (int) Math.ceil((double) totalElements / size);
     }
 
-    public void updateUserDetails(String userId, UserInfo userDetailsUpdateRequest) {
+    public boolean updateUserDetails(String userId, UserInfo userInfo) {
         // Find the user by userId
-        Optional<UserDetailsDB> optionalUser = usersRepository.findUsersByUserName(userId);
+        Optional<UserDetailsDB> optionalUser = usersRepository.findByUserId(userId);
 
         if (optionalUser.isPresent()) {
             UserDetailsDB existingUser = optionalUser.get();
             // Update the fields of existing user with the updated values
-            existingUser.setUserName(userDetailsUpdateRequest.getUserName());
+            existingUser.setUserName(userInfo.getUserName());
             existingUser.setRoles(
-                    userDetailsUpdateRequest.getRoles()
+                    userInfo.getRoles()
                             .stream()
                             .map(role -> role.toString())
                             .collect(Collectors.toCollection(ArrayList::new))
 
             );
-            existingUser.setEmail(userDetailsUpdateRequest.getEmail());
-            existingUser.setStatus(userDetailsUpdateRequest.getStatus().toString());
-            existingUser.setDateRegistered(userDetailsUpdateRequest.getDateRegistered());
+            existingUser.setName(userInfo.getName());
+            existingUser.setEmail(userInfo.getEmail());
+            existingUser.setStatus(userInfo.getStatus().toString());
+            existingUser.setDepartment(userInfo.getDepartment());
+            existingUser.setPhoneNumber(userInfo.getPhoneNumber());
+            existingUser.setDateRegistered(userInfo.getDateRegistered());
             // Save the updated user details
             usersRepository.save(existingUser);
             System.out.println("User details updated successfully.");
+            return true;
         } else {
             System.out.println("User with userId " + userId + " not found.");
+            return false;
         }
     }
 
-    public void deleteUserById(String userId) {
-        usersRepository.delete(usersRepository.findByUserId(userId));
+    public boolean deleteUserById(String userId) {
+        try {
+            usersRepository.delete(usersRepository.findByUserId(userId).get());
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
     public void createUser(UserDetailsDB userDetailUpdate) {

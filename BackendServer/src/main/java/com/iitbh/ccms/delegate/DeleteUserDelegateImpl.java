@@ -24,9 +24,8 @@ public class DeleteUserDelegateImpl implements DeleteUserApiDelegate {
         String userId = deleteUserRequest.getUserId();
 
         // Call the UserService to delete the user
-        deleteUserService.deleteUserById(userId);
 
-        boolean deleted = true;
+        boolean deleted = deleteUserService.deleteUserById(userId);
 
         if (deleted) {
             return ResponseEntity.ok().build(); // User deleted successfully
