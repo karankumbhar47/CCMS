@@ -1,27 +1,37 @@
 <script>
-    import ImageHandler from "$lib/components/ImageHandler.svelte";
-    import Cookies from "js-cookie";
     import { getDefaultApi, userInfo } from "$lib/utils/auth";
     import { onMount } from "svelte";
     import zonesData from "$lib/data/location.json";
     import {
-        ComplaintInfoPriorityEnum,
         ComplaintInfoStatusEnum,
         ComplaintInfoLevelEnum,
+        ComplaintInfoPriorityEnum,
     } from "$lib/generated/models";
     import { get } from "svelte/store";
-    import Button from "@smui/button";
+    import SimpleDisplay from "$lib/components/SimpleDisplay.svelte";
+    import { UploadFileUserTypeEnum } from "$lib/generated";
+    import WarningSnackbar from "$lib/components/Snakbar.svelte";
+    import Dialog from "$lib/components/Dialog.svelte";
 
-    /**@type {ImageHandler}*/
-    let uploadImage;
+    let titleAlert = "";
+    let messageAlert = "";
+    let errorColor = "#DC143C";
+    let warningColor = "#ff9800";
+    let color = warningColor;
+    let showNegativeButton = true;
 
-    /**@type {string[]}*/
-    let FileIds = [];
+    /**
+     * @type {string[]}
+     */
+    let fileIds = [];
 
-    /** @type {string | undefined} token */
-    const token = Cookies.get("StudentPortalAuthToken");
+    /** @type {string}*/
+    const title = "Selected files";
 
-    let priorityOptions = ["Normal", "Urgent", "Medium"];
+    function addImage() {
+        let element = document.getElementById("fileInput");
+        if (element) element.click();
+    }
 
     /**@type {string[]}*/
     let zones = [];
@@ -34,7 +44,6 @@
 
     let isLoading = false;
     let complaintDescription = "";
-    let selectedPriority = "Normal";
     let selectedZone = "";
     let selectedBuilding = "";
     let selectedCriteria = "";
@@ -64,16 +73,8 @@
         selectedCriteria = complaintCriteria[0];
     }
 
-    /** @param {string} selectedZone */
-    function handleZoneChange(selectedZone) {
-        console.log(selectedZone);
+    function handleZoneChange() {
         updateBuildingNamesAndCriteria();
-    }
-
-    /** @param {{ detail: string[]; }} event */
-    function handleFileIds(event) {
-        FileIds = event.detail;
-        console.log("fileids in main ", FileIds);
     }
 
     /** @param {string | number | Date} date */
@@ -91,23 +92,10 @@
         return dateString.replace(/\//g, "-").replace(",", "");
     }
 
-    /**
-     * convert priority string value to
-     * respective Enum value
-     * @param {string} priority
-     */
-    function priorityEnum(priority) {
-        if (priority === "Urgent") {
-            return ComplaintInfoPriorityEnum.Urgent;
-        } else if (priority == "Medium") {
-            return ComplaintInfoPriorityEnum.Medium;
-        } else {
-            return ComplaintInfoPriorityEnum.Normal;
-        }
-    }
+    /** @type {WarningSnackbar} */
+    let warningSnackBar;
 
     async function submitForm() {
-        isLoading = true;
         try {
             let flag = true;
             if (complaintDescription === "") {
@@ -115,22 +103,25 @@
             }
 
             if (!flag) {
-                alert("Please fill all Information");
+                messageInfo = "Please fill all Information";
+                color = warningColor;
+                warningSnackBar.showSnackbar();
             } else {
-                console.log("try");
-                await uploadImage.handleSubmit();
-                handleSubmit();
+                messageAlert = "Are you sure, you want to submit";
+                titleAlert = "Confirm";
+                showDialog = true;
             }
         } catch (error) {
+            messageInfo = "Invalid Information filled";
+            color = errorColor;
+            warningSnackBar.showSnackbar();
             console.error("Error handling file upload:", error);
-        } finally {
-            isLoading = false;
         }
     }
 
     async function handleSubmit() {
+        isLoading = true;
         currentDate = formatDateTime(new Date());
-        const apiClient = getDefaultApi();
 
         /** @type {string | undefined} */
         let userId = get(userInfo)?.userId;
@@ -138,39 +129,53 @@
             return;
         }
 
-        /**
-         * @todo get complainer id from local storage
-         * @todo get complainer name from local storage
-         * @todo also save complain id locally if want to
-         *       show the complaint
-         */
-        const complaintInfo = {
-            complainerId: userId,
-            description: complaintDescription,
-            registrationDate: currentDate,
-            resolutionDate: "",
-            remarkByUser: "",
-            remarkByMaintainer: "",
-            buildingName: selectedBuilding,
-            locationDetails: locationDetails,
-            attachmentIds: FileIds,
-            closureAttachmentIds: [],
-            zone: selectedZone,
-            priority: priorityEnum(selectedPriority),
-            status: ComplaintInfoStatusEnum.Open,
-            level: ComplaintInfoLevelEnum.L1,
-            complaintCriteria: selectedCriteria,
-        };
-
         try {
-            const response = await apiClient.submitComplaint({
+            for (let i = 0; i < boxes.length; i++) {
+                if (boxes[i].selectedFile) {
+                    const { selectedFile } = boxes[i];
+                    if (selectedFile) {
+                        let fileId = await getDefaultApi().uploadFile({
+                            userType: UploadFileUserTypeEnum.User,
+                            imageFile: selectedFile,
+                        });
+                        fileIds = [...fileIds, fileId];
+                    }
+                }
+            }
+
+            const complaintInfo = {
+                complainerId: userId,
+                description: complaintDescription,
+                registrationDate: currentDate,
+                resolutionDate: "",
+                remarkByUser: "",
+                remarkByMaintainer: "",
+                buildingName: selectedBuilding,
+                locationDetails: locationDetails,
+                attachmentIds: fileIds,
+                closureAttachmentIds: [],
+                zone: selectedZone,
+                priority: ComplaintInfoPriorityEnum.Normal,
+                status: ComplaintInfoStatusEnum.Open,
+                level: ComplaintInfoLevelEnum.L1,
+                complaintCriteria: selectedCriteria,
+            };
+            await getDefaultApi().submitComplaint({
                 complaintInfo: complaintInfo,
             });
-            alert("Complaint submitted successfully");
+            titleAlert = "Success";
+            messageAlert = "Complaint submitted successfully";
+            showNegativeButton = false;
+            showDialog = true;
             resetAllVars();
-            console.log(response);
+            isLoading = false;
         } catch (error) {
-            console.error("Error submitting complaint:", error);
+            titleAlert = "Error";
+            messageAlert = "Error While submitting complaint";
+            showNegativeButton = false;
+            showDialog = true;
+            console.error("Error submitting complaint", error);
+            isLoading = false;
         }
     }
 
@@ -178,123 +183,271 @@
         complaintDescription = "";
         locationDetails = "";
         currentDate = "";
-        selectedPriority = "Normal";
-        uploadImage.resetAllImages();
+        selectedAttachments = [];
+        boxes = [];
+    }
+
+    let MAX_IMAGES = 5;
+    const MAX_FILE_SIZE_MB = 2;
+    let size = 0;
+    let messageInfo = "";
+
+    /** @type {Array.<{selectedFile: null | File; fileId: string | null; imageUrl: string | null}>} boxes*/
+    let boxes = [];
+    /**
+     * @typedef {Object} ImageData
+     * @property {string} imageUrl
+     * @property {string} fileId
+     */
+    /** @type {Array<ImageData>}*/
+    let selectedAttachments = [];
+
+    /** @param {{ target: { files: Array<File>; }; }} event */
+    function handleFileSelect(event) {
+        const files = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            let selectedFileNum = ++size;
+
+            if (!file.type.startsWith("image/")) {
+                alert("Please select only images.");
+                continue;
+            }
+            if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                alert(`File size exceeds ${MAX_FILE_SIZE_MB}MB.`);
+                continue;
+            }
+            if (selectedFileNum >= MAX_IMAGES + 1) {
+                messageInfo = "Maximum 5 images allowed.";
+                color = warningColor;
+                warningSnackBar.showSnackbar();
+                break;
+            }
+            const imageUrl = URL.createObjectURL(file);
+            let fileName = "File_" + selectedFileNum;
+            boxes = [
+                ...boxes,
+                { imageUrl: imageUrl, selectedFile: file, fileId: fileName },
+            ];
+            selectedAttachments = [
+                ...selectedAttachments,
+                { imageUrl: imageUrl, fileId: fileName },
+            ];
+        }
+    }
+
+    let showDialog = false;
+
+    function handlePositive() {
+        console.log(showNegativeButton);
+        if (showNegativeButton) {
+            handleSubmit();
+        } else {
+            showNegativeButton = true;
+        }
+        showDialog = false;
+    }
+
+    function handleNegative() {
+        showDialog = false;
     }
 </script>
 
 <div>
+    <div class="main-label-container">
+        <div class="label-container">
+            <!-- svelte-ignore a11y-label-has-associated-control -->
+            <label class="well-styled-label">New Complaint</label>
+        </div>
+    </div>
+
     {#if isLoading}
-        <div>Loading...</div>
+        <div class="overlay">
+            <div class="loading-container">
+                <div class="loading-dialog">
+                    <div class="loading-spinner">
+                        <!-- <CircularProgress
+                            indeterminate
+                            style="height: 32px; width: 32px;"
+                        /> -->
+                    </div>
+                </div>
+            </div>
+        </div>
     {/if}
 
-    <div class="complain-description-box">
-        <label for="complaint-description">Complaint Description:</label>
-        <div class="complain-text">
-            <textarea
-                id="complaint-description"
-                rows="4"
-                cols="50"
-                bind:value={complaintDescription}
-            ></textarea>
+    <Dialog
+        title={titleAlert}
+        message={messageAlert}
+        show={showDialog}
+        positiveButtonLabel="Ok"
+        negativeButtonLabel="Cancel"
+        on:positive={handlePositive}
+        on:negative={handleNegative}
+        bind:showNegativeButton
+    />
+
+    <WarningSnackbar
+        bind:backgroundColor={color}
+        bind:this={warningSnackBar}
+        message={messageInfo}
+        duration={4000}
+    />
+
+    <div class="container">
+        <div class="dropdowns">
+            <div class="form-field">
+                <label for="zone">Zone:</label>
+                <select
+                    id="zone"
+                    bind:value={selectedZone}
+                    on:change={handleZoneChange}
+                >
+                    {#each zones as option}
+                        <option value={option}>{option}</option>
+                    {/each}
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="building">Area Name:</label>
+                <select id="building" bind:value={selectedBuilding}>
+                    {#each buildingNames as option}
+                        <option value={option}>{option}</option>
+                    {/each}
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="category">Category:</label>
+                <select id="category" bind:value={selectedCriteria}>
+                    {#each complaintCriteria as option}
+                        <option value={option}>{option}</option>
+                    {/each}
+                </select>
+            </div>
+        </div>
+
+        <div class="textareas">
+            <div class="form-field">
+                <label for="location-details">Location Details:</label>
+                <textarea id="location-details" bind:value={locationDetails}
+                ></textarea>
+            </div>
+
+            <div class="form-field">
+                <label for="complaint-description">Complaint Description:</label
+                >
+                <textarea
+                    id="complaint-description"
+                    rows="5"
+                    cols="50"
+                    bind:value={complaintDescription}
+                ></textarea>
+            </div>
         </div>
     </div>
 
-    <div class="priority-dropdown">
-        <label for="priority">Priority :</label>
-        <select id="priority" bind:value={selectedPriority}>
-            {#each priorityOptions as option}
-                <option value={option}>{option}</option>
-            {/each}
-        </select>
+    <input
+        type="file"
+        id="fileInput"
+        accept="image/*"
+        style="display: none;"
+        multiple
+        on:change={handleFileSelect}
+    />
+
+    <div class="content-container">
+        <button class="add-button" on:click={addImage}>Add Image</button>
+        <button class="submit-button" on:click={submitForm}>Submit</button>
     </div>
 
-    <div class="zone-dropdown">
-        <label for="zone">Zone :</label>
-        <select
-            id="zone"
-            bind:value={selectedZone}
-            on:change={(e) => handleZoneChange(e.target.value)}
-        >
-            {#each zones as option}
-                <option value={option}>{option}</option>
-            {/each}
-        </select>
-    </div>
+    {#if selectedAttachments.length > 0}
+        <SimpleDisplay {title} fileList={selectedAttachments} />
+    {/if}
 
-    <div class="building-dropdown">
-        <label for="building">Area Name:</label>
-        <select id="building" bind:value={selectedBuilding}>
-            {#each buildingNames as option}
-                <option value={option}>{option}</option>
-            {/each}
-        </select>
-    </div>
-
-    <div class="category-dropdown">
-        <label for="category">Category :</label>
-        <select id="category" bind:value={selectedCriteria}>
-            {#each complaintCriteria as option}
-                <option value={option}>{option}</option>
-            {/each}
-        </select>
-    </div>
-
-    <div class="location-details">
-        <label for="location-details">Location Details:</label>
-        <div class="location-text">
-            <textarea id="location-details" bind:value={locationDetails}
-            ></textarea>
-        </div>
-    </div>
-
-    <!-- <TagsHandler bind:selectedTags bind:availableTags /> -->
-    <div class="image-container">
-        <ImageDisplayer bind:this={uploadImage} on:list={handleFileIds} />
-    </div>
-
-    <Button on:click={submitForm} variant="raised">Submit</Button>
+    <!-- .loading-spinner {
+        display: flex;
+        justify-content: center;
+    } -->
 </div>
 
 <style lang="scss">
-    .image-container {
+    .main-label-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+        /* Add any other styling for the container */
+    }
+
+    .label-container {
+        margin-top: 20px; /* Adjust margin as needed */
+        /* No fixed position */
+    }
+
+    .well-styled-label {
+        background-color: #007bff; /* Background color */
+        color: white; /* Text color */
+        padding: 10px 20px; /* Padding */
+        border-radius: 5px; /* Rounded corners */
+        font-size: 18px; /* Font size */
+        font-weight: bold; /* Font weight */
+        text-align: center; /* Center align text */
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2); /* Box shadow */
+    }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    .zone-dropdown {
-        margin-bottom: 20px;
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    label {
-        font-weight: bold;
+    .loading-dialog {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     }
 
-    select {
-        padding: 8px;
-        border: 1px solid #ccc;
-        width: 100%;
+    .loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #007bff;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        animation: spin 1s linear infinite;
     }
 
-    textarea {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        width: 100%;
-        height: 80%;
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
     }
 
-    .complain-text {
-        height: 30vh;
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
-    .location-text {
-        width: 40vw;
-        height: 10vh;
-    }
-
-    .submit-button {
+    button {
+        align-self: center;
+        margin-top: auto;
         padding: 10px 20px;
-        background-color: #007bff;
         color: white;
         border: none;
         border-radius: 5px;
@@ -302,37 +455,77 @@
         margin: 20px 0;
     }
 
-    .priority-dropdown {
-        margin-bottom: 20px;
+    .submit-button {
+        background-color: #007bff;
     }
 
-    label {
-        font-weight: bold;
+    .add-button {
+        background-color: #1d5396;
+        padding: 15px 20px;
     }
 
-    select {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        width: 40vw;
-        display: block;
-        margin-top: 0.7rem;
+    .dropdowns {
+        margin: 1rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
-    .complain-description-box {
-        width: 40vw;
+    .textareas {
+        margin: 1rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
-    label {
-        margin-bottom: 1.5rem;
-        font-weight: bold;
-    }
-
+    select,
     textarea {
         width: 100%;
         padding: 8px;
         border: 1px solid #ccc;
         border-radius: 5px;
         resize: vertical;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center; /* Center align items horizontally */
+        justify-content: center; /* Center align items vertically */
+        height: 100%;
+    }
+
+    .dropdowns,
+    .textareas {
+        margin: 1rem 2rem; /* Center-align these components horizontally */
+        width: 40vw;
+        min-width: 300px; /* Set a minimum width for the components */
+    }
+
+    @media (max-width: 700px) {
+        .dropdowns,
+        .textareas {
+            width: 80vw; /* Set width to full viewport width on smaller screens */
+        }
+    }
+    .form-field {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+    }
+
+    label {
+        font-weight: bold;
+        margin-top: 1rem;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        font-size: 16px;
+        color: #333;
     }
 </style>

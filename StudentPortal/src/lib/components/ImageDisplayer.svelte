@@ -1,9 +1,5 @@
 <script>
-    // /** @type {string[]} */
-    // export let imageUrls;
-
-    // /** @type {string[]} */
-    // export let fileIds;
+    import Accordion, { Panel, Header, Content } from "@smui-extra/accordion";
 
     /**
      * @typedef {Object} ImageData
@@ -13,37 +9,65 @@
 
     /** @type {ImageData[]} */
     export let fileList = [];
+    /** @type {string}*/
+    export let title;
+
+    /** @type {number} */
+    let number;
+    $: number = fileList.length;
 </script>
 
-<h2 class="main-title">Images</h2>
 <div class="image-container">
-    <div class="user-files">
-        {#each fileList as file}
-            <div class="image-display">
-                <p>{file.fileId}</p>
-                <!-- svelte-ignore a11y-img-redundant-alt -->
-                <img src={file.imageUrl} alt="Downloaded Image" />
-            </div>
-        {/each}
-    </div>
+    <Accordion>
+        <Panel>
+            <Header>
+                <div class="container-title">
+                    <div class="name">{title}</div>
+                    <div class="number">{number}</div>
+                </div>
+            </Header>
+            <Content>
+                <div class="accordion-container">
+                    <Accordion>
+                        {#each fileList as file}
+                            <Panel>
+                                <Header>{file.fileId}</Header>
+                                <Content>
+                                    <!-- svelte-ignore a11y-img-redundant-alt -->
+                                    <img src={file.imageUrl} alt="Image" />
+                                </Content>
+                            </Panel>
+                        {/each}
+                    </Accordion>
+                </div>
+            </Content>
+        </Panel>
+    </Accordion>
 </div>
 
 <style>
-    .image-container {
+    .container-title {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .name {
+        margin-right: 10px;
+    }
+
+    .number {
+        margin-left: auto;
+    }
+
+    .accordion-container {
+        width: 100%;
+    }
+
+    .image-container {
+        width: 100%;
         justify-content: center;
         align-items: center;
         margin-top: 20px;
-    }
-
-    .image-display {
-        width: 80%;
-        padding: 3rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        margin: 2rem;
     }
 
     .image-container img {

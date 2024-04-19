@@ -4,95 +4,128 @@
         ComplaintInfoStatusEnum,
     } from "$lib/generated";
     import { getDefaultApi } from "$lib/utils/auth";
-    import Button from "@smui/button";
-    import AlertDialog from "./AlertDialog.svelte";
+    import { getFormatDateTime } from "$lib/utils/date";
+    import Dialog from "$lib/components/Dialog.svelte";
+    import Snakbar from "$lib/components/Snakbar.svelte";
 
     /** @type {boolean}*/
-    let showMessage = false;
     let isEdited = false;
-    let remarkEdit = false;
-    let closeConsent = false;
-    let isReopened = false;
-    let reopenButton = false;
-    let closeButton = false;
+    let partiallyClose = false;
     let escalateButton = false;
+    let alertMessage = "";
+    let alertTitle = "";
+    let showNegativeButton = true;
+    let positiveButtonLabel = "Ok";
+    let negativeButtonLabel = "Cancel";
+    let showAlert = false;
+    let snakMessage = "";
+    let isLoading = false;
+    let errorColor = "#DC143C";
+    let warningColor = "#ff9800";
+    let successColor = "#008B8B";
+    let color = warningColor;
 
-    /** @type {string} */
-    let selectedPriority = "none";
-
-    /** @type {string[]}*/
-    export let attachmentIds;
-
-    /** @type {string[]}*/
-    export let closureAttachmentIds;
-
-    /** @type {string | undefined}}*/
-    let closeDate;
-
-    /** @type {string | undefined}}*/
-    let remark;
+    /** @type {Snakbar} */
+    let warningSnackBar;
 
     /** @typedef {import("$lib/generated/models").ComplaintDetails} ComplaintDetails
      * @type {ComplaintDetails | undefined} */
     export let complaint;
 
-    /**
-     * @typedef {Object} ImageData
-     * @property {string} imageUrl
-     * @property {string} fileId
-     */
-
-    /** @type {ImageData[]} */
-    export let fileList = [];
-
     /** @type {import("$lib/generated").ComplaintInfo | undefined} */
     let updatedComplaint;
-    $: updatedComplaint = complaint?.complaintInfo;
-    function getFileUrl(fileName) {
-        const file = fileList.find((file) => file.fileId === fileName);
-        return file ? file.imageUrl : "";
-    }
 
-    /** @param {boolean} isUpdate */
-    async function updateDetails(isUpdate) {
-        if (isUpdate) {
+    $: updatedComplaint = complaint?.complaintInfo;
+    $: partiallyClose =
+        complaint?.complaintInfo?.status ==
+        ComplaintInfoStatusEnum.PartiallyClose;
+    $: escalateButton =
+        complaint?.complaintInfo?.level != ComplaintInfoLevelEnum.L3 &&
+        !partiallyClose &&
+        complaint?.complaintInfo?.status != ComplaintInfoStatusEnum.Close;
+
+    function updateDetails() {
+        isLoading = true;
+        const delay = new Promise((resolve) => {
+            setTimeout(resolve, 3000);
+        });
+
+        delay.then(() => {
             if (updatedComplaint && complaint?.complaintId) {
-                updatedComplaint.resolutionDate = closeDate;
-                updatedComplaint.status =
-                    ComplaintInfoStatusEnum.PartiallyClose;
+                updatedComplaint.resolutionDate = getFormatDateTime(new Date());
+                updatedComplaint.status = statusEnum;
+                updatedComplaint.remarkByUser = commentValue;
                 getDefaultApi().updateComplaintInfo({
                     id: complaint.complaintId,
                     complaintInfo: updatedComplaint,
                 });
                 clearAll();
+                isLoading = false;
+
+                alertMessage = "Update Details Successfully";
+                alertTitle = "Success";
+                showNegativeButton = false;
+                showAlert = true;
+            } else {
+                isLoading = false;
+                snakMessage = "Invalid data found";
+                warningSnackBar.showSnackbar();
             }
+        });
+    }
+
+    function handlePositive() {
+        if (showNegativeButton) {
+            updateDetails();
         } else {
-            clearAll();
+            showNegativeButton = true;
         }
+        showAlert = false;
+    }
+
+    function handleNegative() {
+        showAlert = false;
     }
 
     function clearAll() {
         isEdited = false;
-        remarkEdit = false;
-        remark = undefined;
-        closeDate = undefined;
-        selectedPriority = "none";
         updatedComplaint = complaint?.complaintInfo;
+        commentValue = complaint?.complaintInfo?.remarkByUser;
+        selectedStatus = "none";
     }
 
-    $: closeConsent =
-        complaint?.complaintInfo?.status == ComplaintInfoStatusEnum.Close;
-    $: isReopened =
-        complaint?.complaintInfo?.status == ComplaintInfoStatusEnum.ReOpen;
-    $: reopenButton =
-        complaint?.complaintInfo?.status ==
-        ComplaintInfoStatusEnum.PartiallyClose;
-    $: closeButton =
-        complaint?.complaintInfo?.status ==
-        ComplaintInfoStatusEnum.PartiallyClose;
-    $: escalateButton =
-        complaint?.complaintInfo?.level != ComplaintInfoLevelEnum.L3 &&
-        (closeConsent || reopenButton);
+    let selectedStatus = "none";
+    /** @type {string | undefined}*/
+    let commentValue = "";
+
+    /** @type {ComplaintInfoStatusEnum} */
+    let statusEnum;
+
+    function handleSelect() {
+        if (selectedStatus === "none") {
+            isEdited = false;
+        } else {
+            commentValue = complaint?.complaintInfo?.remarkByUser;
+            isEdited = true;
+            alertTitle = "Confirm";
+            if (selectedStatus === "close") {
+                alertMessage = "Are you sure, You want to close";
+                statusEnum = ComplaintInfoStatusEnum.Close;
+            } else {
+                alertMessage = "Are you sure, You want to Reopen the Complaint";
+                statusEnum = ComplaintInfoStatusEnum.ReOpen;
+            }
+        }
+    }
+
+    /** @param {boolean} value */
+    export function openDialog(value) {
+        if (value) {
+            showAlert = true;
+        } else {
+            clearAll();
+        }
+    }
 
     function escalateComplaint() {
         let currentLevel = complaint?.complaintInfo?.level;
@@ -101,12 +134,13 @@
         let registrationDate = complaint?.complaintInfo?.registrationDate;
         if (!registrationDate) {
             console.log("Registration date is not available.");
+            snakMessage = "Registration date is not available.";
+            warningSnackBar.showSnackbar();
             return;
         }
 
-        let regDate = new Date(registrationDate);
-        let currentDate = new Date();
-        let timeDifference = currentDate - regDate;
+        /**@type {number | any | bigint} */
+        let timeDifference = new Date() - new Date(registrationDate);
         let hoursDifference = timeDifference / (1000 * 60 * 60);
 
         switch (currentLevel) {
@@ -123,14 +157,25 @@
                             id: complaint.complaintId,
                             complaintInfo: complaint.complaintInfo,
                         });
+
+                        snakMessage = "Successfully updated";
+                        color = successColor;
+                        warningSnackBar.showSnackbar();
                         console.log("Successfully updated");
                     } else {
-                        alert("Network Error");
+                        snakMessage = "Network Error";
+                        color = errorColor;
+                        warningSnackBar.showSnackbar();
+                        // alert("Network Error");
                     }
                 } else {
-                    alert(
-                        "Less than 24 hours have elapsed since registration. You can't escalate to Level 2",
-                    );
+                    snakMessage =
+                        "Less than 24 hours have elapsed since registration. You can't escalate to Level 2";
+                    color = warningColor;
+                    warningSnackBar.showSnackbar();
+                    // alert(
+                    //     "Less than 24 hours have elapsed since registration. You can't escalate to Level 2",
+                    // );
                 }
                 break;
             case ComplaintInfoLevelEnum.L2:
@@ -146,231 +191,267 @@
                             id: complaint.complaintId,
                             complaintInfo: complaint.complaintInfo,
                         });
+                        snakMessage = "Successfully updated";
+                        color = successColor;
+                        warningSnackBar.showSnackbar();
                         console.log("Successfully updated");
                     } else {
-                        alert("Network Error");
+                        snakMessage = "Network Error";
+                        color = errorColor;
+                        warningSnackBar.showSnackbar();
+                        // alert("Network Error");
                     }
                 } else {
-                    alert(
-                        "Less than 48 hours have elapsed since registration. You can't escalate to Level 3",
-                    );
+                    snakMessage =
+                        "Less than 48 hours have elapsed since registration. You can't escalate to Level 3";
+                    color = warningColor;
+                    warningSnackBar.showSnackbar();
+                    // alert(
+                    //     "Less than 48 hours have elapsed since registration. You can't escalate to Level 3",
+                    // );
                 }
                 break;
             case ComplaintInfoLevelEnum.L3:
-                alert("You Can't escalate further");
+                snakMessage = "You Can't escalate further";
+                color = errorColor;
+                warningSnackBar.showSnackbar();
+                // alert("You Can't escalate further");
                 break;
             default:
-                alert("Invalid complaint level.");
+                snakMessage = "Invalid complaint level.";
+                color = errorColor;
+                warningSnackBar.showSnackbar();
+            // alert("Invalid complaint level.");
         }
-    }
-
-    let alertMessage = "";
-    /** @type {ComplaintInfoStatusEnum}*/
-    let status = ComplaintInfoStatusEnum.Close;
-    function closeComplaint() {
-        alertMessage = "Are you sure, You want to close";
-        status = ComplaintInfoStatusEnum.Close;
-        showMessage = true;
-    }
-
-    function updateStatus() {
-        if (complaint?.complaintInfo && complaint.complaintId) {
-            complaint.complaintInfo.status = status;
-            getDefaultApi().updateComplaintInfo({
-                id: complaint.complaintId,
-                complaintInfo: complaint.complaintInfo,
-            });
-            console.log("updated successfully");
-        } else {
-            console.log("Not updated");
-        }
-    }
-
-    function reopenComplaint() {
-        alertMessage = "Are you sure, You want to Reopen the Complaint";
-        status = ComplaintInfoStatusEnum.ReOpen;
-        showMessage = true;
     }
 </script>
 
-<AlertDialog
-    message={alertMessage}
-    bind:show={showMessage}
-    signal={updateStatus}
+{#if isLoading}
+    <div class="overlay">
+        <div class="loading-container">
+            <div class="loading-dialog">
+                <div class="loading-spinner">
+                    <!-- <CircularProgress
+                            indeterminate
+                            style="height: 32px; width: 32px;"
+                        /> -->
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}
+
+<Dialog
+    bind:show={showAlert}
+    bind:negativeButtonLabel
+    bind:positiveButtonLabel
+    bind:message={alertMessage}
+    bind:title={alertTitle}
+    bind:showNegativeButton
+    on:negative={handleNegative}
+    on:positive={handlePositive}
 />
-<table>
-    <tbody>
-        {#if isEdited}
-            <tr class="top-row">
-                <td colspan="2" style="text-align: center;">Update Details</td>
-                <td>
-                    <div class="updatePanel">
-                        <button on:click={() => updateDetails(false)}
-                            >Cancel</button
-                        >
-                        <button on:click={() => updateDetails(true)}
-                            >Update</button
-                        >
-                    </div>
-                </td>
-            </tr>
-        {/if}
-        <tr>
-            <th colspan="2" style="text-align: center;"
-                >Complain Registration Details</th
-            >
-        </tr>
-        <tr>
-            <td>Complain registration number</td>
-            <td>{complaint?.complaintId}</td>
-        </tr>
-        <tr>
-            <td>Date of Registration</td>
-            <td>{complaint?.complaintInfo?.registrationDate}</td>
-        </tr>
-        <tr>
-            <td>Category of issue</td>
-            <td>{complaint?.complaintInfo?.complaintCriteria}</td>
-        </tr>
-        <tr>
-            <td>Brief Description of Issue</td>
-            <td>{complaint?.complaintInfo?.description}</td>
-        </tr>
-        <tr>
-            <td>Location (building/zone)</td>
-            <td
-                >{complaint?.complaintInfo?.buildingName}/{complaint
-                    ?.complaintInfo?.zone}</td
-            >
-        </tr>
-        <tr>
-            <td>Location(Room No.)</td>
-            <td>{complaint?.complaintInfo?.locationDetails}</td>
-        </tr>
-        <tr>
-            <td>Attach Photograph if any</td>
-            <td>
-                <ul>
-                    {#each attachmentIds as attachmentId}
-                        <li>
-                            <a href={getFileUrl(attachmentId)} target="_blank"
-                                >{attachmentId}</a
-                            >
-                        </li>
-                    {/each}
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td>Priority</td>
-            <td>{complaint?.complaintInfo?.priority}</td>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td>{complaint?.complaintInfo?.status}</td>
-        </tr>
-        <tr>
-            <td>Closure Date</td>
-            {#if closeDate != undefined}
-                <td>{closeDate}</td>
-            {:else}
-                <td>{complaint?.complaintInfo?.resolutionDate}</td>
-            {/if}
-        </tr>
-        <tr>
-            <td>Remarks by maintenance team if any</td>
-            {#if remarkEdit}
-                <td>
-                    <input
-                        type="text"
-                        bind:value={remark}
-                        class="form-control"
-                    />
-                </td>
-            {:else if remark}
-                <td>{remark}</td>
-            {:else}
-                <td>{complaint?.complaintInfo?.remarkByMaintainer}</td>
-            {/if}
-        </tr>
-        <tr>
-            <td>Closure Photograph if any</td>
-            <td>
-                <ul>
-                    {#each closureAttachmentIds as closureAttachmentId}
-                        <li>
-                            <a
-                                href={getFileUrl(closureAttachmentId)}
-                                target="_blank">{closureAttachmentId}</a
-                            >
-                        </li>
-                    {/each}
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td>Consent for closure (if closed)</td>
-            {#if closeConsent}
-                <td>Closed from Your Side</td>
-            {:else}
-                <td>Not Closed from Your Side</td>
-            {/if}
-        </tr>
-        <tr>
-            <td>Reopen (if closed but not satisfied)</td>
-            {#if isReopened}
-                <td>Reopened By You</td>
-            {:else}
-                <td>Not Reopened By You</td>
-            {/if}
-        </tr>
 
-        <tr>
-            <td>Escalate to next level</td>
-            <td>{complaint?.complaintInfo?.level}</td>
-        </tr>
-        <tr>
-            <td>Remarks by User</td>
-            <td>{complaint?.complaintInfo?.remarkByUser}</td>
-        </tr>
-    </tbody>
+<Snakbar
+    bind:this={warningSnackBar}
+    bind:backgroundColor={color}
+    message={snakMessage}
+    duration={4000}
+/>
 
-    {#if reopenButton}
-        <Button on:click={() => reopenComplaint()}>Reopen</Button>
-    {/if}
-    {#if closeButton}
-        <Button on:click={() => closeComplaint()}>Close</Button>
-    {/if}
-    {#if escalateButton}
-        <Button on:click={() => escalateComplaint()}
-            >Escalate to next Level</Button
+{#if escalateButton}
+    <button class="button esclate" on:click={() => escalateComplaint()}
+        >Escalate to next Level</button
+    >
+{/if}
+
+{#if isEdited}
+    <div class="top-panel">
+        <div class="panel-title" style="text-align: center;">
+            Update Details
+        </div>
+        <div class="update-panel">
+            <button class="button cancel" on:click={() => openDialog(false)}
+                >Cancel</button
+            >
+            <button class="button update" on:click={() => openDialog(true)}
+                >Update</button
+            >
+        </div>
+    </div>
+{/if}
+
+{#if partiallyClose}
+    <div class="custom-select">
+        <select
+            id="statusSelect"
+            bind:value={selectedStatus}
+            on:change={handleSelect}
         >
+            <option value="none"></option>
+            <option value="close">Close</option>
+            <option value="reopen">ReOpen</option>
+        </select>
+        <label for="statusSelect">Change Status</label>
+    </div>
+    {#if isEdited}
+        <div class="comment-container">
+            <label for="admin-comment">Comment</label>
+            <textarea
+                placeholder="Enter your text here"
+                bind:value={commentValue}
+            ></textarea>
+        </div>
     {/if}
-</table>
+{/if}
 
 <style>
-    .top-row {
+    .comment-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-dialog {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #007bff;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .top-panel {
+        position: sticky;
         background-color: rgb(245, 182, 182);
         color: red;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        margin-bottom: 20px;
     }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        border: 1px solid #dddddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    td:first-child {
+    .panel-title {
+        font-size: 18px;
         font-weight: bold;
+        margin-right: 20px;
+        align-self: center;
+    }
+    .update-panel {
+        display: flex;
+        gap: 10px;
+    }
+    .button {
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+    }
+    .button.cancel {
+        background-color: red;
+        color: white;
+    }
+    .button.update {
+        background-color: #4caf50;
+        color: white;
+    }
+    .button.esclate {
+        margin-top: 1rem;
+        background-color: rgb(233, 129, 129);
+        color: white;
+    }
+
+    .button:hover {
+        transform: scale(1.05);
+    }
+
+    textarea {
+        width: 300px;
+        min-height: 100px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: vertical;
+    }
+
+    .custom-select select:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
+    .custom-select label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        color: #777;
+        font-size: 16px;
+        pointer-events: none;
+        transition: 0.2s ease-out;
+        padding: 10px;
+    }
+
+    .custom-select select:focus ~ label,
+    .custom-select select:not(:placeholder-shown) ~ label {
+        top: 5px;
+        font-size: 12px;
+        color: #007bff;
+    }
+
+    .custom-select {
+        display: flex;
+        align-items: center;
+        margin-top: 1rem;
+        position: relative;
+        width: 100%;
+    }
+
+    .custom-select select {
+        flex: 1;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        font-size: 16px;
+        color: #333;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+    label {
+        font-weight: bold;
+        margin: 0.5rem 10px 0.5rem 0;
     }
 </style>

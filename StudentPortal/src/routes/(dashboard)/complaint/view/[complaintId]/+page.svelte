@@ -2,8 +2,9 @@
     import { page } from "$app/stores";
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
-    import ImageDisplyer from "$lib/components/ImageDisplayer.svelte";
+    import SimpleDisplay from "$lib/components/SimpleDisplay.svelte";
     import ComplaintDetailsComponent from "$lib/components/ComplaintDetails.svelte";
+    import ShowDetails from "$lib/components/showDetails.svelte";
 
     /** @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails
      * @type {ComplaintDetails | undefined} */
@@ -19,12 +20,11 @@
      */
 
     /** @type {ImageData[]} */
-    let fileList = [];
-
-    /** @type {string[]}*/
     let attachmentIds = [];
-    /** @type {string[]}*/
+    let title = "User Attachment";
+    /** @type {ImageData[]} */
     let closureAttachmentIds = [];
+    let title1 = "Maintaince Team Attachment";
 
     /**
      * @param {string} id
@@ -40,9 +40,8 @@
                         const fileBlob = await api.downloadFile({ fileId });
                         const imageUrl = URL.createObjectURL(fileBlob);
                         let fileName = "UserFile_" + counter++;
-                        attachmentIds = [...attachmentIds, fileName];
-                        fileList = [
-                            ...fileList,
+                        attachmentIds = [
+                            ...attachmentIds,
                             { imageUrl: imageUrl, fileId: fileName },
                         ];
                     } catch (error) {
@@ -60,10 +59,6 @@
                             let fileName = "MaintainerFile_" + counter++;
                             closureAttachmentIds = [
                                 ...closureAttachmentIds,
-                                fileName,
-                            ];
-                            fileList = [
-                                ...fileList,
                                 { imageUrl: imageUrl, fileId: fileName },
                             ];
                         } catch (error) {
@@ -81,19 +76,17 @@
 
     onMount(() => {
         const complainId = $page.params.complaintId;
-        fetchComplaint(complainId, false);
+        fetchComplaint(complainId);
     });
 </script>
 
 <h2 class="main-title">Complaint Details</h2>
 
-<ComplaintDetailsComponent
-    bind:complaint
-    bind:this={complainComponent}
-    bind:attachmentIds
-    bind:closureAttachmentIds
-/>
-<ImageDisplyer bind:fileList />
+<ShowDetails bind:complaint />
+<ComplaintDetailsComponent bind:complaint bind:this={complainComponent} />
+
+<SimpleDisplay bind:title bind:fileList={attachmentIds} />
+<SimpleDisplay bind:title={title1} bind:fileList={closureAttachmentIds} />
 
 <style>
 </style>
