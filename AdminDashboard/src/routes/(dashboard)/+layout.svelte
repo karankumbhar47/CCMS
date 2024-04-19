@@ -1,7 +1,7 @@
 <script>
     import Header from "$lib/components/Header.svelte";
     import Sidebar from "$lib/components/Sidebar.svelte";
-    let adminName = "Admin Name"; 
+    let adminName = "Admin Name";
 </script>
 
 <div class="container">
@@ -36,7 +36,7 @@
         z-index: 5;
         display: block;
         height: 100vh;
-        overflow: auto; 
+        overflow: auto;
         position: relative;
     }
     .header {

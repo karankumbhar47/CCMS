@@ -24,4 +24,4 @@ Build the project using `pnpm run build`
 
 ## Changing theme
 
-- To change the theme, first update `src/theme` and then run `pnpm run prepare-theme`
+-   To change the theme, first update `src/theme` and then run `pnpm run prepare-theme`

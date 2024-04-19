@@ -277,7 +277,13 @@
                         {user.status}
                     {/if}
                 </Cell>
-                <Cell>{user.dateRegistered.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</Cell>
+                <Cell
+                    >{user.dateRegistered.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                    })}</Cell
+                >
                 <Cell>
                     {#if editingUser === user}
                         <input
@@ -367,7 +373,8 @@
 </DataTable>
 
 <div class="buttons">
-    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button>
+    <button on:click={openAddUserModal} class="btn btn-primary">Add User</button
+    >
 </div>
 
 <style>

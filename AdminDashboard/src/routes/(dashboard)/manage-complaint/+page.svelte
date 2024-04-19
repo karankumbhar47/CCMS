@@ -2,6 +2,12 @@
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { onMount } from "svelte";
     import { getDefaultApi } from "$lib/utils/auth";
+    import Select, { Option } from "@smui/select";
+
+    let statusList = ["All", "Close", "Open", "InProgress"];
+
+    let value = "All";
+
     /**
      * @typedef {import("$lib/generated").ComplaintDetails } ComplaintDetails
      * @type {Array<ComplaintDetails>}
@@ -14,6 +20,37 @@
     let totalPages = 0;
     /** @type {number} */
     let pageSize = 5;
+
+    let status = "";
+    let toDate = "";
+    let fromDate = "";
+    let filterOn = false;
+    async function filter() {
+        if (!filterOn) {
+            page = 1;
+            filterOn = true;
+        }
+        try {
+            status = value;
+            if (value === "All") {
+                status = "";
+            }
+            const filteredComplaintsPage =
+                await getDefaultApi().filterComplaint({
+                    tags: [],
+                    totime: toDate,
+                    fromtime: fromDate,
+                    status: status,
+                    pageNumber: page,
+                    pageSize: pageSize,
+                });
+            complaintsList = filteredComplaintsPage.complaintList ?? [];
+            totalPages = filteredComplaintsPage.totalPages ?? 0;
+            console.log(complaintsList);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     async function fetchComplaints() {
         try {
@@ -71,21 +108,53 @@
     async function nextPage() {
         if (page < totalPages) {
             page++;
-            await fetchComplaints();
+            if (filterOn) {
+                await filter();
+            } else {
+                await fetchComplaints();
+            }
         }
     }
 
     async function previousPage() {
         if (page > 1) {
             page--;
-            await fetchComplaints();
+            if (filterOn) {
+                await filter();
+            } else {
+                await fetchComplaints();
+            }
         }
+    }
+    async function resetFilter() {
+        status = "";
+        toDate = "";
+        fromDate = "";
+        filterOn = false;
+        page = 1;
+        await fetchComplaints();
     }
 </script>
 
-<div class="search-container">
-    <SearchBar />
+<div>
+    <label for="ToDate">To Date</label>
+    <input type="date" id="ToDate" bind:value={toDate} />
+    <label for="FromDate">From Date</label>
+    <input type="date" id="FromDate" bind:value={fromDate} />
+    <Select bind:value label="Select STATUS">
+        {#each statusList as status}
+            <Option value={status}>{status}</Option>
+        {/each}
+    </Select>
+
+    <button type="submit" on:click={filter}>filter</button>
+    <button type="submit" on:click={resetFilter}>reset</button>
 </div>
+
+<!-- <div class="search-container">
+    <SearchBar />
+</div> -->
+
 <table class="table-container">
     <thead>
         <tr>
