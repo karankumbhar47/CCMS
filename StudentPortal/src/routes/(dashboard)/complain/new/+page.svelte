@@ -10,7 +10,7 @@
         ComplaintInfoLevelEnum,
     } from "$lib/generated/models";
     import { get } from "svelte/store";
-    import Button from "@smui/button"
+    import Button from "@smui/button";
 
     /**@type {ImageHandler}*/
     let uploadImage;
@@ -134,7 +134,7 @@
 
         /** @type {string | undefined} */
         let userId = get(userInfo)?.userId;
-        if(userId === undefined){
+        if (userId === undefined) {
             return;
         }
 
@@ -253,7 +253,6 @@
     </div>
 
     <Button on:click={submitForm} variant="raised">Submit</Button>
-
 </div>
 
 <style>
