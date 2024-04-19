@@ -22,6 +22,7 @@ ComplaintRepository extends MongoRepository<Complaint, ObjectId> {
     long countByComplaintCriteriaAndComplaintId(String tag, String dateRegex);
     List<Complaint> findByBuildingNameAndStatus(String buildingName, String status);
     List<Complaint> findByStatus(String status);
-
+    Page<Complaint> findComplaintByBuildingNameAndStatus(String buildingName, String status, PageRequest pageRequest);
+    List<Complaint> findComplaintsByStatus(String status);
 
 }
