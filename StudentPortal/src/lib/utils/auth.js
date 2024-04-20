@@ -22,7 +22,7 @@ export function getDefaultApi(loginPage) {
     /** @type {import("$lib/generated").HTTPHeaders} headers */
     let headers = {};
 
-    if (!loginPage){
+    if (!loginPage) {
         if (token !== undefined) {
             let payload = jwtDecode(token);
             let exp = payload.exp;
@@ -48,7 +48,7 @@ export function getDefaultApi(loginPage) {
     }
 
     let config = new Configuration({
-        basePath: "http://ec2-3-90-222-205.compute-1.amazonaws.com:8080",
+        basePath: "https://ec2-3-90-222-205.compute-1.amazonaws.com:8443",
         headers: headers,
     });
 

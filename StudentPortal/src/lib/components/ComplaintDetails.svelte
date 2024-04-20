@@ -28,8 +28,8 @@
     /** @type {Snakbar} */
     let warningSnackBar;
 
-    /** @typedef {import("$lib/generated/models").ComplaintDetails} ComplaintDetails
-     * @type {ComplaintDetails | undefined} */
+    /** @typedef {import("$lib/generated/models").ComplaintDetails} ComplaintDetails */
+    /** @type {ComplaintDetails | undefined} */
     export let complaint;
 
     /** @type {import("$lib/generated").ComplaintInfo | undefined} */
@@ -140,8 +140,8 @@
         }
 
         /**@type {number | any | bigint} */
-        let timeDifference = new Date() - new Date(registrationDate);
-        let hoursDifference = timeDifference / (1000 * 60 * 60);
+        let hoursDifference =
+            new Date().getHours() - new Date(registrationDate).getHours();
 
         switch (currentLevel) {
             case ComplaintInfoLevelEnum.L1:

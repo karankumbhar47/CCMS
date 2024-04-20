@@ -79,6 +79,7 @@
 
     /** @param {string | number | Date} date */
     function formatDateTime(date) {
+        /** @type {Intl.DateTimeFormatOptions} */
         const options = {
             year: "numeric",
             month: "2-digit",
@@ -202,10 +203,12 @@
     /** @type {Array<ImageData>}*/
     let selectedAttachments = [];
 
-    /** @param {{ target: { files: Array<File>; }; }} event */
+    /** @param {Event & { currentTarget: EventTarget & HTMLInputElement }} event */
     function handleFileSelect(event) {
-        const files = event.target.files;
-
+        const files = event.currentTarget.files;
+        if (files === null) {
+            return;
+        }
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             let selectedFileNum = ++size;

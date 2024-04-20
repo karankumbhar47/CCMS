@@ -34,6 +34,7 @@ export function formatDateTime(inputDate) {
 
 /** @param {string | number | Date} date */
 export function getFormatDateTime(date) {
+    /** @type {Intl.DateTimeFormatOptions} */
     const options = {
         year: "numeric",
         month: "2-digit",

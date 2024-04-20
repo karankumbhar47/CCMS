@@ -1,8 +1,8 @@
 <script>
     import { formatDateTime } from "$lib/utils/date";
 
-    /** @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails
-     * @type {ComplaintDetails | undefined} */
+    /** @typedef {import("$lib/generated").ComplaintDetails} ComplaintDetails */
+    /** @type {ComplaintDetails | undefined} */
     export let complaint;
 </script>
 

@@ -37,6 +37,15 @@ devDependencies:
   '@openapitools/openapi-generator-cli':
     specifier: ^2.13.2
     version: 2.13.2
+  '@smui-extra/accordion':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5)
+  '@smui/icon-button':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5)
+  '@smui/snackbar':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5)
   '@sveltejs/adapter-auto':
     specifier: ^3.2.0
     version: 3.2.0(@sveltejs/kit@2.5.6)
@@ -410,7 +419,6 @@ packages:
     resolution: {integrity: sha512-VlYSfUaIj/BBVtRZI8Gv0VvzikFf+XgK0Zdgsok5c1v5DDnNz5tpB8mnGrveWz0rHbp1X4+CWLKrTwNmjrw3Xw==}
     dependencies:
       tslib: 2.6.2
-    dev: false
 
   /@material/banner@14.0.0:
     resolution: {integrity: sha512-z0WPBVQxbQVcV1km4hFD40xBEeVWYtCzl2jrkHd8xXexP/fMvXkFU1UfwSWvY3jlWx//j4/Xd7VpnRdEXS4RLQ==}
@@ -433,7 +441,6 @@ packages:
     resolution: {integrity: sha512-Ou7vS7n1H4Y10MUZyYAbt6H0t67c6urxoCgeVT7M38aQlaNUwFMODp7KT/myjYz2YULfhu3PtfSV3Sltgac9mA==}
     dependencies:
       tslib: 2.6.2
-    dev: false
 
   /@material/button@14.0.0:
     resolution: {integrity: sha512-dqqHaJq0peyXBZupFzCjmvScrfljyVU66ZCS3oldsaaj5iz8sn33I/45Z4zPzdR5F5z8ExToHkRcXhakj1UEAA==}
@@ -451,7 +458,6 @@ packages:
       '@material/touch-target': 14.0.0
       '@material/typography': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/card@14.0.0:
     resolution: {integrity: sha512-SnpYWUrCb92meGYLXV7qa/k40gnHR6rPki6A1wz0OAyG2twY48f0HLscAqxBLvbbm1LuRaqjz0RLKGH3VzxZHw==}
@@ -541,7 +547,6 @@ packages:
     resolution: {integrity: sha512-NlxXBV5XjNsKd8UXF4K/+fOXLxoFNecKbsaQO6O2u+iG8QBfFreKRmkhEBb2hPPwC3w8nrODwXX0lHV+toICQw==}
     dependencies:
       tslib: 2.6.2
-    dev: false
 
   /@material/dialog@14.0.0:
     resolution: {integrity: sha512-E07NEE4jP8jHaw/y2Il2R1a3f4wDFh2sgfCBtRO/Xh0xxJUMuQ7YXo/F3SAA8jfMbbkUv/PHdJUM3I3HmI9mAA==}
@@ -568,7 +573,6 @@ packages:
     dependencies:
       '@material/feature-targeting': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/drawer@14.0.0:
     resolution: {integrity: sha512-VPrxMIhbkXVbfH7aMFV+Um0tjOVrU/Y65X2hWsVdmjASadE8C5UYjIE3vjL1DM1M+zIa3qZZRUWqz0j1zqbr3w==}
@@ -596,7 +600,6 @@ packages:
       '@material/rtl': 14.0.0
       '@material/theme': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/fab@14.0.0:
     resolution: {integrity: sha512-s4rrw2TLU8ITKopHSTEHuJEFsGEZsb+ijwW16pQt0h9GArxPGaALT+CCJIPjf75D3wPEEMW0vnLj7oMoII2VFg==}
@@ -640,7 +643,6 @@ packages:
       '@material/dom': 14.0.0
       '@material/feature-targeting': 14.0.0
       '@material/rtl': 14.0.0
-    dev: false
 
   /@material/form-field@14.0.0:
     resolution: {integrity: sha512-k1GNBj6Sp8A7Xsn5lTMp5DkUkg60HX7YkQIRyFz1qCDCKJRWh/ou7Z45GMMgKmG3aF6LfjIavc7SjyCl8e5yVg==}
@@ -668,7 +670,6 @@ packages:
       '@material/theme': 14.0.0
       '@material/touch-target': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/image-list@14.0.0:
     resolution: {integrity: sha512-vx/7WCMbiZoy/R+DmO7r0N3jWzFjlvvDMeBpXt0btglWP3EYbVnDqzseW4u1TtY+IBbJldW/DsiCN1oLnlEVxw==}
@@ -795,14 +796,12 @@ packages:
       '@material/rtl': 14.0.0
       '@material/theme': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/rtl@14.0.0:
     resolution: {integrity: sha512-xl6OZYyRjuiW2hmbjV2omMV8sQtfmKAjeWnD1RMiAPLCTyOW9Lh/PYYnXjxUrNa0cRwIIbOn5J7OYXokja8puA==}
     dependencies:
       '@material/theme': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/segmented-button@14.0.0:
     resolution: {integrity: sha512-6es7PPNX3T3h7bOLyb8L38hMoTXqBs5XX8XCKycKZG2Dm4stac/yYMKKO/q3MOn36t37s+JAVTjyRB8HnJu5Gg==}
@@ -848,7 +847,6 @@ packages:
       '@material/rtl': 14.0.0
       '@material/theme': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/slider@14.0.0:
     resolution: {integrity: sha512-m5RqySIps1vhAQnGp2eg4Sh2Ss6bzrZm10TWBw2cNFHmbiI72rK2EeFnMsBXAarplY0cot/FaMuj91VP36gKFQ==}
@@ -881,7 +879,6 @@ packages:
       '@material/theme': 14.0.0
       '@material/typography': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/switch@14.0.0:
     resolution: {integrity: sha512-vHVKzbvHVKGSrkMB1lZAl8z3eJ8sPRnSR+DWn+IhqHcTsDdDyly2NNj4i2vTSrEA39CztGqkx0OnKM4vkpiZHw==}
@@ -983,7 +980,6 @@ packages:
     resolution: {integrity: sha512-SXgB9VwsKW4DFkHmJfDIS0x0cGdMWC1D06m6z/WQQ5P5j6/m0pKrbHVlrLzXcRjau+mFhXGvj/KyPo9Pp/Rc8Q==}
     dependencies:
       '@material/elevation': 14.0.0
-    dev: false
 
   /@material/tooltip@14.0.0:
     resolution: {integrity: sha512-rp7sOuVE1hmg4VgBJMnSvtDbSzctL42X7y1yv8ukuu40Sli+H5FT0Zbn351EfjJgQWg/AlXA6+reVXkXje8JzQ==}
@@ -1021,7 +1017,6 @@ packages:
       '@material/feature-targeting': 14.0.0
       '@material/rtl': 14.0.0
       tslib: 2.6.2
-    dev: false
 
   /@material/typography@14.0.0:
     resolution: {integrity: sha512-/QtHBYiTR+TPMryM/CT386B2WlAQf/Ae32V324Z7P40gHLKY/YBXx7FDutAWZFeOerq/two4Nd2aAHBcMM2wMw==}
@@ -1306,7 +1301,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui-extra/autocomplete@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-BbQ7J8rS4lWUqokZftHRI/RVpraKKvTcdOvWbEoXdJf2wzxQnwnbwbuoZ9yiJSzMHK+ZPq0ew15B4mVZ0a3KAw==}
@@ -1376,7 +1370,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui/card@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-A37m5Uuuu32kHuaoumuDHct2EHxEVmUPtbH3asqNki/UptCimqgx0LFVU7zSCCXx3T3rFtVX6ECTG0wv3dZCzA==}
@@ -1437,7 +1430,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui/data-table@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-th6/fPK1Sxs45eo1Ld/C3uCjdnfu86Ky6rwrodXj0QH6Du3INq/Pb1EbeqZPJ8DmNzmzjndNa2zn1XjPSaKwQA==}
@@ -1528,7 +1520,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui/image-list@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-gP02IY9ZoQV9YFxi/2gme3VQ3GWiW4VHSJaSR64Wo56uB33pe3AWVVm2GRD5BH7z1cO0w3Igh8EtCq4uTB4HGw==}
@@ -1639,7 +1630,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui/radio@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-/UyfoPUIFfjoDVWnopgpjFOoj9FkDs/qh07nkB/fBEOr5SHhNBUuZbVl7HPOZts7ROFpcyReXceoUpFxu9ASVA==}
@@ -1663,7 +1653,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui/segmented-button@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-Mvgp0HD+UkG2iLlENkWONisoKe2HGZwZ2Bm8DHEy19dA+DDaq0vNTIWmRM9AOMs60gX42E8wdKBZMlIZzZJjnw==}
@@ -1728,7 +1717,6 @@ packages:
     transitivePeerDependencies:
       - svelte
       - typescript
-    dev: false
 
   /@smui/switch@7.0.0-beta.18(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-5kGy0oLoIniNSVYZE8or1OclHa4AAyrgG5dLT7f0X1svZX9lvTpj7a6Jk16d1x7ToeQpaNgFxynmmYSgZLJ/uA==}
@@ -4079,7 +4067,6 @@ packages:
       pascal-case: 3.1.2
       svelte: 4.2.15
       typescript: 5.4.5
-    dev: false
 
   /svelte2tsx@0.7.6(svelte@4.2.15)(typescript@5.4.5):
     resolution: {integrity: sha512-awHvYsakyiGjRqqSOhb2F+qJ6lUT9klQe0UQofAcdHNaKKeDHA8kEZ8zYKGG3BiDPurKYMGvH5/lZ+jeIoG7yQ==}
