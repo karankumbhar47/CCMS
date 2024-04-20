@@ -80,17 +80,7 @@ public class UsersService implements UserDetailsService {
     }
 
     public void createUser(UserDetailsDB userDetailUpdate) {
-        // Mapping UserDetailUpdate to UserDetailUpdateDB
-        UserDetailsDB userDetailDB = new UserDetailsDB();
-        userDetailDB.setUserId(userDetailUpdate.getUserId());
-        userDetailDB.setUserName(userDetailUpdate.getUsername());
-        userDetailDB.setRoles(userDetailUpdate.getRoles());
-        userDetailDB.setEmail(userDetailUpdate.getEmail());
-        userDetailDB.setStatus(userDetailUpdate.getStatus());
-        userDetailDB.setDateRegistered(userDetailUpdate.getDateRegistered());
-
-        // Saving the mapped object to the repository
-        usersRepository.save(userDetailDB);
+        usersRepository.save(userDetailUpdate);
     }
 
     public Optional<UserDetailsDB> singleUser(String username) {
