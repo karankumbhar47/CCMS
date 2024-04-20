@@ -2,7 +2,7 @@
     import { page } from "$app/stores";
     import { getDefaultApi } from "$lib/utils/auth";
     import { onMount } from "svelte";
-    import SimpleDisplay from "$lib/components/SimpleDisplay.svelte";
+    import SimpleDisplay from "$lib/components/ImageDisplayer.svelte";
     import ComplaintDetailsComponent from "$lib/components/ComplaintDetails.svelte";
     import ShowDetails from "$lib/components/showDetails.svelte";
 
