@@ -12,45 +12,50 @@ export const userInfo = writable(undefined);
 /** @type {import("svelte/store").Writable.<string | undefined>} */
 const userId = writable(undefined);
 
-/** @returns DefaultApi */
-export function getDefaultApi() {
+/**
+ * @returns DefaultApi
+ * @param {boolean} [loginPage]
+ */
+export function getDefaultApi(loginPage) {
     const token = Cookies.get("authToken");
 
     /** @type {import("$lib/generated").HTTPHeaders} headers */
     let headers = {};
 
-    if (token !== undefined) {
-        let payload = jwtDecode(token);
-        let exp = payload.exp;
-        userId.set(payload.sub);
+    if(!loginPage){
+        if (token !== undefined) {
+            let payload = jwtDecode(token);
+            let exp = payload.exp;
+            userId.set(payload.sub);
 
-        if (exp === undefined) {
-            console.log("Token expiary not set, redirecting to login page");
-            goto("/login");
-        } else {
-            exp *= 1000;
-            let expiaryTime = new Date(exp);
-            if (expiaryTime < new Date()) {
-                console.log("Token expiared, redirecting to login page");
+            if (exp === undefined) {
+                console.log("Token expiary not set, redirecting to login page");
                 goto("/login");
+            } else {
+                exp *= 1000;
+                let expiaryTime = new Date(exp);
+                if (expiaryTime < new Date()) {
+                    console.log("Token expiared, redirecting to login page");
+                    goto("/login");
+                }
+
+                headers = { Authorization: "Bearer " + token };
             }
-
-            headers = { Authorization: "Bearer " + token };
+        } else {
+            console.log("No token found, redirecting to login page");
+            goto("/login");
         }
-    } else {
-        console.log("No token found, redirecting to login page");
-        goto("/login");
-    }
 
-    if (token !== undefined) {
-        headers = { Authorization: "Bearer " + token };
-    } else {
-        console.log("No token found, redirecting to login page");
-        goto("/login");
+        if (token !== undefined) {
+            headers = { Authorization: "Bearer " + token };
+        } else {
+            console.log("No token found, redirecting to login page");
+            goto("/login");
+        }
     }
 
     let config = new Configuration({
-        basePath: "http://localhost:8080",
+        basePath: "http://ec2-3-90-222-205.compute-1.amazonaws.com:8080",
         headers: headers,
     });
 

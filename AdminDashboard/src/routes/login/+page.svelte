@@ -7,9 +7,9 @@
     let username = "";
     let password = "";
 
-    const api = new DefaultApi();
 
     async function handleLogin() {
+        const api = getDefaultApi(true);
         try {
             let res = await api.login({
                 loginRequest: {
