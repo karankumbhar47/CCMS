@@ -10,7 +10,11 @@
     import Checkbox from "@smui/checkbox";
     import Select, { Option } from "@smui/select";
     import IconButton from "@smui/icon-button";
-    import { Label } from "@smui/common";
+    import Dialog, { Header, Title, Content, Actions } from "@smui/dialog";
+    import Button, { Label } from "@smui/button";
+    import LinearProgress from "@smui/linear-progress";
+    import Textfield from "@smui/textfield";
+    import HelperText from "@smui/textfield/helper-text";
 
     import SearchBar from "$lib/components/SearchBar.svelte";
     import { getDefaultApi } from "$lib/utils/auth";
@@ -27,7 +31,7 @@
     /** @type {number} */
     let totalPages = 0;
     /** @type {boolean} */
-    let isLoading = false;
+    let loaded = true;
 
     onMount(async () => {
         await loadUsers();
@@ -35,7 +39,7 @@
 
     async function loadUsers() {
         try {
-            isLoading = true;
+            loaded = false;
             console.log(page);
             const response = await getDefaultApi().getUsers({
                 page: page,
@@ -43,17 +47,30 @@
             });
             totalPages = response.totalPages ? response.totalPages : 1;
             users = response.users ? response.users : [];
-            isLoading = false;
+            loaded = true;
         } catch (error) {
             console.error("Failed to fetch user details:", error);
         } finally {
-            isLoading = false;
+            loaded = true;
         }
         console.log(users);
     }
 
     /** @type {UserInfo | null} */
     let editingUser = null;
+    /** @type {UserInfo} */
+    let addingUser = {
+        userId: "",
+        userName: "",
+        name: "",
+        roles: [],
+        email: "",
+        status: UserInfoStatusEnum.Active,
+        password: "1234",
+        dateRegistered: new Date(),
+        department: "",
+        phoneNumber: "",
+    };
     /** @type {boolean} */
     let isAddingUser = false;
 
@@ -68,7 +85,53 @@
         isAddingUser = true;
     }
 
-    function closeAddUserModal() {
+    /** @param {CustomEvent<{action: string }} e  */
+    async function closeAddUserModal(e) {
+        switch (e.detail.action) {
+            case "cancel": {
+                addingUser = {
+                    userId: "",
+                    userName: "",
+                    name: "",
+                    roles: [],
+                    email: "",
+                    status: UserInfoStatusEnum.Active,
+                    password: "1234",
+                    dateRegistered: new Date(),
+                    department: "",
+                    phoneNumber: "",
+                };
+                break;
+            }
+            case "add": {
+                // check all the field of addingUser
+                if (addingUser.userName === "" && addingUser.userName === "") {
+                    isAddingUser = true;
+                    return;
+                }
+                try {
+                    await getDefaultApi().createUser({
+                        userInfo: addingUser,
+                    });
+                    console.log("User created successfully.");
+                } catch (error) {
+                    console.error("Failed to create user:", error);
+                }
+                addingUser = {
+                    userId: "",
+                    userName: "",
+                    name: "",
+                    roles: [],
+                    email: "",
+                    status: UserInfoStatusEnum.Active,
+                    password: "1234",
+                    dateRegistered: new Date(),
+                    department: "",
+                    phoneNumber: "",
+                };
+                break;
+            }
+        }
         isAddingUser = false;
     }
 
@@ -86,36 +149,6 @@
             console.error("Failed to save user details:", error);
         }
         editingUser = null;
-    }
-
-    async function createUser() {
-        // try {
-        //     const userId = document.getElementById("userId").value;
-        //     const userName = document.getElementById("userName").value;
-        //     const role = document.getElementById("role").value;
-        //     const email = document.getElementById("email").value;
-        //     const status = document.getElementById("status").value;
-        //     const dateRegistered =
-        //         document.getElementById("dateRegistered").value;
-        //     const newUser = {
-        //         userId: userId,
-        //         userName: userName,
-        //         name: "",
-        //         roles: role,
-        //         email: email,
-        //         status: status,
-        //         dateRegistered: dateRegistered,
-        //         department: "",
-        //         phoneNumber: "",
-        //     };
-        //     await getDefaultApi().createUser({
-        //         userInfo: newUser,
-        //     });
-        //     console.log("User created successfully.");
-        //     closeAddUserModal();
-        // } catch (error) {
-        //     console.error("Failed to create user:", error);
-        // }
     }
 
     /**
@@ -151,42 +184,95 @@
 
 <SearchBar />
 
-{#if isAddingUser}
-    <div class="modal">
-        <div class="modal-content">
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <span class="close" on:click={closeAddUserModal}>&times;</span>
-            <div class="form-group">
-                <label for="userId">User ID:</label>
-                <input type="text" id="userId" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="userName">User Name:</label>
-                <input type="text" id="userName" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="role">Role:</label>
-                <input type="text" id="role" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="text" id="email" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="status">Status:</label>
-                <input type="text" id="status" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label for="dateRegistered">Date Registered:</label>
-                <input type="text" id="dateRegistered" class="form-control" />
-            </div>
-            <button on:click={createUser} class="btn btn-primary"
-                >Add user</button
-            >
-        </div>
-    </div>
-{/if}
+<Dialog
+    bind:open={isAddingUser}
+    scrimClickAction=""
+    escapeKeyAction=""
+    aria-labelledby="fullscreen-title"
+    aria-describedby="fullscreen-content"
+    on:SMUIDialog:closed={closeAddUserModal}
+>
+    <Header>
+        <Title id="fullscreen-title">Add New User</Title>
+    </Header>
+    <Content id="fullscreen-content">
+        <DataTable table$aria-label="People list" style="max-width: 100%;">
+            <Body>
+                <Row>
+                    <Cell>
+                        <Textfield
+                            bind:value={addingUser.userId}
+                            label="ID Number"
+                        >
+                            <HelperText slot="helper">ID Number</HelperText>
+                        </Textfield>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Textfield
+                        bind:value={addingUser.userName}
+                        label="Username"
+                    >
+                        <HelperText slot="helper">Username</HelperText>
+                    </Textfield>
+                </Row>
+                <Row>
+                    <Textfield bind:value={addingUser.name} label="Name">
+                        <HelperText slot="helper">Name</HelperText>
+                    </Textfield>
+                </Row>
+                <Row>
+                    <List class="demo-list" checkList>
+                        {#each Object.keys(Role) as role}
+                            <Item>
+                                <Label>{role}</Label>
+                                <Meta>
+                                    <Checkbox
+                                        bind:group={addingUser.roles}
+                                        value={role}
+                                    />
+                                </Meta>
+                            </Item>
+                        {/each}
+                    </List>
+                </Row>
+                <Row>
+                    <Textfield
+                        bind:value={addingUser.email}
+                        label="Email"
+                        type="email"
+                    >
+                        <HelperText slot="helper">Email:</HelperText>
+                    </Textfield>
+                </Row>
+                <Row>
+                    <Select bind:value={addingUser.status} label="Status">
+                        {#each Object.values(UserInfoStatusEnum) as stat}
+                            <Option value={stat}>{stat}</Option>
+                        {/each}
+                    </Select>
+                </Row>
+                <Row>
+                    <Textfield
+                        bind:value={addingUser.dateRegistered}
+                        label="Registration date"
+                        type="date"
+                    >
+                        <HelperText slot="helper">Registration date</HelperText>
+                    </Textfield>
+                </Row>
+            </Body>
+        </DataTable>
+    </Content>
+    <Actions>
+        <Button action="cancel">
+            <Label>Cancel</Label>
+        </Button>
+        <Button action="add" defaultAction>
+            <Label>Add User</Label>
+        </Button>
+    </Actions>
+</Dialog>
 
 <DataTable table$aria-label="Todo list" style="width: 100%;">
     <Head>
@@ -205,9 +291,6 @@
         </Row>
     </Head>
     <Body>
-        {#if isLoading}
-            Loading...
-        {/if}
         {#each users as user}
             <Row>
                 <Cell>{user.userId}</Cell>
@@ -371,6 +454,12 @@
             disabled={page === totalPages}>last_page</IconButton
         >
     </Pagination>
+    <LinearProgress
+        indeterminate
+        bind:closed={loaded}
+        aria-label="Data is being loaded..."
+        slot="progress"
+    />
 </DataTable>
 
 <div class="buttons">
@@ -381,7 +470,6 @@
 <style>
     /* CSS Styles */
     .modal {
-        display: none;
         position: fixed;
         z-index: 1;
         left: 0;

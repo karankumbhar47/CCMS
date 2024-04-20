@@ -70,6 +70,9 @@ devDependencies:
   '@smui/snackbar':
     specifier: 7.0.0-beta.18
     version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
+  '@smui/textfield':
+    specifier: 7.0.0-beta.18
+    version: 7.0.0-beta.18(svelte@4.2.12)(typescript@5.3.3)
   '@sveltejs/adapter-auto':
     specifier: ^3.1.1
     version: 3.1.1(@sveltejs/kit@2.5.2)
