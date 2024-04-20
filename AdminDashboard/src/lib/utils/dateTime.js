@@ -57,8 +57,10 @@ export function getFormattedDate(inputDate) {
     return formattedDate;
 }
 
-/** @param {string | number | Date} date */
+/** @param {string | number | Date} date
+ * @returns {string} */
 export function getFormatDateTime(date) {
+    /** @type {Intl.DateTimeFormatOptions} */
     const options = {
         year: "numeric",
         month: "2-digit",

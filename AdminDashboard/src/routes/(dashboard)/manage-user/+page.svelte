@@ -71,6 +71,7 @@
         department: "",
         phoneNumber: "",
     };
+    let newUserRegistrationDate = new Date().toDateString();
     /** @type {boolean} */
     let isAddingUser = false;
 
@@ -85,7 +86,7 @@
         isAddingUser = true;
     }
 
-    /** @param {CustomEvent<{action: string }} e  */
+    /** @param {CustomEvent<{action: string }>} e  */
     async function closeAddUserModal(e) {
         switch (e.detail.action) {
             case "cancel": {
@@ -105,10 +106,18 @@
             }
             case "add": {
                 // check all the field of addingUser
-                if (addingUser.userName === "" && addingUser.userName === "") {
+                if (
+                    !addingUser.userId ||
+                    addingUser.userId === "" ||
+                    !addingUser.userName ||
+                    addingUser.userName === "" ||
+                    !addingUser.password ||
+                    addingUser.password === ""
+                ) {
                     isAddingUser = true;
                     return;
                 }
+                addingUser.dateRegistered = new Date(newUserRegistrationDate);
                 try {
                     await getDefaultApi().createUser({
                         userInfo: addingUser,
@@ -254,7 +263,7 @@
                 </Row>
                 <Row>
                     <Textfield
-                        bind:value={addingUser.dateRegistered}
+                        bind:value={newUserRegistrationDate}
                         label="Registration date"
                         type="date"
                     >
@@ -469,44 +478,6 @@
 
 <style>
     /* CSS Styles */
-    .modal {
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        border-radius: 5px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
     .btn {
         padding: 8px 20px;
         border: none;

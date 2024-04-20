@@ -24,8 +24,8 @@
      * @property {string} imageUrl
      * @property {string} fileId
      */
-    /** @typedef {import("$lib/generated/models").ComplaintDetails} ComplaintDetails
-     * @type {ComplaintDetails | undefined} */
+    /** @typedef {import("$lib/generated/models").ComplaintDetails} ComplaintDetails */
+    /** @type {ComplaintDetails | undefined} */
     export let complaint;
     /** @type {boolean} */
     export let isEdited = true;
@@ -66,12 +66,15 @@
         imageUrl: null,
     }));
 
-    /** @param {{ target: { files: Array<File>; }; }} event */
+    /** @param {Event & { currentTarget: EventTarget & HTMLInputElement }} event */
     function handleFileSelect(event) {
         console.log(closureAttachmentIds.length);
         isEdited = true;
-        const files = event.target.files;
+        const files = event.currentTarget.files;
         console.log(MAX_IMAGES);
+        if (files === null) {
+            return;
+        }
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
