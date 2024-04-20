@@ -4,6 +4,9 @@
     import { getDefaultApi } from "$lib/utils/auth";
     import Select, { Option } from "@smui/select";
     import { getFormattedDate } from "$lib/utils/dateTime";
+    import Accordion, { Panel, Header, Content } from "@smui-extra/accordion";
+    import Button from "@smui/button";
+    import IconButton from "@smui/icon-button";
 
     let statusList = ["All", "Close", "Open", "InProgress"];
     let value = "All";
@@ -102,24 +105,89 @@
     }
 </script>
 
-<div>
-    <label for="ToDate">To Date</label>
-    <input type="date" id="ToDate" bind:value={toDate} />
-    <label for="FromDate">From Date</label>
-    <input type="date" id="FromDate" bind:value={fromDate} />
-    <Select bind:value label="Select STATUS">
-        {#each statusList as status}
-            <Option value={status}>{status}</Option>
-        {/each}
-    </Select>
+<!--<div>-->
+<!--    <label for="ToDate">To Date</label>-->
+<!--    <input type="date" id="ToDate" bind:value={toDate} />-->
+<!--    <label for="FromDate">From Date</label>-->
+<!--    <input type="date" id="FromDate" bind:value={fromDate} />-->
+<!--    <Select bind:value label="Select STATUS">-->
+<!--        {#each statusList as status}-->
+<!--            <Option value={status}>{status}</Option>-->
+<!--        {/each}-->
+<!--    </Select>-->
 
-    <button type="submit" on:click={filter}>filter</button>
-    <button type="submit" on:click={resetFilter}>reset</button>
-</div>
+<!--    <button type="submit" on:click={filter}>filter</button>-->
+<!--    <button type="submit" on:click={resetFilter}>reset</button>-->
+<!--</div>-->
 
 <!-- <div class="search-container">
     <SearchBar />
 </div> -->
+
+<div class="filter-container">
+    <Accordion>
+        <Panel>
+            <Header>
+                <div class="filter-header">
+                    <div class="icon">
+                        <IconButton class="material-icons">tune</IconButton>
+                    </div>
+                    <div class="icon-name">Apply Filter</div>
+                </div>
+            </Header>
+            <Content>
+                <div class="container">
+                    <div class="outer-first-coloumn">
+                        <div class="inner-first-coloumn">
+                            <label for="ToDate">To Date</label>
+                            <label for="FromDate">From Date</label>
+                        </div>
+                        <div class="inner-second-coloumn">
+                            <input
+                                type="date"
+                                bind:value={toDate}
+                                id="ToDate"
+                            />
+                            <input
+                                type="date"
+                                bind:value={fromDate}
+                                id="FromDate"
+                            />
+                        </div>
+                    </div>
+                    <div class="coloumn-second">
+                        <Select
+                            variant="outlined"
+                            bind:value
+                            label="Select STATUS"
+                        >
+                            {#each statusList as status}
+                                <Option value={status}>{status}</Option>
+                            {/each}
+                        </Select>
+                    </div>
+
+                    <div class="outer-second-coloumn">
+                        <Button
+                            class="button-filter"
+                            on:click={filter}
+                            variant="outlined">Filter</Button
+                        >
+                        <Button
+                            class="button-reset"
+                            on:click={resetFilter}
+                            variant="outlined">Reset</Button
+                        >
+                    </div>
+                </div>
+            </Content>
+        </Panel>
+    </Accordion>
+</div>
+
+<div class="search-container">
+    <SearchBar />
+</div>
 
 <table class="table-container">
     <thead>
@@ -190,6 +258,66 @@
 </div>
 
 <style>
+    .filter-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0;
+    }
+
+    input[type="date"]::before {
+        content: none !important;
+    }
+
+    .filter-container {
+        margin-top: 50px;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        align-items: center;
+    }
+
+    .outer-first-coloumn {
+        display: flex;
+        flex-direction: row;
+        margin: 1rem;
+    }
+
+    .coloumn-second {
+        display: flex;
+    }
+
+    .outer-second-coloumn {
+        display: flex;
+        justify-content: center;
+        justify-content: space-evenly;
+        width: 100%;
+        margin: 1rem;
+    }
+
+    .inner-first-coloumn {
+        display: flex;
+        flex-direction: column;
+        margin: 1rem;
+    }
+
+    .inner-second-coloumn {
+        display: flex;
+        flex-direction: column;
+        margin: 1rem;
+    }
+
+    .inner-first-coloumn label {
+        margin: 0.5rem;
+    }
+
+    .inner-second-coloumn input {
+        margin: 0.5rem;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
@@ -208,9 +336,12 @@
     }
 
     .table-container {
-        margin-top: 100px;
+        /*margin-top: 100px;*/
+        /*border-collapse: collapse;*/
+        margin-top: 1rem;
         width: 100%;
-        border-collapse: collapse;
+        max-width: 100%;
+        overflow-x: auto;
     }
 
     th,
