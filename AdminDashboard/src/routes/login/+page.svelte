@@ -1,12 +1,17 @@
 <script>
     import Cookies from "js-cookie";
+    import Snackbar, { Actions, Label } from "@smui/snackbar";
+    import IconButton from "@smui/icon-button";
     import { goto } from "$app/navigation";
     import { getDefaultApi } from "$lib/utils/auth";
-    import { DefaultApi, Role } from "$lib/generated";
+    import { Role } from "$lib/generated";
 
+    /** @type {string} */
     let username = "";
+    /** @type {string} */
     let password = "";
-
+    /** @type {Snackbar} */
+    let snackbar;
 
     async function handleLogin() {
         const api = getDefaultApi(true);
@@ -22,6 +27,7 @@
             goto("/");
         } catch (e) {
             console.log("Invalid username or password");
+            snackbar.open();
         }
     }
 
@@ -35,7 +41,15 @@
     }
 </script>
 
-<h1>LOGIN PAGE</h1>
+<h1>CCMS</h1>
+<h2>Admin Dashboard - Login</h2>
+
+<Snackbar bind:this={snackbar}>
+    <Label>Login Failed</Label>
+    <Actions>
+        <IconButton class="material-icons" title="Dismiss">close</IconButton>
+    </Actions>
+</Snackbar>
 
 <form on:submit|preventDefault={handleLogin}>
     <input type="text" placeholder="Username" bind:value={username} />
@@ -44,7 +58,8 @@
 </form>
 
 <style>
-    h1 {
+    h1,
+    h2 {
         text-align: center;
         margin-bottom: 20px;
     }

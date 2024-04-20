@@ -87,10 +87,10 @@
     });
 
     let sendSignal = false;
-    $: sendSignal==true ? callParent() : ()=>{};
+    $: sendSignal == true ? callParent() : () => {};
 
-    function callParent(){
-        console.log("call Parent")
+    function callParent() {
+        console.log("call Parent");
         const complaintId = $page.params.complaintId;
         fetchComplaint(complaintId);
         sendSignal = false;

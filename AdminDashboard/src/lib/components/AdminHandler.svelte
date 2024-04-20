@@ -12,7 +12,6 @@
     import CircularProgress from "@smui/circular-progress";
     import Button, { Label } from "@smui/button";
 
-
     export let sendSignal = false;
     /** @type {string | undefined} */
     let selectedStatus = undefined;
@@ -69,7 +68,7 @@
 
     /** @param {{ target: { files: Array<File>; }; }} event */
     function handleFileSelect(event) {
-        console.log(closureAttachmentIds.length)
+        console.log(closureAttachmentIds.length);
         isEdited = true;
         const files = event.target.files;
         console.log(MAX_IMAGES);
@@ -105,7 +104,7 @@
     /** @param {boolean} isUpdate */
     async function updateDetails(isUpdate) {
         console.log("called update details");
-        console.log(isUpdate)
+        console.log(isUpdate);
         if (isUpdate) {
             isLoading = true;
             if (updatedComplaint && complaint?.complaintId) {
@@ -155,7 +154,6 @@
             clearAll();
             isLoading = false;
         }
-
     }
 
     function clearAll() {
@@ -207,7 +205,7 @@
         ) {
             isEdited = false;
             console.log(isEdited);
-            clearImages()
+            clearImages();
         } else {
             commentValue = complaint?.complaintInfo?.remarkByMaintainer;
             if (selectedStatus === "partiallyClose") {
@@ -231,8 +229,6 @@
             updateDetails(false);
         }
     }
-
-    
 </script>
 
 {#if isLoading}
@@ -310,10 +306,18 @@
         >Are you sure you want to change status to {selectedStatus}</Content
     >
     <Actions>
-        <Button on:click={() => {updateDetails(false);}}>
+        <Button
+            on:click={() => {
+                updateDetails(false);
+            }}
+        >
             <Label>No</Label>
         </Button>
-        <Button on:click={() => {updateDetails(true);}}>
+        <Button
+            on:click={() => {
+                updateDetails(true);
+            }}
+        >
             <Label>Yes</Label>
         </Button>
     </Actions>
@@ -349,8 +353,6 @@
     .add-button {
         margin-left: 3rem;
     }
-
-    
 
     .button-container {
         display: flex;
