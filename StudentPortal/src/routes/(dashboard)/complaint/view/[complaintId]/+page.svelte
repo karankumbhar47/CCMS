@@ -35,7 +35,7 @@
             complaint = await api.getComplaintInfo({ id });
             if (complaint.complaintInfo?.attachmentIds) {
                 let counter = 0;
-                for (const fileId of complaint.complaintInfo?.attachmentIds) {
+                for (const fileId of complaint.complaintInfo.attachmentIds) {
                     try {
                         const fileBlob = await api.downloadFile({ fileId });
                         const imageUrl = URL.createObjectURL(fileBlob);
@@ -52,7 +52,7 @@
                     complaint.complaintInfo?.closureAttachmentIds != undefined
                 ) {
                     for (const fileId of complaint.complaintInfo
-                        ?.closureAttachmentIds) {
+                        .closureAttachmentIds) {
                         try {
                             const fileBlob = await api.downloadFile({ fileId });
                             const imageUrl = URL.createObjectURL(fileBlob);

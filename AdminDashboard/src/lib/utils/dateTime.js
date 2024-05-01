@@ -31,6 +31,7 @@ export function getFormattedDate(inputDate) {
     if (inputDate) {
         try {
             const [datePart, timePart] = inputDate.split(" ");
+            // eslint-disable-next-line no-unused-vars
             const [month, day, _] = datePart.split("-");
             const [hour, minute] = timePart.split(":");
             const months = [

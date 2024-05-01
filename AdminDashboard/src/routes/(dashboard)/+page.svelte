@@ -4,13 +4,14 @@
     import LayoutGrid, { Cell } from "@smui/layout-grid";
     import Paper, { Title, Subtitle, Content } from "@smui/paper";
     import IconButton from "@smui/icon-button";
+    import { onMount } from "svelte";
+    import { getDefaultApi } from "$lib/utils/auth";
 
-    export let userCount = 50;
-    export let totalComplaints = 10;
-    export let pendingComplaints = 2;
-    export let resolverCount = 2;
+    let userCount = 0;
+    let totalComplaints = 0;
+    let pendingComplaints = 0;
 
-    export let clicked = 0;
+    let clicked = 0;
 
     // import Cookies from 'js-cookie';
 
@@ -18,6 +19,20 @@
     // if (!authToken && window.location.pathname !== "/login") {
     //     window.location.href = '/login';
     // }
+    onMount(async () => {
+        await loadStats();
+    });
+
+    async function loadStats() {
+        try {
+            const response = await getDefaultApi().stats();
+            userCount = response.users;
+            totalComplaints = response.complaints;
+            pendingComplaints = response.pendingComplaints;
+        } catch (error) {
+            console.error("Failed to fetch user details:", error);
+        }
+    }
 </script>
 
 <LayoutGrid>
@@ -54,7 +69,7 @@
             </Content>
         </Paper>
     </Cell>
-    <Cell>
+    <!-- <Cell>
         <Paper>
             <Title>No. of Resolvers</Title>
             <Subtitle><h2>{resolverCount}</h2></Subtitle>
@@ -64,5 +79,5 @@
                 </IconButton>
             </Content>
         </Paper>
-    </Cell>
+    </Cell> -->
 </LayoutGrid>

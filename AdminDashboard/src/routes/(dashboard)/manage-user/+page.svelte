@@ -142,6 +142,7 @@
             }
         }
         isAddingUser = false;
+        await loadUsers();
     }
 
     /**
@@ -169,6 +170,7 @@
                 deleteUserRequest: { userId: user.userId },
             });
             console.log("User deleted successfully.");
+            await loadUsers();
         } catch (error) {
             console.error("Failed to delete user:", error);
         }
