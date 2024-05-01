@@ -26,6 +26,7 @@ public class EmailService {
             message.setSubject(subject);
             message.setText(text);
             emailSender.send(message);
+            System.out.println("Email sent to " + to + " sucessfully.");
         } catch (MailException e) {
             System.out.println("Failed to send email. MailException: " + e.getMessage());
             System.out.println("" + e.getCause());

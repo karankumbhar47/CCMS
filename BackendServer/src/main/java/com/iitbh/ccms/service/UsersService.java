@@ -23,6 +23,12 @@ public class UsersService implements UserDetailsService {
     @Autowired
     private UsersRepository usersRepository;
     private UserDetailsService userDetailsService;
+    private final EmailService emailService;
+
+    @Autowired
+    public UsersService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     public List<UserDetailsDB> getAllUserDetail(int page, int size) {
         // Fetch user details for the specified page and size
@@ -79,8 +85,17 @@ public class UsersService implements UserDetailsService {
         }
     }
 
-    public void createUser(UserDetailsDB userDetailUpdate) {
-        usersRepository.save(userDetailUpdate);
+    public void createUser(UserDetailsDB newUserDetails) {
+        usersRepository.save(newUserDetails);
+        mailUserCredentials(newUserDetails);
+    }
+
+    private void mailUserCredentials(UserDetailsDB details) {
+        emailService.sendSimpleMessage(
+                details.getEmail(),
+                "Welcome to CCMS",
+                "A new account has been created for you on Campus Complaint Management System (CCMS).\nUsername: "
+                        + details.getUsername() + "\n Password: " + details.getPassword());
     }
 
     public Optional<UserDetailsDB> singleUser(String username) {
