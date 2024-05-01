@@ -1,0 +1,13 @@
+get:
+    summary: Get system statistics
+    description: Gets values of different system statistics.
+    operationId: stats
+    responses:
+        "200":
+            description: "OK"
+            content:
+                application/json:
+                    schema:
+                        $ref: '../schemas/stats.yaml'
+        "403":
+            description: "Forbidden"

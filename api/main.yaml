@@ -74,6 +74,8 @@ paths:
     /updateLocation:
         $ref: "./paths/update_location.yaml"
 
+    /stats:
+        $ref: "./paths/stats.yaml"
 
 servers:
     -   url: http://localhost:8080

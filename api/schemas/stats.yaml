@@ -1,0 +1,13 @@
+type: object
+name: "new_announcement"
+required:
+    - users
+    - complaints
+    - pending_complaints
+properties:
+    users:
+        type: integer
+    complaints:
+        type: integer
+    pending_complaints:
+        type: integer
