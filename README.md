@@ -15,25 +15,20 @@ ensure timely resolution.
 - Auto-acknowledgment of complaints to ensure prompt attention.
 - Efficient complaint table with filtering options for easy management.
 
+## Installation 
+- [Backend Server](./BackendServer/ReadMe.md)
+- [Student Portal](./StudentPortal/README.md)
+- [Admin Dashboard](./AdminDashboard/README.md)
+- [MetaFlow](./MetaFlow/README.md)
 
 ## Technologies Used
 
-- **Frontend**:
-  - Svelte
-  - HTML
-  - CSS
-
-- **Backend**:
-  - Spring Boot
-  - MongoDB
-
-- **Api** 
-  - Openapi
-  - Swagger-ui
-
-- **Machine Learning** 
-  - Scikit-learn 
-  - Metaflow
+| Category         | Technologies           |
+| ---------------- | ---------------------- |
+| Frontend         | Svelte,HTML, CSS       |
+| Backend          | Spring Boot, MongoDB   |
+| Api              | Openapi, Swagger-ui    |
+| Machine Learning | Scikit-learn, Metaflow |
 
 ## Usage
 
@@ -56,6 +51,6 @@ project, please follow these steps:
 
 ## Feedback
 
-We value feedback from users and stakeholders to improve the system. If you
+We value feedback from users to improve the system. If you
 encounter any issues or have suggestions for enhancements, please open an issue
 on GitHub.
