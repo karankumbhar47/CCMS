@@ -1,10 +1,5 @@
 package com.iitbh.ccms.service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.iitbh.ccms.model.ComplaintDetails;
 import com.iitbh.ccms.model.ComplaintInfo;
 import com.iitbh.ccms.model.ComplaintPage;
+import com.iitbh.ccms.model.ComplaintInfo.StatusEnum;
 import com.iitbh.ccms.model_db.Complaint;
 import com.iitbh.ccms.model_db.UserDetailsDB;
 import com.iitbh.ccms.repository.ComplaintRepository;
@@ -31,6 +27,14 @@ public class ComplaintService {
         this.complaintRepository = complaintRepository;
         this.usersRepository = usersRepository;
         this.complaintUtils = complaintUtils;
+    }
+
+    public int getCount(){
+        return (int) complaintRepository.count();
+    }
+
+    public int getCountByStatus(StatusEnum status){
+        return (int) complaintRepository.countByStatus(status.toString());
     }
 
     public ComplaintPage getAllComplains(int page, int size, String userId) {

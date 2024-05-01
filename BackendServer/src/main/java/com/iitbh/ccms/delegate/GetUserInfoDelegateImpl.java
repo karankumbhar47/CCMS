@@ -18,7 +18,6 @@ public class GetUserInfoDelegateImpl implements GetUserInfoApiDelegate {
 
     @Override
     public ResponseEntity<UserInfo> getUserInfo(String username) {
-        System.out.println(username);
         if (usersService.getUserInfo(username) != null) {
             return ResponseEntity.ok(usersService.getUserInfo(username));
         } else {
