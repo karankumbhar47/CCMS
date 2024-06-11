@@ -8,6 +8,11 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+
 @Configuration
 @EnableWebMvc
 public class SwaggerConfiguration implements WebMvcConfigurer {
@@ -25,21 +30,35 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         return new ByteArrayHttpMessageConverter();
     }
 
-//    @Bean
-//    public UrlBasedCorsConfigurationSource corsFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.addAllowedOrigin("*"); // Allow all origins for demo purposes, you can specify your frontend URL here
-//        config.addAllowedMethod("*"); // Allow all HTTP methods
-//        config.addAllowedHeader("*"); // Allow all headers
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
-//    }
-//
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(new ByteArrayHttpMessageConverter());
-//        converters.add(new MappingJackson2HttpMessageConverter());
-//    }
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info().title("API").version("v1"))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(new io.swagger.v3.oas.models.Components()
+                        .addSecuritySchemes("bearerAuth",
+                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer")
+                                        .bearerFormat("JWT")));
+    }
+
+    // @Bean
+    // public UrlBasedCorsConfigurationSource corsFilter() {
+    // UrlBasedCorsConfigurationSource source = new
+    // UrlBasedCorsConfigurationSource();
+    // CorsConfiguration config = new CorsConfiguration();
+    // config.addAllowedOrigin("*"); // Allow all origins for demo purposes, you can
+    // specify your frontend URL here
+    // config.addAllowedMethod("*"); // Allow all HTTP methods
+    // config.addAllowedHeader("*"); // Allow all headers
+    // source.registerCorsConfiguration("/**", config);
+    // return source;
+    // }
+    //
+    // @Override
+    // public void configureMessageConverters(List<HttpMessageConverter<?>>
+    // converters) {
+    // converters.add(new ByteArrayHttpMessageConverter());
+    // converters.add(new MappingJackson2HttpMessageConverter());
+    // }
 
 }

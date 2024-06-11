@@ -48,7 +48,7 @@ export function getDefaultApi(loginPage) {
     }
 
     let config = new Configuration({
-        basePath: "https://ec2-3-90-222-205.compute-1.amazonaws.com:8443",
+        basePath: "https://localhost:8443",
         headers: headers,
     });
 
