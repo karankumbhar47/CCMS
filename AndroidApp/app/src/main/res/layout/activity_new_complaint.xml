@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/card_background_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    tools:context=".NewComplaint">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@color/app_theme"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:title="New Complaint" />
+
+    <TextView
+        android:id="@+id/zone_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="95dp"
+        android:layout_marginLeft="22dp"
+        android:text="Zone"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/zoneLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="367dp"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/app_theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zone_label">
+
+        <AutoCompleteTextView
+            android:id="@+id/zone_option_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E5D5D5"
+            android:hint="@string/zone"
+
+            android:inputType="none"
+            android:textColorHint="@color/black"
+            tools:layout_editor_absoluteX="18dp"
+            tools:layout_editor_absoluteY="130dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/area_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Area Name"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zoneLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/areaLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="367dp"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/app_theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/area_label">
+
+        <AutoCompleteTextView
+            android:id="@+id/area_option_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E5D5D5"
+            android:hint="@string/area"
+            android:inputType="none"
+            android:textColorHint="@color/black"
+            tools:layout_editor_absoluteX="18dp"
+            tools:layout_editor_absoluteY="130dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/category_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="22dp"
+        android:text="Category"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/areaLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/categoryLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_width="367dp"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/app_theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_label">
+
+        <AutoCompleteTextView
+            android:id="@+id/category_option_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E5D5D5"
+            android:hint="@string/category"
+            android:inputType="none"
+            android:textColorHint="@color/black"
+            tools:layout_editor_absoluteX="18dp"
+            tools:layout_editor_absoluteY="130dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/location_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="22dp"
+        android:text="Location Details"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/categoryLayout" />
+
+
+    <EditText
+        android:id="@+id/location_details"
+        android:layout_width="367dp"
+        android:layout_height="55dp"
+        android:ems="1"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location_label" />
+
+    <TextView
+        android:id="@+id/complaint_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="22dp"
+        android:text="Complaint Description"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location_details" />
+
+
+    <EditText
+        android:id="@+id/complaint_description"
+        android:layout_width="367dp"
+        android:layout_height="55dp"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/complaint_label" />
+
+    <Button
+        android:id="@+id/buttonUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Upload Image"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/complaint_description" />
+
+    <TextView
+        android:id="@+id/textViewImageName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonUpload"
+        android:layout_centerHorizontal="true"
+        android:text="Image Name"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonUpload" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

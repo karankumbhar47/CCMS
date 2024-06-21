@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.androidapp"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -26,6 +26,11 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -50,11 +55,15 @@ openApiGenerate {
     generatorName.set("android")
     inputSpec.set("$rootDir/app/api/main.yaml")
     outputDir.set("$buildDir/CCMS_Api")
-    apiPackage.set("com.openapi.resolverApp.api")
-    invokerPackage.set("com.openapi.resolverApp.invoker")
-    modelPackage.set("com.openapi.resolverApp.model")
+    apiPackage.set("com.openapi.studentPortal.api")
+    invokerPackage.set("com.openapi.studentPortal.invoker")
+    modelPackage.set("com.openapi.studentPortal.model")
     typeMappings.set(mapOf("number" to "Float"))
-    configOptions.set(mapOf("dateLibrary" to "java8"))
+    configOptions.set(mapOf(
+        "dateLibrary" to "java8",
+        "library" to "volley"
+    ))
+    //configOptions.set(mapOf("dateLibrary" to "java8"))
 }
 
 tasks.named("preBuild") {
@@ -68,6 +77,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -95,7 +107,14 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.0")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("org.apache.httpcomponents:httpclient-android:4.3.5.1")
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+
     implementation("io.springfox:springfox-swagger2:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
     implementation("org.apache.httpcomponents:httpclient-android:4.3.5.1")
